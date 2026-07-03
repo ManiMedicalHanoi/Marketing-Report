@@ -94,6 +94,25 @@ button{cursor:pointer}
 @keyframes fade{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
 
 /* ══ KPI ROW ══ */
+.mf-wrap{background:#fff;border:1px solid var(--border);border-radius:var(--r-xl);padding:18px 20px;margin-bottom:20px;box-shadow:var(--sh-sm)}
+.mf-title{font-size:15px;font-weight:800;color:var(--mmh-navy);margin-bottom:14px}
+.mf-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}
+.mf-col{border:1px solid var(--border);border-radius:var(--r-lg);overflow:hidden;display:flex;flex-direction:column;background:var(--lb3)}
+.mf-col-h{display:flex;align-items:center;justify-content:space-between;padding:9px 12px;font-size:12px;color:var(--text);background:#fff;border-bottom:1px solid var(--border)}
+.mf-count{font-size:11px;font-weight:800;background:var(--mmh-navy);color:#fff;min-width:20px;height:20px;padding:0 6px;border-radius:10px;display:flex;align-items:center;justify-content:center}
+.mf-over .mf-col-h{color:var(--danger-fg)} .mf-over .mf-count{background:var(--danger-fg)}
+.mf-today .mf-col-h{color:var(--mmh-blue)} .mf-today .mf-count{background:var(--mmh-blue)}
+.mf-done .mf-col-h{color:#1E6B3A} .mf-done .mf-count{background:#1E6B3A}
+.mf-col-body{padding:6px;display:flex;flex-direction:column;gap:5px;max-height:230px;overflow-y:auto;min-height:60px}
+.mf-item{display:flex;align-items:center;gap:7px;padding:7px 9px;background:#fff;border:1px solid var(--border);border-radius:9px;cursor:pointer;transition:.13s}
+.mf-item:hover{border-color:var(--mmh-blue);transform:translateX(2px);box-shadow:var(--sh-sm)}
+.mf-dot{width:8px;height:8px;border-radius:50%;flex:0 0 auto}
+.mf-name{font-size:12px;font-weight:600;color:var(--text);line-height:1.3;flex:1;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.mf-meta{display:none}
+.mf-note-ic{font-size:11px;flex:0 0 auto;opacity:.7}
+.mf-empty{font-size:11px;color:var(--faint);padding:10px 8px;text-align:center}
+.flash{animation:flash 1.5s ease}
+@keyframes flash{0%,100%{background:#fff}30%{background:#FFF6CC}}
 .kpi-row{display:grid;grid-template-columns:repeat(6,1fr);gap:12px}
 .kpi-card{background:#fff;border:1px solid var(--border);border-radius:var(--r-lg);padding:16px 15px;box-shadow:var(--sh-sm);position:relative;overflow:hidden;transition:transform .15s,box-shadow .15s}
 .kpi-card:hover{transform:translateY(-2px);box-shadow:var(--sh-md)}
@@ -209,7 +228,11 @@ button{cursor:pointer}
 .sub-cell.locked{opacity:.72}
 .sc-no{font-family:'DM Mono',monospace;font-size:10px;color:var(--faint)}
 .sc-title{font-size:12.3px;font-weight:600;color:var(--text);line-height:1.35;margin:3px 0 8px;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;min-height:32px}
-.sc-foot{display:flex;justify-content:space-between;align-items:center}
+.sc-foot{display:flex;justify-content:space-between;align-items:center;gap:6px}
+.sc-update{display:flex;align-items:flex-start;gap:5px;background:var(--lb3);border-radius:7px;padding:5px 7px;margin:0 0 8px}
+.sc-update-ic{font-size:10px;flex:0 0 auto;opacity:.6;line-height:1.5}
+.sc-update-txt{font-size:10.5px;color:var(--sub);line-height:1.4;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.sc-dl{font-size:10px;color:var(--faint);margin-left:auto;white-space:nowrap}
 .sc-pic{display:flex;align-items:center;gap:5px;font-size:10.5px;color:var(--sub);font-weight:600}
 .sc-pic-av{width:18px;height:18px;border-radius:50%;color:#fff;font-size:8px;font-weight:800;display:flex;align-items:center;justify-content:center}
 .sc-add{border:2px dashed var(--lb1);background:var(--pale);display:flex;align-items:center;justify-content:center;color:var(--mmh-blue);font-weight:700;font-size:12px;min-height:96px;cursor:pointer}
@@ -252,6 +275,18 @@ button{cursor:pointer}
 .field textarea{resize:vertical;min-height:80px;line-height:1.5}
 .field-row{display:grid;grid-template-columns:1fr 1fr;gap:13px}
 .field-hint{font-size:11px;color:var(--faint);margin-top:5px}
+.modal-lg{max-width:640px}
+.as-empty{font-size:12px;color:var(--faint);padding:14px;background:var(--lb3);border-radius:10px;text-align:center}
+.as-selall{padding:8px 0 4px}
+.as-check{display:flex;align-items:center;gap:8px;cursor:pointer;font-size:12.5px}
+.as-check input{width:16px;height:16px;accent-color:var(--mmh-blue);cursor:pointer}
+.as-list{max-height:280px;overflow-y:auto;border:1px solid var(--border);border-radius:10px}
+.as-item{display:flex;align-items:center;gap:10px;padding:8px 12px;border-bottom:1px solid var(--border)}
+.as-item:last-child{border-bottom:none}
+.as-item:hover{background:var(--lb3)}
+.as-item-name{font-size:12.5px;color:var(--text)}
+.as-item-status{font-size:9.5px;font-weight:700;padding:2px 8px;border-radius:8px;margin-left:auto;white-space:nowrap}
+.as-item-dl{width:140px;flex:0 0 auto;font-size:11.5px;padding:5px 8px;border:1px solid var(--border);border-radius:8px}
 .modal-footer{display:flex;gap:12px;justify-content:flex-end;margin-top:8px}
 .voice-btn{background:var(--pale);border:1.5px dashed var(--mmh-blue);color:var(--mmh-blue);font-size:11px;font-weight:700;padding:6px 11px;border-radius:var(--r-sm);display:inline-flex;align-items:center;gap:5px}
 .voice-btn.rec{background:var(--danger);border-color:var(--danger);color:#fff;border-style:solid;animation:pulse 1s infinite}
@@ -599,6 +634,10 @@ function renderOverview(){
   var idle=subs.filter(function(s){return /idle/i.test(s.status)||!s.status;}).length;
 
   var h="";
+
+  // ── PANEL "VIỆC CỦA TÔI" — hiện ngay khi đăng nhập (mọi vai trò) ──
+  h+=myFocusPanel();
+
   // PIC filter chips (mọi người xem hết → luôn hiện để lọc nhanh)
   h+='<div class="chips" style="margin-bottom:18px">';
   h+='<button class="chip'+(S.overviewPic===""?" active":"")+'" onclick="setOverviewPic(\'\')">👥 Tất cả PIC</button>';
@@ -665,6 +704,50 @@ function renderOverview(){
   $("tab-overview").innerHTML=h;
 }
 function setOverviewPic(p){ S.overviewPic=p; renderOverview(); }
+
+/* Panel "Việc của tôi": task hôm nay, đang chờ (pending), đã hoàn thành gần đây */
+function myFocusPanel(){
+  var me=S.user.pic;
+  var mine=[];
+  allKeyTasks().forEach(function(k){ (k.subs||[]).forEach(function(s){ if(s.pic===me) mine.push({k:k,s:s}); }); });
+  if(!mine.length) return "";
+
+  var todayISO=toISO(new Date());
+  function eff(s){ return s.revised||s.planned||""; }
+  function isDone(s){ return /complet/i.test(s.status); }
+  function isOverdue(s){ return /overdue/i.test(s.status) || (!isDone(s) && eff(s) && toISO(eff(s))<todayISO); }
+
+  var dueToday=mine.filter(function(o){ return !isDone(o.s) && toISO(eff(o.s))===todayISO; });
+  var overdue =mine.filter(function(o){ return isOverdue(o.s); });
+  var pending =mine.filter(function(o){ return !isDone(o.s) && !isOverdue(o.s) && toISO(eff(o.s))!==todayISO; });
+  var doneRec =mine.filter(function(o){ return isDone(o.s); }).slice(0,6);
+
+  function taskLine(o,showDate){
+    var s=o.s, m=stMeta(s.status), c=typeColor(o.k.type);
+    var dl=eff(s)?('· hạn '+esc(fmtVN(eff(s)))):'';
+    return '<div class="mf-item" onclick="gotoSub(\''+jsq(o.k.no)+'\',\''+jsq(s.no)+'\')" title="'+esc(s.result||'')+'">'
+      +'<span class="mf-dot" style="background:'+m.dot+'"></span>'
+      +'<span class="mf-name">'+esc(s.name||s.subTask)+'</span>'
+      +'<span class="mf-meta">'+esc(o.k.keyTask)+' '+(showDate?dl:'')+'</span>'
+      +(s.result?'<span class="mf-note-ic" title="'+esc(s.result)+'">💬</span>':'')
+      +'</div>';
+  }
+  function col(title,arr,cls,empty){
+    var body = arr.length ? arr.map(function(o){return taskLine(o,true);}).join("")
+                          : '<div class="mf-empty">'+empty+'</div>';
+    return '<div class="mf-col '+cls+'"><div class="mf-col-h"><b>'+title+'</b><span class="mf-count">'+arr.length+'</span></div><div class="mf-col-body">'+body+'</div></div>';
+  }
+
+  return '<div class="mf-wrap">'
+    +'<div class="mf-title">Xin chào '+esc(me)+' — đây là việc của bạn</div>'
+    +'<div class="mf-grid">'
+      +col('🔴 Quá hạn',overdue,'mf-over','Không có việc quá hạn 👍')
+      +col('📌 Hôm nay',dueToday,'mf-today','Hôm nay không có việc đến hạn')
+      +col('⏳ Đang chờ',pending,'mf-pend','Trống')
+      +col('✅ Đã xong (gần đây)',doneRec,'mf-done','Chưa có việc hoàn thành')
+    +'</div></div>';
+}
+function gotoSub(kno,sno){ switchTab('detail'); setTimeout(function(){ openDetailKey(kno); var el=document.getElementById('sub-'+sno); if(el){el.scrollIntoView({behavior:'smooth',block:'center'}); el.classList.add('flash'); setTimeout(function(){el.classList.remove('flash');},1600);} },80); }
 function kpiCard(val,label,ic,cls){
   return '<div class="kpi-card '+(cls||"")+'"><div class="kpi-ic">'+ic+'</div><div class="kpi-val">'+val+'</div><div class="kpi-label">'+esc(label)+'</div></div>';
 }
@@ -774,7 +857,12 @@ function barStyle(start,end,off,totalDays,color){
   if(left+width>100) width=100-left;
   return "left:"+left+"%;width:"+Math.max(width,1.5)+"%;background:"+color;
 }
-function toISO(d){ return d.getFullYear()+"-"+("0"+(d.getMonth()+1)).slice(-2)+"-"+("0"+d.getDate()).slice(-2); }
+function toISO(d){
+  if(!d) return "";
+  if(typeof d==="string"){ var m=/^(\d{4})-(\d{2})-(\d{2})/.exec(d); return m?m[0]:""; }
+  return d.getFullYear()+"-"+("0"+(d.getMonth()+1)).slice(-2)+"-"+("0"+d.getDate()).slice(-2);
+}
+function effDate(s){ return s.revised||s.planned||""; }
 
 /* ══════════════════════════════════════════════════════════════════════════════
    TAB: DETAIL (Key ▸ Sub, thêm/sửa/xoá, voice)
@@ -790,6 +878,7 @@ function renderDetail(){
     +'<div class="search"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>'
     +'<input type="text" placeholder="Tìm key task / sub-task / PIC…" value="'+esc(S.detailQ)+'" oninput="S.detailQ=this.value;renderDetail()"/></div>';
   if(isManager()) h+='<button class="btn-primary" onclick="openAddKey()"><svg viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>Thêm Key Task</button>';
+  h+='<button class="btn-secondary" onclick="openAddSub(null)"><svg viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>Thêm Sub Task</button>';
   h+='</div>';
   h+='<div class="chips" style="margin-bottom:16px"><button class="chip'+(S.detailType===""?" active":"")+'" onclick="S.detailType=\'\';renderDetail()">Tất cả loại</button>'
     +types.map(function(t){return '<button class="chip'+(S.detailType===t?" active":"")+'" style="'+(S.detailType===t?'background:'+typeColor(t):'')+'" onclick="S.detailType=\''+jsq(t)+'\';renderDetail()">'+esc(t)+'</button>';}).join("")+'</div>';
@@ -821,11 +910,13 @@ function renderDetail(){
     (k.subs||[]).forEach(function(s){
       var canE=canEditPic(s.pic);
       var sm=stMeta(s.status);
-      h+='<div class="sub-cell'+(canE?"":" locked")+'" '+(canE?'onclick="openEdit(\''+jsq(k.no)+'\',\''+jsq(s.no)+'\')"':'')+'>'
+      h+='<div class="sub-cell'+(canE?"":" locked")+'" id="sub-'+esc(s.no)+'" '+(s.result?'title="Cập nhật: '+esc(s.result).replace(/"/g,'&quot;')+'" ':'')+(canE?'onclick="openEdit(\''+jsq(k.no)+'\',\''+jsq(s.no)+'\')"':'')+'>'
         +'<div style="display:flex;align-items:center;gap:6px"><span class="sc-no">'+esc(s.no)+'</span>'
         +'<span class="tc-status '+sm.cls+'" style="margin-left:auto">'+sm.lbl+'</span></div>'
-        +'<div class="sc-title">'+esc(s.name||s.subTask)+(s.result?' 🔗':'')+'</div>'
+        +'<div class="sc-title">'+esc(s.name||s.subTask)+'</div>'
+        +(s.result?'<div class="sc-update"><span class="sc-update-ic">💬</span><span class="sc-update-txt">'+esc(s.result)+'</span></div>':'')
         +'<div class="sc-foot"><span class="sc-pic"><span class="sc-pic-av" style="background:'+avColor(s.pic)+'">'+esc(initials(s.pic))+'</span>'+esc(s.pic||"—")+'</span>'
+        +'<span class="sc-dl">'+(effDate(s)?esc(fmtVN(effDate(s))):'')+'</span>'
         +(canE?'':'<span class="sc-lock">🔒</span>')+'</div>'
         +'</div>';
     });
@@ -1012,30 +1103,46 @@ function saveAddKey(){
 
 /* ── ADD SUB TASK ── */
 function openAddSub(kno){
-  var k=findKey(kno); if(!k)return;
-  var canAdd = isManager() || canEditPic(k.pic);
-  if(!canAdd){ toast("Bạn không có quyền thêm sub-task cho key này"); return; }
-  var picOpts=S.pics.map(function(p){return '<option'+(p===(isManager()?k.pic:S.user.pic)?" selected":"")+(!isManager()&&p!==S.user.pic?" disabled":"")+'>'+esc(p)+'</option>';}).join("");
+  var k = kno ? findKey(kno) : null;
+  if(k){
+    var canAdd = isManager() || canEditPic(k.pic);
+    if(!canAdd){ toast("Bạn không có quyền thêm sub-task cho key này"); return; }
+  }
+  var keyField;
+  if(k){
+    keyField='<div class="field"><label>Thuộc Key Task</label><input type="text" value="'+esc(k.no+' · '+k.keyTask)+'" disabled/></div>';
+  } else {
+    // cho chọn key task (chỉ những key được quyền thêm)
+    var opts=allKeyTasks().filter(function(x){ return isManager()||canEditPic(x.pic); })
+      .map(function(x){ return '<option value="'+esc(x.no)+'">'+esc(x.no)+' · '+esc(x.keyTask)+'</option>'; }).join("");
+    if(!opts){ toast("Không có Key Task nào bạn được phép thêm sub-task"); return; }
+    keyField='<div class="field"><label>Chọn Key Task</label><select id="s-key">'+opts+'</select></div>';
+  }
+  var defPic = k ? (isManager()?k.pic:S.user.pic) : S.user.pic;
+  var picOpts=S.pics.map(function(p){return '<option'+(p===defPic?" selected":"")+(!isManager()&&p!==S.user.pic?" disabled":"")+'>'+esc(p)+'</option>';}).join("");
   var today=toISO(new Date());
-  var html='<div class="modal-box"><div class="modal-head"><h3>➕ Thêm Sub Task</h3><button class="modal-close" onclick="closeModal()">✕</button></div>'
+  var html='<div class="modal-box"><div class="modal-head"><h3>Thêm Sub Task</h3><button class="modal-close" onclick="closeModal()">✕</button></div>'
     +'<div class="modal-body">'
-    +'<div class="field"><label>Thuộc Key Task</label><input type="text" value="'+esc(k.keyTask)+'" disabled/></div>'
+    +keyField
     +'<div class="field"><label>Tên Sub Task</label><input id="s-name" type="text" placeholder="VD: Chuẩn bị tài liệu trình bày"/></div>'
     +'<div class="field"><label>Assign cho (PIC)</label><select id="s-pic">'+picOpts+'</select></div>'
     +'<div class="field-row"><div class="field"><label>Bắt đầu</label><input id="s-start" type="date" value="'+today+'"/></div>'
     +'<div class="field"><label>Deadline dự kiến</label><input id="s-planned" type="date" value="'+today+'"/></div></div>'
+    +'<div class="field-hint">Sub-task mới sẽ được chèn ngay bên dưới sub-task cuối của Key Task này, không ảnh hưởng dòng khác.</div>'
     +'<div class="modal-footer"><button class="btn-secondary" onclick="closeModal()">Hủy</button>'
-    +'<button class="btn-primary" onclick="saveAddSub(\''+jsq(kno)+'\')">💾 Thêm Sub Task</button></div>'
+    +'<button class="btn-primary" onclick="saveAddSub('+(k?('\''+jsq(kno)+'\''):'null')+')">Thêm Sub Task</button></div>'
     +'</div></div>';
   showModal(html);
 }
 function saveAddSub(kno){
+  var parent = kno || ($("s-key") && $("s-key").value);
+  if(!parent){ toast("Chọn Key Task"); return; }
   var name=$("s-name").value.trim(); if(!name){ toast("Nhập tên Sub Task"); return; }
   overlay(true,"Đang thêm","Ghi Sub Task vào Sheet…");
-  apiPost({action:"addSub", parentNo:kno, name:name, pic:$("s-pic").value,
+  apiPost({action:"addSub", parentNo:parent, name:name, pic:$("s-pic").value,
     start:$("s-start").value, planned:$("s-planned").value, status:"Idle"})
   .then(function(r){ return reload().then(function(){return r;}); })
-  .then(function(r){ overlay(false); closeModal(); S.detailOpen[kno]=true; toast("✓ "+(r.message||"Đã thêm")); rerenderActive(); })
+  .then(function(r){ overlay(false); closeModal(); S.detailOpen[parent]=true; toast("✓ "+(r.message||"Đã thêm")); rerenderActive(); })
   .catch(function(e){ overlay(false); toast("⚠️ "+e.message); });
 }
 
@@ -1051,30 +1158,92 @@ function delRow(no,row,isKey){
 /* ── ASSIGN / NHẮC VIỆC ── */
 function openAssign(kno,sno){
   if(!isManager()){ toast("Chỉ quản lý được nhắc việc"); return; }
-  var k=findKey(kno);
-  var item = sno? findSub(kno,sno) : k;
-  var taskName = sno ? (item.name||item.subTask) : k.keyTask;
-  var toPic = item.pic || k.pic;
-  var picOpts=S.pics.map(function(p){return '<option'+(p===toPic?" selected":"")+'>'+esc(p)+'</option>';}).join("");
-  var nextWeek=addDaysISO(toISO(new Date()),3);
-  var html='<div class="modal-box"><div class="modal-head"><h3>🔔 Nhắc việc / Assign</h3><button class="modal-close" onclick="closeModal()">✕</button></div>'
+  // Trạng thái modal nhắc việc
+  AS = { key: kno || "", pic: "", checked: {} };
+  // nếu mở từ 1 sub cụ thể → set sẵn key + pic + tick dòng đó
+  if(kno){
+    var k=findKey(kno);
+    if(sno){ var sub=findSub(kno,sno); if(sub){ AS.pic=sub.pic||k.pic||""; AS.checked[sno]=true; } }
+    else { AS.pic = k? (k.pic||"") : ""; }
+  }
+  renderAssignModal();
+}
+var AS = { key:"", pic:"", checked:{} };
+function renderAssignModal(){
+  var keyOpts='<option value="">— Chọn Key Task —</option>'+allKeyTasks().map(function(k){
+    return '<option value="'+esc(k.no)+'"'+(k.no===AS.key?" selected":"")+'>'+esc(k.no)+' · '+esc(k.keyTask)+'</option>';
+  }).join("");
+  // PIC options: chỉ các PIC có sub-task trong key đã chọn (nếu đã chọn key)
+  var picsInKey = [];
+  if(AS.key){
+    var kk=findKey(AS.key);
+    (kk && kk.subs || []).forEach(function(s){ if(s.pic && picsInKey.indexOf(s.pic)<0) picsInKey.push(s.pic); });
+  }
+  if(!picsInKey.length) picsInKey = S.pics.slice();
+  var picOpts='<option value="">— Chọn PIC —</option>'+picsInKey.map(function(p){
+    return '<option value="'+esc(p)+'"'+(p===AS.pic?" selected":"")+'>'+esc(p)+'</option>';
+  }).join("");
+
+  // Danh sách sub-task của PIC trong key đã chọn
+  var subsHtml='', subs=[];
+  if(AS.key && AS.pic){
+    var kx=findKey(AS.key);
+    subs=(kx&&kx.subs||[]).filter(function(s){ return s.pic===AS.pic; });
+    if(!subs.length){
+      subsHtml='<div class="as-empty">PIC này chưa có sub-task nào trong Key Task đã chọn.</div>';
+    } else {
+      var allChecked = subs.every(function(s){ return AS.checked[s.no]; });
+      subsHtml='<div class="as-selall"><label class="as-check"><input type="checkbox" '+(allChecked?"checked":"")+' onclick="asToggleAll(this.checked)"/> <b>Chọn tất cả ('+subs.length+')</b></label></div>';
+      subsHtml+='<div class="as-list">'+subs.map(function(s){
+        var eff=s.revised||s.planned||"";
+        var m=stMeta(s.status);
+        return '<div class="as-item">'+
+          '<label class="as-check"><input type="checkbox" '+(AS.checked[s.no]?"checked":"")+' onclick="asToggleOne(\''+jsq(s.no)+'\',this.checked)"/>'+
+            '<span class="as-item-name">'+esc(s.name||s.subTask)+'</span></label>'+
+          '<span class="as-item-status '+m.cls+'">'+m.lbl+'</span>'+
+          '<input class="as-item-dl" type="date" value="'+esc(toISO(eff)||"")+'" data-no="'+esc(s.no)+'" title="Hạn (sửa được)"/>'+
+        '</div>';
+      }).join("")+'</div>';
+    }
+  }
+
+  var nCheck=Object.keys(AS.checked).filter(function(k){return AS.checked[k];}).length;
+  var html='<div class="modal-box modal-lg"><div class="modal-head"><h3>Nhắc việc / Assign</h3><button class="modal-close" onclick="closeModal()">✕</button></div>'
     +'<div class="modal-body">'
-    +'<div class="field"><label>Công việc</label><input type="text" value="'+esc(taskName)+'" disabled/></div>'
-    +'<div class="field-row"><div class="field"><label>Nhắc cho (PIC)</label><select id="as-pic">'+picOpts+'</select></div>'
-    +'<div class="field"><label>Cần xong trước</label><input id="as-deadline" type="date" value="'+nextWeek+'"/></div></div>'
-    +'<div class="field"><div class="field-label-row"><label>Nội dung nhắc</label><button class="voice-btn" onclick="toggleVoice(\'as-note\',this)">🎤 Nói</button></div>'
-    +'<textarea id="as-note" placeholder="VD: Ưu tiên hoàn thành phần thiết kế ấn phẩm trước sự kiện. Cần gửi bản nháp để duyệt…"></textarea></div>'
-    +'<div class="field-hint">Email sẽ gửi tới PIC (CC bạn). Nội dung do bạn nhập ở trên.</div>'
+    +'<div class="field-row">'
+      +'<div class="field"><label>Key Task</label><select id="as-key" onchange="asPickKey(this.value)">'+keyOpts+'</select></div>'
+      +'<div class="field"><label>Gửi cho PIC</label><select id="as-pic" onchange="asPickPic(this.value)"'+(AS.key?"":" disabled")+'>'+picOpts+'</select></div>'
+    +'</div>'
+    +(AS.key&&AS.pic ? '<div class="field"><label>Chọn sub-task để nhắc</label>'+subsHtml+'</div>' : '<div class="as-empty">Chọn Key Task rồi chọn PIC để hiện danh sách sub-task.</div>')
+    +'<div class="field"><div class="field-label-row"><label>Ghi chú chung (tuỳ chọn)</label><button class="voice-btn" onclick="toggleVoice(\'as-note\',this)">🎤 Nói</button></div>'
+      +'<textarea id="as-note" placeholder="VD: Ưu tiên hoàn thành trước sự kiện. Gửi bản nháp để duyệt…"></textarea></div>'
+    +'<div class="field-hint">Email công sở (1 email gộp các sub-task đã chọn) sẽ gửi tới PIC, CC bạn. Hạn từng dòng lấy từ Sheet, có thể sửa tay.</div>'
     +'<div class="modal-footer"><button class="btn-secondary" onclick="closeModal()">Hủy</button>'
-    +'<button class="btn-primary" onclick="sendAssign(\''+jsq(taskName)+'\')">📧 Gửi nhắc việc</button></div>'
+    +'<button class="btn-primary" '+(nCheck?"":"disabled")+' onclick="submitAssign()">Gửi nhắc việc'+(nCheck?" ("+nCheck+")":"")+'</button></div>'
     +'</div></div>';
   showModal(html);
 }
-function sendAssign(taskName){
-  var toPic=$("as-pic").value, deadline=$("as-deadline").value, note=$("as-note").value.trim();
-  if(!note){ toast("Nhập nội dung nhắc việc"); return; }
+function asPickKey(v){ AS.key=v; AS.pic=""; AS.checked={}; renderAssignModal(); }
+function asPickPic(v){ AS.pic=v; AS.checked={}; renderAssignModal(); }
+function asToggleOne(no,on){ AS.checked[no]=on; renderAssignModal(); }
+function asToggleAll(on){
+  var kx=findKey(AS.key); var subs=(kx&&kx.subs||[]).filter(function(s){return s.pic===AS.pic;});
+  AS.checked={}; if(on) subs.forEach(function(s){ AS.checked[s.no]=true; });
+  renderAssignModal();
+}
+function submitAssign(){
+  // gom sub-task đã tick + hạn (đọc lại từ input date trước khi re-render)
+  var kx=findKey(AS.key); if(!kx){ toast("Chọn Key Task"); return; }
+  var subs=(kx.subs||[]).filter(function(s){return s.pic===AS.pic;});
+  var dlMap={};
+  document.querySelectorAll(".as-item-dl").forEach(function(inp){ dlMap[inp.getAttribute("data-no")]=inp.value; });
+  var items=subs.filter(function(s){return AS.checked[s.no];}).map(function(s){
+    return { no:s.no, name:(s.name||s.subTask), deadline:(dlMap[s.no]||s.revised||s.planned||"") };
+  });
+  if(!items.length){ toast("Chọn ít nhất 1 sub-task"); return; }
+  var note=($("as-note")&&$("as-note").value||"").trim();
   overlay(true,"Đang gửi","Gửi email nhắc việc…");
-  apiPost({action:"assign", toPic:toPic, deadline:fmtVNFull(deadline), note:note, taskName:taskName})
+  apiPost({action:"assign", toPic:AS.pic, items:items, note:note})
     .then(function(r){ overlay(false); closeModal(); toast("✓ "+(r.message||"Đã gửi")); })
     .catch(function(e){ overlay(false); toast("⚠️ "+e.message); });
 }
