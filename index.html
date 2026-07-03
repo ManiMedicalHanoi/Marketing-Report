@@ -336,8 +336,8 @@ button{cursor:pointer}
 <div id="toast"></div>
 
 <script>
-/* GAS_URL đã fix sẵn — bạn chỉ cần up file này thành index.html rồi deploy GitHub Pages */
-var GAS_URL = "https://script.google.com/macros/s/AKfycbzn-5chMgO7lQPKmot8P7UkP9C40MdCPtiTTa4H1gcKepVsnr1IYfcB7sSdK1_jrZYY/exec";
+/* CÙNG ORIGIN: file này chạy bên trong chính Web App, gọi thẳng /exec hiện hành → hết Failed to fetch */
+var GAS_URL = window.location.pathname;   // ví dụ: /macros/s/AKfy.../exec — không kèm query string
 </script>
 <script>
 /* ══════════════════════════════════════════════════════════════════════════════
