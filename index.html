@@ -185,26 +185,41 @@ button{cursor:pointer}
 
 /* ══ GANTT ══ */
 .gantt-wrap{background:#fff;border:1px solid var(--border);border-radius:var(--r-lg);box-shadow:var(--sh-sm);overflow-x:auto;padding-bottom:6px}
-.gantt-grid{min-width:960px}
-.gantt-hrow{display:grid;grid-template-columns:260px 1fr;border-bottom:1.5px solid var(--border);position:sticky;top:0;background:#fff;z-index:2}
+.gantt-grid{min-width:1100px}
+.gantt-hrow{display:grid;grid-template-columns:240px 1fr;border-bottom:1.5px solid var(--border);position:sticky;top:0;background:#fff;z-index:2}
 .gantt-hlabel{padding:11px 16px;font-size:10px;font-weight:700;color:var(--sub);text-transform:uppercase;letter-spacing:.4px;display:flex;align-items:center}
-.gantt-weeks{display:grid;grid-auto-flow:column;grid-auto-columns:1fr}
-.gantt-wcell{padding:10px 4px;font-size:9.5px;font-weight:700;color:var(--sub);text-align:center;border-left:1px solid var(--border)}
-.gantt-krow{display:grid;grid-template-columns:260px 1fr;border-bottom:1.5px solid var(--border);align-items:center;min-height:44px;background:#fafbfe}
-.gantt-srow{display:grid;grid-template-columns:260px 1fr;border-bottom:1px solid var(--border);align-items:center;min-height:38px}
+.gantt-days{display:grid;grid-auto-flow:column;grid-auto-columns:1fr}
+.gantt-dcell{padding:6px 2px;font-size:9px;font-weight:700;color:var(--sub);text-align:center;border-left:1px solid var(--border);display:flex;flex-direction:column;gap:1px;line-height:1.1}
+.gantt-dcell .gd-dow{font-size:8px;opacity:.65;font-weight:600}
+.gantt-dcell .gd-num{font-size:11px;color:var(--text)}
+.gantt-dcell.wknd{background:#f7f8fb}
+.gantt-dcell.today{background:var(--mmh-blue);border-radius:6px 6px 0 0}
+.gantt-dcell.today .gd-dow,.gantt-dcell.today .gd-num{color:#fff}
+.gantt-krow{display:grid;grid-template-columns:240px 1fr;border-bottom:1.5px solid var(--border);align-items:center;min-height:42px;background:#fafbfe}
+.gantt-srow{display:grid;grid-template-columns:240px 1fr;border-bottom:1px solid var(--border);align-items:center;min-height:36px}
 .gantt-srow:hover{background:var(--pale)}
-.gantt-rlabel{padding:8px 16px;font-size:11.5px;color:var(--text);display:flex;align-items:center;gap:8px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.gantt-rlabel{padding:8px 14px;font-size:11.5px;color:var(--text);display:flex;align-items:center;gap:8px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .gantt-rlabel.key{font-weight:700}
-.gantt-rlabel.sub{padding-left:32px;font-size:11px;color:var(--sub)}
+.gantt-rlabel.sub{padding-left:30px;font-size:11px;color:var(--sub)}
 .gantt-rdot{width:8px;height:8px;border-radius:50%;flex-shrink:0}
 .gantt-track{position:relative;height:100%;display:grid;grid-auto-flow:column;grid-auto-columns:1fr}
 .gantt-tcell{border-left:1px solid var(--border);height:100%}
-.gantt-bar{position:absolute;top:8px;height:22px;border-radius:6px;display:flex;align-items:center;padding:0 8px;font-size:9.5px;font-weight:700;color:#fff;white-space:nowrap;overflow:hidden;box-shadow:var(--sh-sm);cursor:pointer}
-.gantt-today{position:absolute;top:0;bottom:0;width:2px;background:#ef4444;z-index:3}
-.gantt-today-lb{position:absolute;top:-16px;left:-12px;font-size:8.5px;font-weight:800;color:#ef4444;white-space:nowrap}
+.gantt-tcell.wknd{background:#f7f8fb}
+.gantt-bar{position:absolute;top:8px;height:24px;border-radius:6px;display:flex;align-items:center;padding:0 8px;font-size:9.5px;font-weight:700;color:#fff;white-space:nowrap;overflow:hidden;box-shadow:var(--sh-sm);cursor:pointer;min-width:24px}
+.gantt-bar-sub{height:20px;top:8px}
+.gbar-pic{font-size:9px;font-weight:700;overflow:hidden;text-overflow:ellipsis}
+.gantt-today-line{position:absolute;top:0;bottom:0;width:2px;background:#ef4444;z-index:3}
+.gantt-today-lb{position:absolute;top:-16px;left:-14px;font-size:8.5px;font-weight:800;color:#ef4444;white-space:nowrap}
+.gantt-nobar{position:absolute;left:8px;top:50%;transform:translateY(-50%);font-size:9px;color:var(--faint);font-style:italic}
 .gantt-legend{display:flex;gap:16px;margin-top:14px;flex-wrap:wrap}
 .gl-item{display:flex;align-items:center;gap:6px;font-size:11px;color:var(--sub);font-weight:600}
 .gl-dot{width:9px;height:9px;border-radius:3px}
+.gantt-nav{display:flex;align-items:center;gap:8px}
+.gnav-btn{width:36px;height:36px;border-radius:10px;border:1.5px solid var(--border);background:#fff;color:var(--text);cursor:pointer;display:flex;align-items:center;justify-content:center;transition:.14s}
+.gnav-btn:hover{border-color:var(--mmh-blue);color:var(--mmh-blue)}
+.gnav-btn svg{width:18px;height:18px;stroke:currentColor;fill:none;stroke-width:2.4;stroke-linecap:round}
+.gnav-label{font-size:15px;font-weight:800;color:var(--mmh-navy);min-width:120px;text-align:center}
+.gnav-today{padding:8px 14px;border-radius:10px;border:1.5px solid var(--lb1);background:var(--lb3);color:var(--mmh-blue);font-size:12.5px;font-weight:700;cursor:pointer}
 
 /* ══ KT DETAIL PANELS ══ */
 .kt-panel{background:#fff;border:1px solid var(--border);border-radius:var(--r-lg);box-shadow:var(--sh-sm);margin-bottom:14px;overflow:hidden}
@@ -225,18 +240,34 @@ button{cursor:pointer}
 .sub-cell{background:var(--pale);border:1.5px solid var(--border);border-radius:var(--r-md);padding:12px;transition:box-shadow .15s}
 .sub-cell:not(.locked){cursor:pointer}
 .sub-cell:not(.locked):hover{box-shadow:var(--sh-md);border-color:var(--lb1)}
-.sub-cell.locked{opacity:.72}
-.sc-no{font-family:'DM Mono',monospace;font-size:10px;color:var(--faint)}
-.sc-title{font-size:12.3px;font-weight:600;color:var(--text);line-height:1.35;margin:3px 0 8px;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;min-height:32px}
+.sub-cell.locked{opacity:.82}
+.sc-head{display:flex;align-items:center;gap:6px;margin-bottom:6px}
+.sc-edit-btn{font-size:10.5px;font-weight:700;color:var(--mmh-blue);background:var(--lb3);border:none;border-radius:7px;padding:4px 9px;cursor:pointer;transition:.14s}
+.sc-edit-btn:hover{background:var(--mmh-blue);color:#fff}
+.sc-title{font-size:13.5px;font-weight:700;color:var(--text);line-height:1.35;margin:0 0 9px}
+.sc-result{background:var(--lb3);border-radius:9px;padding:9px 11px;margin:0 0 9px}
+.sc-result.empty{color:var(--faint);font-style:italic;font-size:11.5px}
+.sc-result-lbl{font-size:10px;font-weight:700;color:var(--mmh-blue);text-transform:uppercase;letter-spacing:.3px;margin-bottom:5px}
+.sc-result-txt{font-size:12.5px;color:var(--text);line-height:1.6;word-break:break-word;max-height:200px;overflow-y:auto}
+.sc-link{color:var(--mmh-blue);text-decoration:underline;word-break:break-all}
+.sc-ref-btn{width:100%;font-size:11.5px;font-weight:700;color:var(--mmh-navy);background:#fff;border:1.5px solid var(--lb1);border-radius:8px;padding:7px;cursor:pointer;margin-bottom:9px;transition:.14s}
+.sc-ref-btn:hover{border-color:var(--mmh-blue);background:var(--lb3);color:var(--mmh-blue)}
 .sc-foot{display:flex;justify-content:space-between;align-items:center;gap:6px}
-.sc-update{display:flex;align-items:flex-start;gap:5px;background:var(--lb3);border-radius:7px;padding:5px 7px;margin:0 0 8px}
-.sc-update-ic{font-size:10px;flex:0 0 auto;opacity:.6;line-height:1.5}
-.sc-update-txt{font-size:10.5px;color:var(--sub);line-height:1.4;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
-.sc-dl{font-size:10px;color:var(--faint);margin-left:auto;white-space:nowrap}
-.sc-pic{display:flex;align-items:center;gap:5px;font-size:10.5px;color:var(--sub);font-weight:600}
-.sc-pic-av{width:18px;height:18px;border-radius:50%;color:#fff;font-size:8px;font-weight:800;display:flex;align-items:center;justify-content:center}
-.sc-add{border:2px dashed var(--lb1);background:var(--pale);display:flex;align-items:center;justify-content:center;color:var(--mmh-blue);font-weight:700;font-size:12px;min-height:96px;cursor:pointer}
+.sc-dl{font-size:10.5px;color:var(--faint);white-space:nowrap}
+.sc-del-btn{background:none;border:none;cursor:pointer;font-size:12px;opacity:.5;transition:.14s;padding:2px 4px;border-radius:6px}
+.sc-del-btn:hover{opacity:1;background:#fee2e2}
+.sc-pic{display:flex;align-items:center;gap:5px;font-size:11px;color:var(--sub);font-weight:600}
+.sc-pic-av{width:19px;height:19px;border-radius:50%;color:#fff;font-size:8px;font-weight:800;display:flex;align-items:center;justify-content:center}
+.sc-add{border:2px dashed var(--lb1);background:var(--pale);display:flex;align-items:center;justify-content:center;color:var(--mmh-blue);font-weight:700;font-size:13px;min-height:110px;cursor:pointer;border-radius:var(--r-md);transition:.14s}
+.sc-add:hover{border-color:var(--mmh-blue);background:var(--lb3)}
 .sc-lock{font-size:11px;color:var(--faint)}
+/* Referral modal */
+.ref-list{display:flex;flex-direction:column;gap:8px}
+.ref-item{display:flex;align-items:center;gap:10px;padding:11px 13px;background:var(--lb3);border:1px solid var(--border);border-radius:10px;text-decoration:none;color:var(--text);transition:.14s}
+.ref-item:hover{border-color:var(--mmh-blue);background:#fff}
+.ref-ic{flex:0 0 auto}
+.ref-url{flex:1;font-size:12.5px;color:var(--mmh-blue);word-break:break-all;line-height:1.4}
+.ref-go{flex:0 0 auto;color:var(--mmh-blue);font-weight:800}
 
 /* ══ MONTHLY ══ */
 .month-tabs{display:flex;gap:7px;flex-wrap:wrap;margin-bottom:16px}
@@ -381,18 +412,15 @@ button{cursor:pointer}
 .donut-lg-val small{color:var(--faint);font-weight:600}
 
 /* ═══════════════ GANTT ENHANCEMENTS ═══════════════ */
-.gantt-wcell.cur{background:var(--lb2);color:var(--mmh-navy);border-radius:6px 6px 0 0}
 .gantt-srow.overdue .gantt-rlabel.sub{color:#b91c1c}
 .gantt-late{margin-left:5px;font-size:11px}
-.gantt-nobar{position:absolute;left:8px;top:50%;transform:translateY(-50%);font-size:9px;color:var(--faint);font-style:italic}
-.gantt-bar{cursor:pointer;transition:filter .14s,box-shadow .14s}
 .gantt-bar:hover{filter:brightness(1.1);box-shadow:0 2px 8px rgba(14,47,95,.25);z-index:5}
-.gantt-rlabel{cursor:default}
 @media(max-width:640px){
   .gantt-wrap{overflow-x:auto;-webkit-overflow-scrolling:touch}
-  .gantt-grid{min-width:680px}
   .gantt-rlabel{font-size:11px}
   .gantt-hlabel,.gantt-rlabel{width:130px;min-width:130px}
+  .gantt-hrow,.gantt-krow,.gantt-srow{grid-template-columns:130px 1fr}
+  .gnav-label{min-width:90px;font-size:13px}
 }
 
 /* ═══════════════ MONTHLY REPORT v2 ═══════════════ */
@@ -470,8 +498,6 @@ body{font-size:14.5px}
 /* Task cells */
 .tc-title{font-size:14px}
 .tc-bottom{font-size:12.5px}
-.sc-title{font-size:13.5px}
-.sc-update-txt{font-size:11.5px}
 /* Detail / key task panel */
 .kt-title{font-size:14.5px}
 .kt-meta{font-size:12.5px}
@@ -483,6 +509,8 @@ body{font-size:14.5px}
 table.dt td, table.dt th{font-size:13.5px}
 .field label{font-size:12px}
 .field input,.field select,.field textarea{font-size:14px}
+.combo-input{width:100%;padding:10px 12px;border:1.5px solid var(--border);border-radius:10px;font-size:14px;font-family:inherit;background:#fff url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%235a6a8a' stroke-width='2'%3E%3Ccircle cx='11' cy='11' r='8'/%3E%3Cline x1='21' y1='21' x2='16.65' y2='16.65'/%3E%3C/svg%3E") no-repeat right 11px center;padding-right:36px;transition:.14s}
+.combo-input:focus{border-color:var(--mmh-blue);outline:none;box-shadow:0 0 0 3px rgba(58,92,170,.12)}
 .modal-head h3{font-size:17px}
 .btn-primary,.btn-secondary{font-size:14px}
 /* Monthly report */
@@ -601,6 +629,7 @@ var S={
   tab:"overview",
   overviewPic:"",           // filter pic ở overview (manager)
   ganttType:"",             // filter type gantt
+  ganttMonth:null,          // Date đại diện tháng đang xem trên timeline (null = tháng hiện tại)
   detailType:"", detailQ:"", detailOpen:{},
   monthSel:"", monthType:"",
   reportView:"thisweek", reportFrom:"", reportTo:"",
@@ -760,7 +789,7 @@ function logout(){
 /* ══════════════ TABS ══════════════ */
 var TABS=[
   {id:"overview",label:"Tổng quan",dash:true,icon:'<rect x="3" y="3" width="7" height="9"/><rect x="14" y="3" width="7" height="5"/><rect x="14" y="12" width="7" height="9"/><rect x="3" y="16" width="7" height="5"/>'},
-  {id:"gantt",label:"Gantt tuần",dash:false,icon:'<line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/>'},
+  {id:"gantt",label:"Tiến độ (Timeline)",dash:false,icon:'<line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/>'},
   {id:"detail",label:"Chi tiết & Sub-task",dash:false,icon:'<path d="M4 4h16v16H4z"/><path d="M8 8h8M8 12h8M8 16h5"/>'},
   {id:"month",label:"Monthly Report",dash:false,icon:'<rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/>'},
   {id:"report",label:"Báo cáo tuần (PDF)",dash:false,icon:'<path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6M8 13h8M8 17h5"/>'},
@@ -1004,81 +1033,94 @@ function barsHTML(entries,kind){
    TAB: GANTT (tuần) — thanh timeline theo start → deadline
    ══════════════════════════════════════════════════════════════════════════════ */
 function ganttRange(){
-  // gom min start & max deadline từ dữ liệu, fallback quanh hôm nay
-  var dates=[];
-  S.keyTasks.forEach(function(k){
-    [k.start,k.planned,k.revised].forEach(function(d){if(d)dates.push(d);});
-    (k.subs||[]).forEach(function(s){[s.start,s.planned,s.revised,s.actual].forEach(function(d){if(d)dates.push(d);});});
-  });
+  // View theo THÁNG: từ ngày 1 đến ngày cuối của tháng đang chọn
+  var base = S.ganttMonth ? new Date(S.ganttMonth) : new Date();
+  var y=base.getFullYear(), m=base.getMonth();
+  var start=new Date(y,m,1); start.setHours(0,0,0,0);
+  var end=new Date(y,m+1,0); end.setHours(0,0,0,0);        // ngày cuối tháng
+  var days=Math.round((end-start)/86400000)+1;
   var today=new Date(); today.setHours(0,0,0,0);
-  var min,max;
-  if(dates.length){ dates.sort(); min=new Date(dates[0]); max=new Date(dates[dates.length-1]); }
-  else { min=new Date(today); max=new Date(today); }
-  // đệm: lùi về đầu tuần, tối thiểu 6 tuần
-  min=mondayOf(min);
-  var weeks=Math.ceil((max-min)/(7*86400000))+1;
-  if(weeks<6) weeks=6;
-  return {start:min, weeks:weeks, today:today};
+  return { start:start, end:end, days:days, today:today, y:y, m:m };
 }
+function ganttShiftMonth(n){
+  var base = S.ganttMonth ? new Date(S.ganttMonth) : new Date();
+  base.setDate(1); base.setMonth(base.getMonth()+n);
+  S.ganttMonth=base; renderGantt();
+}
+function ganttThisMonth(){ S.ganttMonth=null; renderGantt(); }
 function mondayOf(d){ var x=new Date(d); x.setHours(0,0,0,0); var w=(x.getDay()+6)%7; x.setDate(x.getDate()-w); return x; }
 function renderGantt(){
   var kts=allKeyTasks();
   var types=[...new Set(kts.map(function(k){return k.type;}).filter(Boolean))];
   if(S.ganttType) kts=kts.filter(function(k){return k.type===S.ganttType;});
 
-  var h="";
-  // toolbar
-  h+='<div class="toolbar">';
-  h+='<div class="chips"><button class="chip'+(S.ganttType===""?" active":"")+'" onclick="S.ganttType=\'\';renderGantt()">Tất cả loại</button>'
-    +types.map(function(t){return '<button class="chip'+(S.ganttType===t?" active":"")+'" style="'+(S.ganttType===t?'background:'+typeColor(t):'')+'" onclick="S.ganttType=\''+jsq(t)+'\';renderGantt()">'+esc(t)+'</button>';}).join("")
-    +'</div>';
-  h+='<span style="flex:1"></span>';
-  if(isManager()) h+='<button class="btn-primary" onclick="openAddKey()"><svg viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>Thêm Key Task</button>';
-  h+='<button class="btn-secondary" onclick="openAddSub(null)"><svg viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>Thêm Sub Task</button>';
-  h+='</div>';
-
   var R=ganttRange();
-  var totalDays=R.weeks*7;
+  var totalDays=R.days;
+  var monthName=(R.m+1)+"/"+R.y;
   function off(d){ return Math.round((new Date(d)-R.start)/86400000); }
   var todayISOv=toISO(R.today);
-  // header weeks
-  var weekCells="";
-  for(var w=0;w<R.weeks;w++){
-    var wd=new Date(R.start); wd.setDate(wd.getDate()+w*7);
-    var we=new Date(wd); we.setDate(we.getDate()+6);
-    var isCur = todayISOv>=toISO(wd) && todayISOv<=toISO(we);
-    weekCells+='<div class="gantt-wcell'+(isCur?' cur':'')+'">T'+(w+1)+'<br><span style="font-weight:400;opacity:.7">'+fmtVN(toISO(wd))+'</span></div>';
+
+  var h="";
+  // Toolbar: chuyển tháng + filter type + thêm
+  h+='<div class="toolbar" style="justify-content:space-between;flex-wrap:wrap;gap:10px">';
+  h+='<div class="gantt-nav">'
+    +'<button class="gnav-btn" onclick="ganttShiftMonth(-1)" title="Tháng trước"><svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg></button>'
+    +'<span class="gnav-label">Tháng '+monthName+'</span>'
+    +'<button class="gnav-btn" onclick="ganttShiftMonth(1)" title="Tháng sau"><svg viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg></button>'
+    +'<button class="gnav-today" onclick="ganttThisMonth()">Tháng này</button>'
+    +'</div>';
+  h+='<div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap">';
+  if(isManager()) h+='<button class="btn-primary" onclick="openAddKey()"><svg viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>Thêm Key Task</button>';
+  h+='<button class="btn-secondary" onclick="openAddSub(null)"><svg viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>Thêm Sub Task</button>';
+  h+='</div></div>';
+  // Filter type chips
+  h+='<div class="chips" style="margin-bottom:14px"><button class="chip'+(S.ganttType===""?" active":"")+'" onclick="S.ganttType=\'\';renderGantt()">Tất cả loại</button>'
+    +types.map(function(t){return '<button class="chip'+(S.ganttType===t?" active":"")+'" style="'+(S.ganttType===t?'background:'+typeColor(t):'')+'" onclick="S.ganttType=\''+jsq(t)+'\';renderGantt()">'+esc(t)+'</button>';}).join("")
+    +'</div>';
+
+  // Header: các ngày trong tháng
+  var dayCells="";
+  for(var d=0;d<totalDays;d++){
+    var dd=new Date(R.start); dd.setDate(dd.getDate()+d);
+    var dow=dd.getDay();
+    var isToday=toISO(dd)===todayISOv;
+    var isWeekend=(dow===0||dow===6);
+    dayCells+='<div class="gantt-dcell'+(isToday?' today':'')+(isWeekend?' wknd':'')+'">'
+      +'<span class="gd-dow">'+["CN","T2","T3","T4","T5","T6","T7"][dow]+'</span>'
+      +'<span class="gd-num">'+dd.getDate()+'</span></div>';
   }
+
   var body="";
   var todayLeft=(off(todayISOv)/totalDays)*100;
   kts.forEach(function(k){
     var kstart=k.start||(k.subs&&k.subs[0]&&k.subs[0].start);
     var keff=k.revised||k.planned;
     var kbar=barStyle(kstart,keff,off,totalDays,typeColor(k.type));
-    var kTip=esc(k.keyTask)+' — '+ktProgress(k)+'% · '+esc(k.pic||'')+(kstart?' · '+fmtVN(kstart)+'→'+fmtVN(keff):'');
+    var kTip=esc(k.keyTask)+' — '+ktProgress(k)+'% · '+esc(k.pic||'');
     body+='<div class="gantt-krow">'
       +'<div class="gantt-rlabel key" title="'+kTip+'"><span class="gantt-rdot" style="background:'+stMeta(ktStatus(k)).dot+'"></span>'+esc(k.keyTask)+'</div>'
-      +'<div class="gantt-track">'+weekTrackCells(R.weeks)
-      +(kbar?'<div class="gantt-bar" style="'+kbar+'" title="'+kTip+'" onclick="openEdit(\''+jsq(k.no)+'\',null)">'+ktProgress(k)+'%</div>':'<span class="gantt-nobar">chưa đặt ngày</span>')
+      +'<div class="gantt-track">'+dayTrackCells(totalDays,R)
+      +(kbar?'<div class="gantt-bar" style="'+kbar+'" title="'+kTip+'" onclick="openEdit(\''+jsq(k.no)+'\',null)">'+ktProgress(k)+'%</div>':'<span class="gantt-nobar">ngoài tháng này</span>')
       +'</div></div>';
     (k.subs||[]).forEach(function(s){
       var seff=s.revised||s.planned;
       var sbar=barStyle(s.start,seff,off,totalDays,stMeta(s.status).dot);
       var overdue=/overdue/i.test(s.status) || (!/complet/i.test(s.status) && seff && toISO(seff)<todayISOv);
-      var sTip=esc(s.name||s.subTask)+' · '+esc(s.status||'—')+(s.start?' · '+fmtVN(s.start)+'→'+fmtVN(seff):'')+(s.result?' · '+esc(s.result.slice(0,60)):'');
+      var sTip=esc(s.name||s.subTask)+' · '+esc(s.pic||'')+' · '+esc(s.status||'—')+(s.start?' · '+fmtVN(s.start)+'→'+fmtVN(seff):'');
+      var picLabel=esc(s.pic||'');
       body+='<div class="gantt-srow'+(overdue?' overdue':'')+'">'
         +'<div class="gantt-rlabel sub" title="'+sTip+'"><span class="gantt-rdot" style="background:'+stMeta(s.status).dot+'"></span>'+esc(s.name||s.subTask)+(overdue?'<span class="gantt-late">⚠</span>':'')+'</div>'
-        +'<div class="gantt-track">'+weekTrackCells(R.weeks)
-        +(sbar?'<div class="gantt-bar" style="'+sbar+';height:18px;top:9px;font-size:9px" title="'+sTip+'" onclick="openEdit(\''+jsq(k.no)+'\',\''+jsq(s.no)+'\')">'+esc(initials(s.pic))+'</div>':'<span class="gantt-nobar">—</span>')
+        +'<div class="gantt-track">'+dayTrackCells(totalDays,R)
+        +(sbar?'<div class="gantt-bar gantt-bar-sub" style="'+sbar+'" title="'+sTip+'" onclick="openEdit(\''+jsq(k.no)+'\',\''+jsq(s.no)+'\')"><span class="gbar-pic">'+picLabel+'</span></div>':'<span class="gantt-nobar">—</span>')
         +'</div></div>';
     });
   });
   if(!body) body='<div class="empty"><div class="ic">📊</div><p>Chưa có key task nào.</p></div>';
 
-  h+='<div class="gantt-wrap"><div class="gantt-grid">'
-    +'<div class="gantt-hrow"><div class="gantt-hlabel">Key Task ▸ Sub Task</div><div class="gantt-weeks" style="position:relative">'
-      +weekCells
-      +(todayLeft>=0&&todayLeft<=100?'<div class="gantt-today" style="left:'+todayLeft+'%"><span class="gantt-today-lb">Hôm nay</span></div>':'')
+  h+='<div class="gantt-wrap"><div class="gantt-grid" style="--gdays:'+totalDays+'">'
+    +'<div class="gantt-hrow"><div class="gantt-hlabel">Key Task ▸ Sub Task</div><div class="gantt-days" style="position:relative">'
+      +dayCells
+      +(todayLeft>=0&&todayLeft<=100?'<div class="gantt-today-line" style="left:'+todayLeft+'%"><span class="gantt-today-lb">Hôm nay</span></div>':'')
     +'</div></div>'
     +body
     +'</div></div>';
@@ -1089,6 +1131,15 @@ function renderGantt(){
     +'<span class="gl-item"><span class="gl-dot" style="background:#94a3b8"></span>Chưa bắt đầu</span>'
     +'<span class="gl-item" style="margin-left:auto;color:var(--faint)">Di chuột xem chi tiết · bấm thanh để sửa</span></div>';
   $("tab-gantt").innerHTML=h;
+}
+function dayTrackCells(n,R){
+  var s=""; 
+  for(var i=0;i<n;i++){
+    var dd=new Date(R.start); dd.setDate(dd.getDate()+i);
+    var wknd=(dd.getDay()===0||dd.getDay()===6);
+    s+='<div class="gantt-tcell'+(wknd?' wknd':'')+'"></div>';
+  }
+  return s;
 }
 function weekTrackCells(n){ var s=""; for(var i=0;i<n;i++)s+='<div class="gantt-tcell"></div>'; return s; }
 function barStyle(start,end,off,totalDays,color){
@@ -1107,6 +1158,36 @@ function toISO(d){
   return d.getFullYear()+"-"+("0"+(d.getMonth()+1)).slice(-2)+"-"+("0"+d.getDate()).slice(-2);
 }
 function effDate(s){ return s.revised||s.planned||""; }
+/* trích URL từ text */
+function extractLinks(txt){
+  if(!txt) return [];
+  var m=String(txt).match(/https?:\/\/[^\s)]+/g);
+  return m ? m.filter(function(v,i,a){return a.indexOf(v)===i;}) : [];
+}
+/* biến URL thành link bấm được trong text (giữ xuống dòng) */
+function linkify(txt){
+  var s=esc(String(txt||""));
+  s=s.replace(/(https?:\/\/[^\s)]+)/g,'<a href="$1" target="_blank" rel="noopener" class="sc-link">$1</a>');
+  s=s.replace(/\n/g,'<br>');
+  return s;
+}
+/* modal Tham chiếu — liệt kê link bấm được */
+function showReferral(sno,name){
+  var sub=null;
+  allKeyTasks().forEach(function(k){ (k.subs||[]).forEach(function(s){ if(s.no===sno) sub=s; }); });
+  if(!sub) return;
+  var links=extractLinks(sub.result);
+  var list=links.map(function(u,i){
+    return '<a class="ref-item" href="'+esc(u)+'" target="_blank" rel="noopener">'
+      +'<span class="ref-ic">🔗</span><span class="ref-url">'+esc(u)+'</span><span class="ref-go">↗</span></a>';
+  }).join("");
+  var html='<div class="modal-box"><div class="modal-head"><h3>🔗 Tham chiếu — '+esc(name)+'</h3><button class="modal-close" onclick="closeModal()">✕</button></div>'
+    +'<div class="modal-body">'
+    +(links.length?'<div class="ref-list">'+list+'</div>':'<p style="color:var(--faint)">Không tìm thấy link nào.</p>')
+    +'<div class="modal-footer"><button class="btn-secondary" onclick="closeModal()">Đóng</button></div>'
+    +'</div></div>';
+  showModal(html);
+}
 
 /* ══════════════════════════════════════════════════════════════════════════════
    TAB: DETAIL (Key ▸ Sub, thêm/sửa/xoá, voice)
@@ -1154,14 +1235,18 @@ function renderDetail(){
     (k.subs||[]).forEach(function(s){
       var canE=canEditPic(s.pic);
       var sm=stMeta(s.status);
-      h+='<div class="sub-cell'+(canE?"":" locked")+'" id="sub-'+esc(s.no)+'" '+(s.result?'title="Cập nhật: '+esc(s.result).replace(/"/g,'&quot;')+'" ':'')+(canE?'onclick="openEdit(\''+jsq(k.no)+'\',\''+jsq(s.no)+'\')"':'')+'>'
-        +'<div style="display:flex;align-items:center;gap:6px"><span class="sc-no">'+esc(s.no)+'</span>'
-        +'<span class="tc-status '+sm.cls+'" style="margin-left:auto">'+sm.lbl+'</span></div>'
+      var links=extractLinks(s.result);
+      h+='<div class="sub-cell'+(canE?"":" locked")+'" id="sub-'+esc(s.no)+'">'
+        +'<div class="sc-head">'
+          +(canE?'<button class="sc-edit-btn" onclick="openEdit(\''+jsq(k.no)+'\',\''+jsq(s.no)+'\')" title="Sửa">✏️ Sửa</button>':'<span class="sc-lock">🔒</span>')
+          +'<span class="tc-status '+sm.cls+'" style="margin-left:auto">'+sm.lbl+'</span></div>'
         +'<div class="sc-title">'+esc(s.name||s.subTask)+'</div>'
-        +(s.result?'<div class="sc-update"><span class="sc-update-ic">💬</span><span class="sc-update-txt">'+esc(s.result)+'</span></div>':'')
+        +(s.result?'<div class="sc-result"><div class="sc-result-lbl">💬 Kết quả / Cập nhật</div><div class="sc-result-txt">'+linkify(s.result)+'</div></div>':'<div class="sc-result empty">— chưa có kết quả —</div>')
+        +(links.length?'<button class="sc-ref-btn" onclick="showReferral(\''+jsq(s.no)+'\',\''+jsq(s.name||s.subTask)+'\')">🔗 Tham chiếu ('+links.length+' link)</button>':'')
         +'<div class="sc-foot"><span class="sc-pic"><span class="sc-pic-av" style="background:'+avColor(s.pic)+'">'+esc(initials(s.pic))+'</span>'+esc(s.pic||"—")+'</span>'
-        +'<span class="sc-dl">'+(effDate(s)?esc(fmtVN(effDate(s))):'')+'</span>'
-        +(canE?'':'<span class="sc-lock">🔒</span>')+'</div>'
+        +'<span class="sc-dl">'+(effDate(s)?'📅 '+esc(fmtVN(effDate(s))):'')+'</span>'
+        +(canE?'<button class="sc-del-btn" onclick="delRow(\''+jsq(k.no)+'\','+s.row+',false)" title="Xoá sub-task">🗑️</button>':'')
+        +'</div>'
         +'</div>';
     });
     if(addSub) h+='<div class="sub-cell sc-add" onclick="openAddSub(\''+jsq(k.no)+'\')">+ Thêm Sub Task</div>';
@@ -1333,21 +1418,24 @@ function openEdit(kno,sno){
   var pic=item.pic;
   if(!canEditPic(pic)){ toast("Bạn chỉ được sửa task của mình ("+pic+")"); return; }
   S.editCtx={kno:kno,sno:sno,row:item.row};
-  var picOpts=S.pics.map(function(p){return '<option'+(p===pic?" selected":"")+'>'+esc(p)+'</option>';}).join("");
   var stOpts=S.statusOptions.map(function(o){return '<option'+(o===item.status?" selected":"")+'>'+esc(o)+'</option>';}).join("");
   var title=isSub?"✏️ Sửa Sub Task "+sno:"✏️ Sửa Key Task "+kno;
   var name = isSub ? (item.name||item.subTask) : item.keyTask;
+  var picField = isManager()
+    ? '<div class="field"><label>PIC phụ trách — gõ để tìm</label>'+combo("e-pic",S.pics,"Gõ tên PIC…",pic)+'</div>'
+    : '<div class="field"><label>PIC phụ trách</label><input type="text" value="'+esc(pic)+'" disabled/></div>';
   var html='<div class="modal-box"><div class="modal-head"><h3>'+title+'</h3><button class="modal-close" onclick="closeModal()">✕</button></div>'
     +'<div class="modal-body">'
     +'<div class="field"><label>'+(isSub?"Tên Sub Task":"Tên Key Task")+'</label><input id="e-name" type="text" value="'+esc(name)+'"'+(isManager()?"":" disabled")+'/></div>'
-    +'<div class="field-row"><div class="field"><label>PIC phụ trách</label><select id="e-pic"'+(isManager()?"":" disabled")+'>'+picOpts+'</select></div>'
+    +'<div class="field-row">'+picField
     +'<div class="field"><label>Trạng thái</label><select id="e-status">'+stOpts+'</select></div></div>'
     +'<div class="field-row"><div class="field"><label>Bắt đầu</label><input id="e-start" type="date" value="'+esc(item.start||"")+'"/></div>'
     +'<div class="field"><label>Deadline dự kiến</label><input id="e-planned" type="date" value="'+esc(item.planned||"")+'"/></div></div>'
     +'<div class="field-row"><div class="field"><label>Deadline dời (Revised)</label><input id="e-revised" type="date" value="'+esc(item.revised||"")+'"/></div>'
-    +'<div class="field"><label>Hoàn thành thực tế</label><input id="e-actual" type="date" value="'+esc(item.actual||"")+'"/></div></div>'
+    +'<div class="field"><label>Hoàn thành thực tế <small style="color:var(--faint)">(tự tính)</small></label><input type="date" value="'+esc(item.actual||"")+'" disabled/></div></div>'
     +'<div class="field"><div class="field-label-row"><label>Kết quả / Link / Ghi chú</label><button class="voice-btn" onclick="toggleVoice(\'e-result\',this)">🎤 Nói</button></div>'
     +'<textarea id="e-result" placeholder="VD: Link Drive, ghi chú kết quả bàn giao…">'+esc(item.result||"")+'</textarea></div>'
+    +'<div class="field-hint">Cột Actual / Leadtime do công thức Sheet tự tính khi trạng thái = Completed.</div>'
     +'</div>'
     +'<div class="modal-body" style="padding-top:0"><div class="modal-footer">'
     +'<button class="btn-secondary" onclick="closeModal()">Đóng</button>'
@@ -1356,9 +1444,10 @@ function openEdit(kno,sno){
 }
 function saveEdit(isSub){
   var ctx=S.editCtx; if(!ctx)return;
+  // KHÔNG gửi actual (O là công thức)
   var updates={ status:$("e-status").value, start:$("e-start").value, planned:$("e-planned").value,
-    revised:$("e-revised").value, actual:$("e-actual").value, result:$("e-result").value };
-  if(isManager()){ updates[isSub?"name":"keyTask"]=$("e-name").value; updates.pic=$("e-pic").value; }
+    revised:$("e-revised").value, result:$("e-result").value };
+  if(isManager()){ updates[isSub?"name":"keyTask"]=$("e-name").value; if($("e-pic")) updates.pic=$("e-pic").value; }
   overlay(true,"Đang lưu","Ghi vào Google Sheet…");
   apiPost({action: isSub?"updateSub":"updateKey", row:ctx.row, updates:updates}).then(function(){
     return reload();
@@ -1367,19 +1456,25 @@ function saveEdit(isSub){
 }
 
 /* ── ADD KEY TASK ── */
+/* Combobox smart-search: input gõ để lọc (datalist gốc trình duyệt, như Google) */
+var _comboSeq=0;
+function combo(id, options, placeholder, value){
+  var listId="dl_"+(++_comboSeq);
+  var opts=options.map(function(o){return '<option value="'+esc(o)+'"></option>';}).join("");
+  return '<input id="'+id+'" list="'+listId+'" class="combo-input" autocomplete="off" placeholder="'+esc(placeholder||"Gõ để tìm…")+'" value="'+esc(value||"")+'"/>'
+    +'<datalist id="'+listId+'">'+opts+'</datalist>';
+}
 function openAddKey(){
   if(!isManager()){ toast("Chỉ quản lý được thêm Key Task"); return; }
-  var picOpts=S.pics.map(function(p){return '<option'+(p===S.user.pic?" selected":"")+'>'+esc(p)+'</option>';}).join("");
-  var typeOpts=S.typeOptions.map(function(t){return '<option>'+esc(t)+'</option>';}).join("");
   var today=toISO(new Date());
   var html='<div class="modal-box"><div class="modal-head"><h3>➕ Thêm Key Task</h3><button class="modal-close" onclick="closeModal()">✕</button></div>'
     +'<div class="modal-body">'
-    +'<div class="field"><label>Loại (Type)</label><select id="a-type">'+typeOpts+'</select></div>'
+    +'<div class="field"><label>Loại (Type) — gõ để tìm</label>'+combo("a-type",S.typeOptions,"Gõ để tìm loại công việc…")+'</div>'
     +'<div class="field"><label>Tên Key Task</label><input id="a-name" type="text" placeholder="VD: 20260815 Entropion Seminar - Dr…"/></div>'
-    +'<div class="field-row"><div class="field"><label>Assign cho (PIC)</label><select id="a-pic">'+picOpts+'</select></div>'
-    +'<div class="field"><label>Tháng (FY/Month)</label><input id="a-month" type="text" placeholder="202607"/></div></div>'
+    +'<div class="field"><label>Assign cho (PIC)</label>'+combo("a-pic",S.pics,"Gõ tên PIC…",S.user.pic)+'</div>'
     +'<div class="field-row"><div class="field"><label>Bắt đầu</label><input id="a-start" type="date" value="'+today+'"/></div>'
     +'<div class="field"><label>Deadline dự kiến</label><input id="a-planned" type="date" value="'+today+'"/></div></div>'
+    +'<div class="field-hint">Cột No, Tháng, Leadtime, Actual do công thức Sheet tự tính — hệ thống không ghi đè.</div>'
     +'<div class="modal-footer"><button class="btn-secondary" onclick="closeModal()">Hủy</button>'
     +'<button class="btn-primary" onclick="saveAddKey()">💾 Thêm Key Task</button></div>'
     +'</div></div>';
@@ -1387,9 +1482,10 @@ function openAddKey(){
 }
 function saveAddKey(){
   var name=$("a-name").value.trim(); if(!name){ toast("Nhập tên Key Task"); return; }
+  var type=$("a-type").value.trim(); if(!type){ toast("Chọn loại (Type)"); return; }
   overlay(true,"Đang thêm","Ghi Key Task vào Sheet…");
-  apiPost({action:"addKey", type:$("a-type").value, keyTask:name, pic:$("a-pic").value,
-    month:$("a-month").value, start:$("a-start").value, planned:$("a-planned").value, status:"Idle"})
+  apiPost({action:"addKey", type:type, keyTask:name, pic:$("a-pic").value,
+    start:$("a-start").value, planned:$("a-planned").value, status:"Idle"})
   .then(function(r){ return reload().then(function(){return r;}); })
   .then(function(r){ overlay(false); closeModal(); toast("✓ "+(r.message||"Đã thêm")); rerenderActive(); })
   .catch(function(e){ overlay(false); toast("⚠️ "+e.message); });
@@ -1407,19 +1503,18 @@ function openAddSub(kno){
     keyField='<div class="field"><label>Thuộc Key Task</label><input type="text" value="'+esc(k.no+' · '+k.keyTask)+'" disabled/></div>';
   } else {
     // cho chọn key task (chỉ những key được quyền thêm)
-    var opts=allKeyTasks().filter(function(x){ return isManager()||canEditPic(x.pic); })
-      .map(function(x){ return '<option value="'+esc(x.no)+'">'+esc(x.no)+' · '+esc(x.keyTask)+'</option>'; }).join("");
-    if(!opts){ toast("Không có Key Task nào bạn được phép thêm sub-task"); return; }
-    keyField='<div class="field"><label>Chọn Key Task</label><select id="s-key">'+opts+'</select></div>';
+    var keyItems=allKeyTasks().filter(function(x){ return isManager()||canEditPic(x.pic); })
+      .map(function(x){ return x.no+' · '+x.keyTask; });
+    if(!keyItems.length){ toast("Không có Key Task nào bạn được phép thêm sub-task"); return; }
+    keyField='<div class="field"><label>Chọn Key Task — gõ để tìm</label>'+combo("s-key",keyItems,"Gõ mã hoặc tên Key Task…")+'</div>';
   }
   var defPic = k ? (isManager()?k.pic:S.user.pic) : S.user.pic;
-  var picOpts=S.pics.map(function(p){return '<option'+(p===defPic?" selected":"")+(!isManager()&&p!==S.user.pic?" disabled":"")+'>'+esc(p)+'</option>';}).join("");
   var today=toISO(new Date());
   var html='<div class="modal-box"><div class="modal-head"><h3>Thêm Sub Task</h3><button class="modal-close" onclick="closeModal()">✕</button></div>'
     +'<div class="modal-body">'
     +keyField
     +'<div class="field"><label>Tên Sub Task</label><input id="s-name" type="text" placeholder="VD: Chuẩn bị tài liệu trình bày"/></div>'
-    +'<div class="field"><label>Assign cho (PIC)</label><select id="s-pic">'+picOpts+'</select></div>'
+    +'<div class="field"><label>Assign cho (PIC) — gõ để tìm</label>'+combo("s-pic",S.pics,"Gõ tên PIC…",defPic)+'</div>'
     +'<div class="field-row"><div class="field"><label>Bắt đầu</label><input id="s-start" type="date" value="'+today+'"/></div>'
     +'<div class="field"><label>Deadline dự kiến</label><input id="s-planned" type="date" value="'+today+'"/></div></div>'
     +'<div class="field-hint">Sub-task mới sẽ được chèn ngay bên dưới sub-task cuối của Key Task này, không ảnh hưởng dòng khác.</div>'
@@ -1429,8 +1524,17 @@ function openAddSub(kno){
   showModal(html);
 }
 function saveAddSub(kno){
-  var parent = kno || ($("s-key") && $("s-key").value);
-  if(!parent){ toast("Chọn Key Task"); return; }
+  var parent = kno;
+  if(!parent){
+    var raw = ($("s-key") && $("s-key").value || "").trim();
+    parent = raw.split("·")[0].trim();          // lấy mã No ở đầu chuỗi "No · tên"
+    // nếu người dùng gõ nguyên tên, tìm key khớp
+    if(parent && isNaN(parseInt(parent,10)) || !findKey(parent)){
+      var hit=allKeyTasks().filter(function(x){ return (x.no+' · '+x.keyTask)===raw || x.keyTask===raw; })[0];
+      if(hit) parent=hit.no;
+    }
+  }
+  if(!parent || !findKey(parent)){ toast("Chọn Key Task hợp lệ từ danh sách"); return; }
   var name=$("s-name").value.trim(); if(!name){ toast("Nhập tên Sub Task"); return; }
   overlay(true,"Đang thêm","Ghi Sub Task vào Sheet…");
   apiPost({action:"addSub", parentNo:parent, name:name, pic:$("s-pic").value,
@@ -1566,17 +1670,14 @@ function saveMonthly(row){
     .catch(function(e){ overlay(false); toast("⚠️ "+e.message); });
 }
 function openAddMonthly(){
-  var months=monthList();
   var picDefault=S.user.pic;
-  var picOpts=S.pics.map(function(p){return '<option'+(p===picDefault?" selected":"")+(!isManager()&&p!==picDefault?" disabled":"")+'>'+esc(p)+'</option>';}).join("");
-  var typeOpts=S.typeOptions.map(function(t){return '<option>'+esc(t)+'</option>';}).join("");
   var html='<div class="modal-box"><div class="modal-head"><h3>➕ Thêm mục Monthly</h3><button class="modal-close" onclick="closeModal()">✕</button></div>'
     +'<div class="modal-body">'
     +'<div class="field-row"><div class="field"><label>Tháng</label><input id="mo-a-month" type="text" value="'+(S.monthSel||"")+'" placeholder="202607"/></div>'
     +'<div class="field"><label>FY</label><input id="mo-a-fy" type="text" value="FY67"/></div></div>'
-    +'<div class="field"><label>Loại (Type Task)</label><select id="mo-a-type">'+typeOpts+'</select></div>'
+    +'<div class="field"><label>Loại (Type Task) — gõ để tìm</label>'+combo("mo-a-type",S.typeOptions,"Gõ để tìm loại…")+'</div>'
     +'<div class="field"><label>Key task</label><input id="mo-a-key" type="text" placeholder="VD: 202607 Marketing Online"/></div>'
-    +'<div class="field"><label>Assign cho (PIC)</label><select id="mo-a-pic">'+picOpts+'</select></div>'
+    +'<div class="field"><label>Assign cho (PIC) — gõ để tìm</label>'+combo("mo-a-pic",S.pics,"Gõ tên PIC…",picDefault)+'</div>'
     +'<div class="field"><div class="field-label-row"><label>Plan - Result</label><button class="voice-btn" onclick="toggleVoice(\'mo-a-text\',this)">🎤 Nói</button></div>'
     +'<textarea id="mo-a-text" style="min-height:140px"></textarea></div>'
     +'<div class="modal-footer"><button class="btn-secondary" onclick="closeModal()">Hủy</button>'
