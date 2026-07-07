@@ -2725,15 +2725,20 @@ function doSendReport(){
 /* ── MONTHLY: gửi PDF ── */
 function openMonthlySend(){
   var isMgr=isManager();
-  var mLabel=fmtMonth(S.monthSel);
+  var months=monthList();
+  var selMonth=S.monthSel||months[0]||"";
+  var mLabel=fmtMonth(selMonth);
   var picOpts=S.pics.map(function(p){return '<option'+(p===S.user.pic?" selected":"")+'>'+esc(p)+'</option>';}).join("");
-  var nLabel=fmtMonth(nextMonthLocal(S.monthSel));
-  var html='<div class="modal-box"><div class="modal-head"><h3>📄 Gửi báo cáo tháng '+esc(mLabel)+'</h3><button class="modal-close" onclick="closeModal()">✕</button></div>'
+  var nLabel=fmtMonth(nextMonthLocal(selMonth));
+  var monthOpts=months.map(function(m){return '<option value="'+m+'"'+(m===selMonth?" selected":"")+'>Tháng '+fmtMonth(m)+'</option>';}).join("");
+  var html='<div class="modal-box"><div class="modal-head"><h3>📄 Xuất / Gửi báo cáo tháng</h3><button class="modal-close" onclick="closeModal()">✕</button></div>'
     +'<div class="modal-body">'
-    +'<div class="field-hint" style="margin-bottom:12px">Email &amp; PDF gồm <b>2 phần</b>: ① Kết quả tháng '+esc(mLabel)+' &nbsp;+&nbsp; ② Kế hoạch tháng '+esc(nLabel)+'. Bố cục PDF giống báo cáo tuần.</div>'
-    +'<label style="font-size:12px;font-weight:700;color:var(--sub);text-transform:uppercase;letter-spacing:.3px;display:block;margin-bottom:10px">Gửi tới</label>'
+    +'<div class="field" style="margin-bottom:14px"><label style="font-size:12px;font-weight:700;color:var(--sub);text-transform:uppercase;letter-spacing:.3px;display:block;margin-bottom:8px">Chọn tháng báo cáo</label>'
+      +'<select id="mrp-month" onchange="updateMonthHint()" style="width:100%;padding:11px 13px;border:1.5px solid var(--border);border-radius:10px;font-size:14px;font-weight:600">'+monthOpts+'</select></div>'
+    +'<div class="field-hint" id="mrp-hint" style="margin-bottom:14px">Sẽ tạo <b>2 file</b>: ① Kết quả tháng <b>'+esc(mLabel)+'</b> &nbsp;+&nbsp; ② Kế hoạch tháng <b>'+esc(nLabel)+'</b>.</div>'
+    +'<label style="font-size:12px;font-weight:700;color:var(--sub);text-transform:uppercase;letter-spacing:.3px;display:block;margin-bottom:10px">Hình thức</label>'
     +'<div class="radio-cards">'
-    +'<label class="radio-card sel" onclick="selReportOpt(this,\'download\')"><input type="radio" name="mopt" value="download" checked/><div class="rc-ic">⬇️</div><div><div class="rc-t">Tải 2 file PDF</div><div class="rc-s">File 1: toàn bộ task tháng '+esc(mLabel)+' · File 2: tháng '+esc(nLabel)+' — nhóm theo loại công việc (Type Task), mỗi loại liệt kê key task kèm PIC</div></div></label>'
+    +'<label class="radio-card sel" onclick="selReportOpt(this,\'download\')"><input type="radio" name="mopt" value="download" checked/><div class="rc-ic">⬇️</div><div><div class="rc-t">Tải 2 file PDF</div><div class="rc-s">File 1: kết quả tháng đã chọn · File 2: kế hoạch tháng kế tiếp — nhóm theo loại công việc, mỗi loại liệt kê key task kèm PIC</div></div></label>'
     +'<label class="radio-card" onclick="selReportOpt(this,\'self\')"><input type="radio" name="mopt" value="self"/><div class="rc-ic">🧪</div><div><div class="rc-t">Gửi thử email cho tôi</div><div class="rc-s">Các mục Monthly của '+esc(S.user.pic)+' (① tháng này + ② kế hoạch tháng sau)</div></div></label>'
     +(isMgr
        ? '<label class="radio-card" onclick="selReportOpt(this,\'pic\')"><input type="radio" name="mopt" value="pic"/><div class="rc-ic">👤</div><div style="flex:1"><div class="rc-t">Gửi email cho 1 PIC</div><div class="rc-s">Báo cáo tháng riêng của PIC</div>'
@@ -2746,12 +2751,19 @@ function openMonthlySend(){
     +'</div></div>';
   showModal(html);
 }
+function updateMonthHint(){
+  var sel=$("mrp-month"); if(!sel) return;
+  var m=sel.value;
+  var hint=$("mrp-hint");
+  if(hint) hint.innerHTML='Sẽ tạo <b>2 file</b>: ① Kết quả tháng <b>'+esc(fmtMonth(m))+'</b> &nbsp;+&nbsp; ② Kế hoạch tháng <b>'+esc(fmtMonth(nextMonthLocal(m)))+'</b>.';
+}
 function nextMonthLocal(m){ var y=parseInt(m.slice(0,4),10),mo=parseInt(m.slice(4,6),10); mo++; if(mo>12){mo=1;y++;} return y+("0"+mo).slice(-2); }
 function doSendMonthly(){
   var opt=(document.querySelector('input[name=mopt]:checked')||{}).value||"download";
-  var body={action:"monthlyReport", month:S.monthSel, option:opt};
+  var monthSel=($("mrp-month")&&$("mrp-month").value)||S.monthSel;
+  var body={action:"monthlyReport", month:monthSel, option:opt};
   if(opt==="pic"){ var sel=$("mrp-pic"); body.toPic=sel?sel.value:S.user.pic; }
-  overlay(true, opt==="download"?"Đang tạo PDF":"Đang gửi", opt==="download"?"Tổng hợp toàn bộ task theo PIC…":(opt==="all"?"Gửi báo cáo tháng cho từng PIC…":"Tổng hợp & gửi báo cáo tháng…"));
+  overlay(true, opt==="download"?"Đang tạo PDF":"Đang gửi", opt==="download"?"Tổng hợp toàn bộ task theo loại…":(opt==="all"?"Gửi báo cáo tháng cho từng PIC…":"Tổng hợp & gửi báo cáo tháng…"));
   apiPost(body)
     .then(function(r){
       overlay(false); closeModal();
