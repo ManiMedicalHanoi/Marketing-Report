@@ -149,6 +149,7 @@ button{cursor:pointer}
 .grid2{display:grid;grid-template-columns:1fr 1fr;gap:16px}
 
 /* ══ TASK CELL GRID — TO HƠN ══ */
+.perf-grid{overflow:visible}
 .cell-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(268px,1fr));gap:14px}
 .task-cell{background:#fff;border:1.5px solid var(--border);border-radius:var(--r-lg);padding:17px;transition:box-shadow .15s,transform .15s;display:flex;flex-direction:column;gap:11px}
 .task-cell:hover{box-shadow:var(--sh-md);transform:translateY(-2px)}
@@ -660,8 +661,9 @@ button{cursor:pointer}
 
 
 /* ══ HOVER BOX thống kê nhân sự (Tổng quan) ══ */
-.perf-cell{position:relative;overflow:visible}
-.pf-box{position:absolute;top:calc(100% + 8px);left:0;right:0;z-index:60;background:#fff;border:1px solid var(--border);border-radius:var(--r-lg);box-shadow:var(--sh-lg);padding:14px;opacity:0;visibility:hidden;transform:translateY(-6px);transition:opacity .16s,transform .16s,visibility .16s;pointer-events:none;min-width:280px}
+.perf-cell{position:relative;overflow:visible;z-index:1}
+.perf-cell:hover{z-index:200}
+.pf-box{position:absolute;top:calc(100% + 8px);left:0;right:0;z-index:300;background:#fff;border:1px solid var(--border);border-radius:var(--r-lg);box-shadow:var(--sh-lg);padding:14px;opacity:0;visibility:hidden;transform:translateY(-6px);transition:opacity .16s,transform .16s,visibility .16s;pointer-events:none;min-width:280px}
 .perf-cell:hover .pf-box{opacity:1;visibility:visible;transform:none}
 .pf-box-h{display:flex;align-items:center;gap:9px;padding-bottom:10px;border-bottom:1.5px solid var(--border);margin-bottom:10px}
 .pf-box-av{width:32px;height:32px;border-radius:50%;color:#fff;font-weight:800;font-size:12px;display:flex;align-items:center;justify-content:center;flex:0 0 auto}
@@ -768,12 +770,14 @@ button{cursor:pointer}
 
 /* ══ BẢNG TIN HOẠT ĐỘNG (banner chạy chậm bên phải) ══ */
 .act-rail{position:fixed;top:0;right:0;height:100vh;z-index:400;display:flex;align-items:stretch;pointer-events:none}
-.act-toggle{pointer-events:auto;align-self:center;position:absolute;right:100%;top:50%;transform:translateY(-50%);writing-mode:vertical-rl;background:var(--mmh-navy);color:#fff;border:none;padding:14px 8px;border-radius:10px 0 0 10px;cursor:pointer;font-size:12.5px;font-weight:700;display:flex;align-items:center;gap:8px;box-shadow:-3px 0 12px rgba(0,0,0,.14)}
-.act-toggle-ic{writing-mode:horizontal-tb;font-size:15px}
-.act-panel{pointer-events:auto;width:320px;max-width:82vw;background:#fff;border-left:1px solid var(--border);box-shadow:-8px 0 28px rgba(14,47,95,.10);display:flex;flex-direction:column;transform:translateX(100%);transition:transform .32s cubic-bezier(.4,0,.2,1)}
+.act-toggle{pointer-events:auto;position:fixed;right:18px;bottom:150px;z-index:401;background:var(--mmh-navy);color:#fff;border:none;width:56px;height:56px;border-radius:50%;cursor:pointer;font-size:11px;font-weight:700;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;box-shadow:0 6px 20px rgba(14,47,95,.32);transition:transform .16s}
+.act-toggle:hover{transform:scale(1.06)}
+.act-toggle-ic{font-size:20px;line-height:1}
+.act-toggle-txt{font-size:8.5px;line-height:1}
+.act-rail:not(.collapsed) .act-toggle{right:338px}
+@media(max-width:820px){ .act-rail:not(.collapsed) .act-toggle{right:18px;bottom:auto;top:14px} }
+.act-panel{pointer-events:auto;width:336px;max-width:86vw;background:#fff;border-left:1px solid var(--border);box-shadow:-8px 0 28px rgba(14,47,95,.10);display:flex;flex-direction:column;transform:translateX(100%);transition:transform .32s cubic-bezier(.4,0,.2,1)}
 .act-rail:not(.collapsed) .act-panel{transform:translateX(0)}
-.act-rail:not(.collapsed) .act-toggle{right:320px}
-@media(max-width:820px){ .act-rail:not(.collapsed) .act-toggle{right:82vw} }
 .act-head{padding:14px 16px;border-bottom:1px solid var(--border);background:var(--gray)}
 .act-head b{font-size:14px;color:var(--mmh-navy);display:block;margin-bottom:9px}
 .act-scope{display:flex;gap:6px}
@@ -801,6 +805,25 @@ button{cursor:pointer}
 .act-time{font-size:10.5px;color:var(--faint);margin-top:4px}
 .act-empty{padding:30px 14px;text-align:center;color:var(--faint);font-size:13px}
 .act-group-t{font-size:10.5px;font-weight:800;text-transform:uppercase;letter-spacing:.4px;color:var(--faint);padding:2px 2px 0}
+
+/* Hover box chi tiết task ở tab "Công việc chi tiết" — hiện bên trái dòng */
+.sr-main{position:relative}
+.sr-hoverbox{position:absolute;right:calc(100% + 12px);top:50%;transform:translateY(-50%) translateX(8px);width:290px;background:#fff;border:1px solid var(--border);border-radius:14px;box-shadow:0 12px 40px rgba(14,47,95,.18);padding:14px 16px;z-index:60;opacity:0;visibility:hidden;transition:opacity .16s,transform .16s;pointer-events:none}
+.sr-main:hover .sr-hoverbox{opacity:1;visibility:visible;transform:translateY(-50%) translateX(0)}
+.sr-hb-title{font-size:13.5px;font-weight:700;color:var(--mmh-navy);margin-bottom:10px;line-height:1.3}
+.sr-hb-row{display:flex;gap:8px;font-size:12px;margin-bottom:7px;align-items:flex-start}
+.sr-hb-row .k{color:var(--faint);min-width:74px;flex:0 0 auto;font-weight:600}
+.sr-hb-row .v{color:var(--text);flex:1;word-break:break-word}
+.sr-hb-res{margin-top:9px;padding-top:9px;border-top:1px dashed var(--border);font-size:11.5px;color:var(--sub);line-height:1.5;white-space:pre-wrap;max-height:130px;overflow-y:auto}
+.sr-hb-res .lbl{font-weight:700;color:var(--mmh-navy);display:block;margin-bottom:3px;font-size:11px}
+.sr-hb-arrow{position:absolute;right:-6px;top:50%;transform:translateY(-50%) rotate(45deg);width:12px;height:12px;background:#fff;border-right:1px solid var(--border);border-top:1px solid var(--border)}
+@media(max-width:900px){ .sr-hoverbox{display:none} }
+
+.detail-timeseg{display:inline-flex}
+.detail-timeseg button{padding:8px 15px;font-size:13px;font-weight:600}
+.sr-prog-lock{display:flex;align-items:center;gap:7px;opacity:.9}
+.sr-prog-lock .sr-progbar{flex:1}
+.sr-prog-lock .sr-progpct{font-weight:700;color:var(--sub);min-width:38px;text-align:right}
 </style>
 </head>
 <body>
@@ -940,7 +963,7 @@ var S={
   ganttOpen:{},          // key task nào đang mở sub trên Gantt (mặc định ẩn)
   detailType:"", detailTypes:[], detailPics:[], detailQ:"", detailOpen:{},
   detailFilterOpen:"",   // 'type' | 'pic' | '' — dropdown nào đang mở
-  detailUseTime:false,   // false = xem HẾT task (mọi thời gian); true = lọc theo khoảng
+  detailTimeMode:"all", // 'all' | 'week' | 'month'
   detailShowAllSubs:{},  // key.no → hiện tất cả subtask (kể cả ngoài khoảng)
   priorityMode:false,    // đang ở chế độ đánh dấu ưu tiên
   priorityMarks:{},      // "kno|sno" → true
@@ -1620,10 +1643,18 @@ function renderDetail(){
   var canPriority = isManager(); // manager/leader/Ha đều role manager
 
   var h="";
-  // Hàng 1: bộ lọc thời gian (chỉ áp khi bật "chỉ việc trong kỳ")
+  // Hàng 1: tab phụ chọn phạm vi thời gian
   h+='<div class="detail-timerow">'
-    +'<label class="dt-toggle"><input type="checkbox" '+(S.detailUseTime?"checked":"")+' onchange="S.detailUseTime=this.checked;renderDetail()"/> <span>Chỉ hiện việc trong khoảng thời gian</span></label>'
-    +(S.detailUseTime?'<div class="dt-timebar">'+timeFilterInline()+'</div>':'<span class="dt-hint">Đang hiện <b>tất cả</b> công việc trên sheet — bật để lọc theo tuần/tháng</span>')
+    +'<div class="tf-seg detail-timeseg">'
+      +'<button class="'+(S.detailTimeMode==="all"?"active":"")+'" onclick="setDetailTimeMode(\'all\')">Tất cả công việc</button>'
+      +'<button class="'+(S.detailTimeMode==="week"?"active":"")+'" onclick="setDetailTimeMode(\'week\')">Công việc trong tuần</button>'
+      +'<button class="'+(S.detailTimeMode==="month"?"active":"")+'" onclick="setDetailTimeMode(\'month\')">Công việc trong tháng</button>'
+    +'</div>'
+    +(S.detailTimeMode!=="all"?'<div class="dt-timebar">'
+      +'<button class="tf-arrow" onclick="shiftDetailTime(-1)"><svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg></button>'
+      +'<span class="tf-label" style="min-width:150px;font-size:13.5px">'+dateRangeLabel()+'</span>'
+      +'<button class="tf-arrow" onclick="shiftDetailTime(1)"><svg viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg></button>'
+    +'</div>':'<span class="dt-hint">Đang hiện <b>tất cả</b> công việc trên sheet</span>')
     +'</div>';
   // Hàng 2: search + filter Type + PIC
   h+='<div class="detail-toolbar">'
@@ -1667,8 +1698,8 @@ function renderDetailList(){
   if(S.detailTypes.length) kts=kts.filter(function(k){ return S.detailTypes.indexOf(k.type)>=0; });
   if(S.detailPics.length)  kts=kts.filter(function(k){ return S.detailPics.indexOf(k.pic)>=0 || (k.subs||[]).some(function(s){return S.detailPics.indexOf(s.pic)>=0;}); });
   if(S.detailQ){ var q=S.detailQ.toLowerCase(); kts=kts.filter(function(k){ return (k.keyTask+" "+k.pic+" "+(k.subs||[]).map(function(s){return s.name+" "+s.pic;}).join(" ")).toLowerCase().indexOf(q)>=0; }); }
-  // CHỈ lọc theo thời gian khi bật toggle
-  var useTime=S.detailUseTime;
+  // lọc theo thời gian khi mode != all
+  var useTime = (S.detailTimeMode!=="all");
   var from=S.dateFrom, to=S.dateTo;
   if(useTime) kts=kts.filter(function(k){ return keyInRange(k,from,to); });
   var el=$("detail-list"); if(!el) return;
@@ -1676,6 +1707,12 @@ function renderDetailList(){
   var picFilter = (S.detailPics.length) ? S.detailPics : null;
   el.innerHTML=detailKeyPanels(kts, from, to, picFilter, useTime);
 }
+function setDetailTimeMode(mode){
+  S.detailTimeMode=mode;
+  if(mode!=="all"){ setDateMode(mode); }
+  renderDetail();
+}
+function shiftDetailTime(dir){ shiftDate(dir); renderDetail(); }
 /* dropdown multi-select filter */
 function multiFilterDropdown(kind, label, options, selected){
   var open = (S.detailFilterOpen===kind);
@@ -1753,7 +1790,7 @@ function openSendPriority(){
   }).join("");
   var html='<div class="modal-box"><div class="modal-head"><h3>📧 Gửi nhắc việc ưu tiên</h3><button class="modal-close" onclick="closeModal()">✕</button></div>'
     +'<div class="modal-body">'
-    +'<div class="field-hint" style="margin-bottom:12px">Mỗi PIC nhận 1 email chứa việc ưu tiên của họ (kèm cột Key Task). Việc đã <b>Completed</b> tự bỏ qua. CC: tt.tuyen, nt.ha và bạn.</div>'
+    +'<div class="field-hint" style="margin-bottom:12px">Mỗi PIC liên quan nhận 1 email chứa việc ưu tiên của họ (kèm cột Key Task). Việc đã <b>Completed</b> tự bỏ qua. CC: tt.tuyen và bạn.</div>'
     +'<div class="sp-preview">'+preview+'</div>'
     +'<div class="field" style="margin-top:14px"><div class="field-label-row"><label>Ghi chú chung (tuỳ chọn)</label><button class="voice-btn" onclick="toggleVoice(\'sp-note\',this)">🎤 Nói</button></div>'
     +'<textarea id="sp-note" placeholder="VD: Ưu tiên hoàn thành trước cuộc họp thứ 6…"></textarea></div>'
@@ -1776,20 +1813,22 @@ function submitPriority(){
     .catch(function(e){ overlay(false); toast("⚠️ "+e.message); });
 }
 /* Gửi nhắc cả 1 KEY TASK (tất cả sub chưa done của key) — mode 'key' */
-function sendKeyPriority(kno){
+/* Đánh dấu ưu tiên TẤT CẢ sub chưa hoàn thành của 1 key task (không gửi ngay).
+ * Sau đó dùng nút "Gửi email nhắc" hàng loạt ở thanh trên. */
+function markKeyPriority(kno){
   var k=findKey(kno); if(!k){ toast("Không tìm thấy key task"); return; }
   var subs=(k.subs||[]).filter(function(s){ return !isDone(s.status) && !isCancelled(s.status); });
-  if(!subs.length){ toast("Key task này không còn việc cần nhắc"); return; }
-  // gom theo PIC để hiển thị, nhưng gửi mode 'key' (1 email chung)
-  var items=[{ no:k.no, name:k.keyTask, keyTask:k.keyTask, pic:k.pic, deadline:k.revised||k.planned||"", status:ktStatus(k), row:k.row }];
-  // thực ra gửi theo từng sub PIC liên quan:
-  var picItems=subs.map(function(s){ return { no:s.no, name:s.name||s.subTask, keyTask:k.keyTask, pic:s.pic, deadline:s.revised||s.planned||"", status:s.status, row:s.row }; });
-  var pics=[...new Set(picItems.map(function(i){return i.pic;}).filter(Boolean))];
-  if(!confirm('Gửi nhắc ưu tiên KEY TASK "'+k.keyTask+'" tới '+pics.length+' PIC ('+pics.join(", ")+')?')) return;
-  overlay(true,"Đang gửi","Gửi nhắc key task…");
-  apiPost({action:"sendPriority", mode:"key", items:picItems, note:""})
-    .then(function(r){ overlay(false); toast("✓ "+(r.message||"Đã gửi")); reloadSoft(); })
-    .catch(function(e){ overlay(false); toast("⚠️ "+e.message); });
+  if(!subs.length){ toast("Key task này không còn việc cần đánh dấu"); return; }
+  // toggle: nếu tất cả đã đánh dấu → bỏ; ngược lại → đánh dấu hết
+  var allMarked=subs.every(function(s){ return S.priorityMarks[k.no+"|"+s.no]; });
+  subs.forEach(function(s){
+    var id=k.no+"|"+s.no;
+    S.priorityMarks[id]=!allMarked;
+    s.priority=!allMarked;
+    quietSavePriorityFlag(s.row, !allMarked);
+  });
+  toast(allMarked ? "Đã bỏ đánh dấu key task" : "Đã đánh dấu "+subs.length+" việc — bấm 'Gửi email nhắc' để gửi hàng loạt");
+  renderDetail();
 }
 
 /* ── Render danh sách Key Task panels (dùng chung Detail + Overview-per-PIC) ──
@@ -1836,7 +1875,7 @@ function detailKeyPanels(kts, from, to, picFilter, useTime){
       +'</span>'
       +'<span class="kt-actions" onclick="event.stopPropagation()">'
         +(editKey?'<button class="icon-btn" title="Sửa Key Task" onclick="openEdit(\''+jsq(k.no)+'\',null)">✏️</button>':'')
-        +(isManager()?'<button class="icon-btn" title="Gửi nhắc ưu tiên cả Key Task này" onclick="sendKeyPriority(\''+jsq(k.no)+'\')">⭐</button>':'')
+        +(isManager()?'<button class="icon-btn" title="Đánh dấu ưu tiên tất cả sub-task của Key này (rồi gửi hàng loạt)" onclick="markKeyPriority(\''+jsq(k.no)+'\')">⭐</button>':'')
         +(isManager()?'<button class="icon-btn" title="Nhắc việc" onclick="openAssign(\''+jsq(k.no)+'\',null)">🔔</button>':'')
         +(isManager()?'<button class="icon-btn" title="Xoá Key Task" onclick="delRow(\''+jsq(k.no)+'\','+k.row+',true)">🗑️</button>':'')
       +'</span>'
@@ -1862,6 +1901,21 @@ function detailKeyPanels(kts, from, to, picFilter, useTime){
 }
 function toggleShowAllSubs(kno){ S.detailShowAllSubs[kno]=!S.detailShowAllSubs[kno]; renderDetailList(); }
 
+/* Box chi tiết hiện khi hover 1 sub-row (ngày bắt đầu, deadline, PIC, kết quả) */
+function subHoverBox(k,s,spct){
+  var res=String(s.result||'').trim();
+  var stM=stMeta(s.status);
+  return '<div class="sr-hoverbox">'
+    +'<div class="sr-hb-arrow"></div>'
+    +'<div class="sr-hb-title">'+esc(s.name||s.subTask||'—')+'</div>'
+    +'<div class="sr-hb-row"><span class="k">Key task</span><span class="v">'+esc(k.keyTask||'—')+'</span></div>'
+    +'<div class="sr-hb-row"><span class="k">PIC</span><span class="v">'+esc(s.pic||'—')+'</span></div>'
+    +'<div class="sr-hb-row"><span class="k">Bắt đầu</span><span class="v">'+(s.start?fmtVN(s.start):'—')+'</span></div>'
+    +'<div class="sr-hb-row"><span class="k">Deadline</span><span class="v">'+((s.revised||s.planned)?fmtVN(s.revised||s.planned):'—')+(s.revised&&s.planned&&s.revised!==s.planned?' <small style="color:var(--faint)">(đã dời)</small>':'')+'</span></div>'
+    +'<div class="sr-hb-row"><span class="k">Trạng thái</span><span class="v"><span class="tc-status '+stM.cls+'">'+stM.lbl+'</span> · '+spct+'%</span></div>'
+    +'<div class="sr-hb-res"><span class="lbl">💬 Kết quả / Cập nhật</span>'+(res?esc(res).replace(/\n/g,'<br>'):'<span style="color:var(--faint)">— chưa có kết quả —</span>')+'</div>'
+  +'</div>';
+}
 /* ── 1 dòng sub-task theo trục dọc; comment ẩn; sửa nhanh status & % ── */
 function subRowVertical(k, s, outOfRange){
   var canE=canEditPic(s.pic);
@@ -1873,7 +1927,7 @@ function subRowVertical(k, s, outOfRange){
   var hasComment = !!(s.result && String(s.result).trim());
   var rid = jsq(k.no)+"|"+jsq(s.no);
 
-  // Cụm % nhanh: thanh kéo + nút +/- (chỉ khi In Progress & có quyền)
+  // Cụm %: chỉ In Progress + có quyền mới kéo được; các status khác hiện số + thanh tĩnh (LOCK)
   var progCell;
   if(showProg && canE){
     progCell = '<span class="sr-prog sr-prog-edit" onclick="event.stopPropagation()">'
@@ -1883,10 +1937,10 @@ function subRowVertical(k, s, outOfRange){
         +'onchange="commitProg(\''+jsq(k.no)+'\',\''+jsq(s.no)+'\',this.value)"/>'
       +'<button class="sr-pbtn" title="+5%" onclick="event.stopPropagation();bumpProg(\''+jsq(k.no)+'\',\''+jsq(s.no)+'\',5)">+</button>'
       +'<span class="sr-progpct" id="pct-'+esc(s.no)+'">'+spct+'%</span></span>';
-  } else if(showProg){
-    progCell = '<span class="sr-prog"><span class="sr-progbar"><span class="sr-progfill" style="width:'+spct+'%;background:'+scol+'"></span></span><span class="sr-progpct">'+spct+'%</span></span>';
   } else {
-    progCell = '<span class="sr-prog sr-prog-empty"></span>';
+    // LOCK: hiện thanh tĩnh + số % (kể cả Completed=100%, To Do=0%), không chỉnh được
+    var lockTitle = isInProgress(s.status) ? '' : ' title="Chỉ chỉnh được khi trạng thái In Progress"';
+    progCell = '<span class="sr-prog sr-prog-lock"'+lockTitle+'><span class="sr-progbar"><span class="sr-progfill" style="width:'+spct+'%;background:'+scol+'"></span></span><span class="sr-progpct">'+spct+'%</span></span>';
   }
 
   // Status: dropdown nhanh (nếu có quyền) hoặc badge tĩnh
@@ -1937,6 +1991,7 @@ function subRowVertical(k, s, outOfRange){
       +statusCell
       +(hasComment?'<span class="sr-cmt-ic" title="Có ghi chú">💬</span>':'<span class="sr-cmt-ic"></span>')
       +'<svg class="sr-caret'+(expanded?" open":"")+'" viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg>'
+      +subHoverBox(k,s,spct)
     +'</div>'
     +'<div class="sr-actions">'
       +(canE?'<button class="sr-edit" onclick="event.stopPropagation();openEdit(\''+jsq(k.no)+'\',\''+jsq(s.no)+'\')" title="Sửa (hoặc double-click)">✏️</button>':'<span class="sr-lock">🔒</span>')
