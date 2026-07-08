@@ -1199,28 +1199,28 @@ var DEPT_DEFS=[
    color:"#0E8A6E"}
 ];
 function picDeptId(u){
-  var lead=["nguyen ha","tuyen","hoa"];
-  // Management chỉ gồm director + 2 HOD
-  if(u.level==="director" || u.level==="hod") {
-    // Tuyen thuộc S&M nhưng cũng là management; Hoa back-office cũng management
-  }
   var d=String(u.dept||"").toLowerCase();
   if(/back.?office/.test(d)) return "bo";
   return "sm";
 }
+/* Director/HOD vào được mọi phòng. Cụ thể:
+   - Management: chỉ director + HOD (level director/hod)
+   - Sales & Marketing: director + HOD S&M + member phòng S&M
+   - Back Office: director + HOD + member phòng Back Office
+   Dùng level thay vì tên → không lệ thuộc "Ha" hay "Nguyen Ha". */
+function isTopLevel(u){ return u.level==="director" || u.level==="hod"; }
 function picsInDept(deptId){
-  // Ai hiện trong nhóm nào để CHỌN đăng nhập
   if(deptId==="mgmt"){
-    return S.picList.filter(function(u){ return ["nguyen ha","tuyen","hoa"].indexOf(u.pic.toLowerCase())>=0; });
+    return S.picList.filter(isTopLevel);
   }
   if(deptId==="sm"){
     return S.picList.filter(function(u){
-      return picDeptId(u)==="sm" || ["nguyen ha","tuyen"].indexOf(u.pic.toLowerCase())>=0;
+      return picDeptId(u)==="sm" || u.level==="director" || u.level==="hod";
     });
   }
   if(deptId==="bo"){
     return S.picList.filter(function(u){
-      return picDeptId(u)==="bo" || ["nguyen ha","tuyen","hoa"].indexOf(u.pic.toLowerCase())>=0;
+      return picDeptId(u)==="bo" || u.level==="director" || u.level==="hod";
     });
   }
   return S.picList;
@@ -2000,7 +2000,8 @@ function subRowVertical(k,s,from,to){
   var priOn=!!S.priorityMarks[s.no];
   var hasPri=S.priorityMode;
   var h='<div class="sub-row'+(outRange?' out-range':'')+(priOn?' pri-marked':'')+'" id="sub-'+esc(s.no)+'">';
-  h+='<div class="sr-main'+(hasPri?' has-pri':'')+'" onclick="toggleSubComment(\''+jsq(s.no)+'\')">';
+  // single-click: mở/đóng ghi chú · double-click: mở dialog cập nhật (nếu có quyền)
+  h+='<div class="sr-main'+(hasPri?' has-pri':'')+'" onclick="toggleSubComment(\''+jsq(s.no)+'\')" ondblclick="openEdit(\''+jsq(s.no)+'\')" title="Click: xem ghi chú · Double-click: cập nhật">';
   if(hasPri){
     h+='<span class="sr-pri" onclick="event.stopPropagation();togglePriority(\''+jsq(s.no)+'\')">'
       +(isDone(s.status)?'<span class="sr-pri-done">✓</span>':'<span class="sr-pri-check'+(priOn?' on':'')+'">'+(priOn?'★':'☆')+'</span>')+'</span>';
