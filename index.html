@@ -1445,17 +1445,25 @@ function ktStatus(kt){
 function allSubs(){
   var out=[]; S.keyTasks.forEach(function(k){ (k.subs||[]).forEach(function(s){ out.push({k:k,s:s}); }); }); return out;
 }
-/* ⭐ FIX PIC mặc định: luôn có S.user.pic và đưa lên đầu danh sách */
-function picOptionsWithMeFirst(){
-  var me=S.user&&S.user.pic||"";
-  var all=picListAll();
-  var rest=all.filter(function(p){return p!==me;});
-  return me ? [me].concat(rest) : all;
-}
 function picListAll(){
   var set={}; S.keyTasks.forEach(function(k){ if(k.pic)set[k.pic]=1; (k.subs||[]).forEach(function(s){if(s.pic)set[s.pic]=1;}); });
   S.monthly.forEach(function(m){if(m.pic)set[m.pic]=1;});
   return Object.keys(set).sort();
+}
+/* ⭐ Danh sách PIC đầy đủ từ picList (không phụ thuộc task đã có) — dùng cho dropdown chọn PIC.
+   Đưa 'selected' lên ĐẦU và đảm bảo luôn có mặt để <select> mặc định đúng người. */
+function picOptionsHtml(selected){
+  var names=(S.picList||[]).map(function(u){return u.pic;});
+  if(!names.length) names=picListAll();
+  // thêm các PIC xuất hiện trong task nhưng không có trong picList
+  picListAll().forEach(function(p){ if(names.indexOf(p)<0) names.push(p); });
+  if(selected && names.indexOf(selected)<0) names.unshift(selected);
+  // đưa selected lên đầu
+  names=names.filter(function(p,i){return names.indexOf(p)===i;});
+  if(selected){ names=[selected].concat(names.filter(function(p){return p!==selected;})); }
+  return names.map(function(p){
+    return '<option'+(p===selected?' selected':'')+'>'+esc(p)+'</option>';
+  }).join("");
 }
 function fmtVN(iso){ if(!iso)return ""; var m=/^(\d{4})-(\d{2})-(\d{2})/.exec(String(iso)); return m?(m[3]+"/"+m[2]):String(iso); }
 function fmtVNFull(iso){ if(!iso)return ""; var m=/^(\d{4})-(\d{2})-(\d{2})/.exec(String(iso)); return m?(m[3]+"/"+m[2]+"/"+m[1]):String(iso); }
@@ -2135,7 +2143,7 @@ function renderReport(){
     +'<button class="tf-arrow" onclick="shiftReport(1)"><svg viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg></button></div>';
   h+='<div class="sp" style="flex:1"></div>';
   h+=multiFilterDropdownReport(pics,selPics);
-  if(isManager()) h+='<button class="btn-primary" onclick="openSendReport()"><svg viewBox="0 0 24 24"><path d="M22 2 11 13M22 2 15 22l-4-9-9-4 20-7z"/></svg>Gửi báo cáo</button>';
+  if(canAssign()) h+='<button class="btn-primary" onclick="openSendReport()"><svg viewBox="0 0 24 24"><path d="M22 2 11 13M22 2 15 22l-4-9-9-4 20-7z"/></svg>Gửi báo cáo</button>';
   h+='</div>';
   // ── #4: CẢ 2 phần dùng CHUNG bảng có cột Kết quả ──
   h+=reportSection("this","Kết quả tuần này", thisFrom,thisTo, thisData);
@@ -2227,7 +2235,8 @@ function renderMonth(){
     +months.map(function(m){return '<option value="'+esc(m)+'"'+(m===S.monthSel?' selected':'')+'>'+esc(fmtMonth(m))+'</option>';}).join("")+'</select></div>';
   h+='<span class="mro-mini">'+rows.length+' mục</span>';
   h+='<div class="sp" style="flex:1"></div>';
-  if(isManager()) h+='<button class="btn-primary" onclick="openAddMonth()"><svg viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>Thêm mục</button>';
+  if(canAssign()) h+='<button class="btn-secondary" onclick="openSendMonth()"><svg viewBox="0 0 24 24" style="width:16px;height:16px;stroke:currentColor;fill:none;stroke-width:2"><path d="M22 2 11 13M22 2 15 22l-4-9-9-4 20-7z"/></svg> Gửi báo cáo tháng</button>';
+  if(canAssign()||isManager()) h+='<button class="btn-primary" onclick="openAddMonth()"><svg viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>Thêm mục</button>';
   h+='</div>';
   if(!rows.length){ h+='<div class="empty"><div class="ic">📅</div><p>Chưa có báo cáo tháng cho '+esc(fmtMonth(S.monthSel)||'kỳ này')+'.</p></div>'; }
   else{
@@ -2268,7 +2277,7 @@ function openEdit(sno){
   if(!canEditPic(s.pic)){ toast("🔒 Chỉ "+(s.pic||"PIC")+" sửa được"); return; }
   S.editCtx={no:sno};
   var pct=subPct(s);
-  var picOpts=picOptionsWithMeFirst();
+  var picOpts=picListAll();
   var html='<div class="modal-box modal-lg"><div class="modal-head"><h3>✏️ Cập nhật sub-task</h3><button class="modal-close" onclick="closeModal()">✕</button></div>'
     +'<div class="modal-body">'
     +'<div class="field-hint" style="margin-bottom:12px;color:var(--mmh-blue)">📂 '+esc(k?k.keyTask:'')+'</div>'
@@ -2323,13 +2332,13 @@ function saveEdit(){
 
 /* ── THÊM KEY TASK ── */
 function openAddKey(){
-  var picOpts=picOptionsWithMeFirst();
+  var picOpts=picListAll();
   var typeOpts=S.typeOptions.length?S.typeOptions:[...new Set(S.keyTasks.map(function(k){return k.type;}).filter(Boolean))];
   var canAsg=canAssign();
   var myPic=S.user.pic;
   // ⭐ PIC mặc định = chính mình; chỉ người được assign mới đổi được sang PIC khác
   var picField = canAsg
-    ? '<select id="ak-pic">'+picOpts.map(function(p){return '<option'+(p===myPic?' selected':'')+'>'+esc(p)+'</option>';}).join("")+'</select>'
+    ? '<select id="ak-pic">'+picOptionsHtml(myPic)+'</select>'
     : '<select id="ak-pic" disabled><option selected>'+esc(myPic)+'</option></select>';
   var html='<div class="modal-box"><div class="modal-head"><h3>🗂️ Thêm Key Task</h3><button class="modal-close" onclick="closeModal()">✕</button></div>'
     +'<div class="modal-body">'
@@ -2362,11 +2371,11 @@ function saveAddKey(){
 /* ── THÊM SUB TASK ── */
 function openAddSub(kno){
   var keys=S.keyTasks;
-  var picOpts=picOptionsWithMeFirst();
+  var picOpts=picListAll();
   var canAsg=canAssign();
   var myPic=S.user.pic;
   var picField = canAsg
-    ? '<select id="as-pic">'+picOpts.map(function(p){return '<option'+(p===myPic?' selected':'')+'>'+esc(p)+'</option>';}).join("")+'</select>'
+    ? '<select id="as-pic">'+picOptionsHtml(myPic)+'</select>'
     : '<select id="as-pic" disabled><option selected>'+esc(myPic)+'</option></select>';
   var html='<div class="modal-box"><div class="modal-head"><h3>➕ Thêm Sub-task</h3><button class="modal-close" onclick="closeModal()">✕</button></div>'
     +'<div class="modal-body">'
@@ -2402,7 +2411,7 @@ function saveAddSub(){
 function openEditKey(kno){
   var k=S.keyTasks.filter(function(x){return x.no===kno;})[0];
   if(!k){ toast("Không tìm thấy"); return; }
-  var picOpts=picOptionsWithMeFirst();
+  var picOpts=picListAll();
   var typeOpts=S.typeOptions.length?S.typeOptions:[...new Set(S.keyTasks.map(function(x){return x.type;}).filter(Boolean))];
   var html='<div class="modal-box"><div class="modal-head"><h3>✏️ Sửa Key Task</h3><button class="modal-close" onclick="closeModal()">✕</button></div>'
     +'<div class="modal-body">'
@@ -2467,7 +2476,7 @@ function doDelRow(sno){
 
 /* ── MONTHLY modals ── */
 function openAddMonth(){
-  var picOpts=picOptionsWithMeFirst();
+  var picOpts=picListAll();
   var typeOpts=S.typeOptions.length?S.typeOptions:[...new Set(S.keyTasks.map(function(k){return k.type;}).filter(Boolean))];
   var thisMonth=S.monthSel||(function(){var d=new Date();return d.getFullYear()+("0"+(d.getMonth()+1)).slice(-2);})();
   var html='<div class="modal-box modal-lg"><div class="modal-head"><h3>📅 Thêm mục Monthly</h3><button class="modal-close" onclick="closeModal()">✕</button></div>'
@@ -2517,21 +2526,72 @@ function saveEditMonth(mno){
 
 /* ── GỬI BÁO CÁO ── */
 function openSendReport(){
+  var pics=picListAll();
+  var canAll=canAssign();
   var html='<div class="modal-box"><div class="modal-head"><h3>📤 Gửi báo cáo tuần</h3><button class="modal-close" onclick="closeModal()">✕</button></div>'
     +'<div class="modal-body">'
-    +'<p style="font-size:14px;color:var(--sub);line-height:1.6;margin-bottom:14px">Gửi email báo cáo tuần <b>'+fmtVNFull(S.reportFrom)+' – '+fmtVNFull(S.reportTo)+'</b> theo cấu hình người nhận đã đặt trong backend.</p>'
-    +'<div class="field"><label>Ghi chú thêm (tùy chọn)</label><textarea id="sr-note" rows="3" placeholder="Lời nhắn kèm báo cáo…"></textarea></div>'
+    +'<p style="font-size:14px;color:var(--sub);line-height:1.6;margin-bottom:14px">Gửi email báo cáo tuần <b>'+fmtVNFull(S.reportFrom)+' – '+fmtVNFull(S.reportTo)+'</b> (kèm plan tuần sau) theo cấu hình người nhận trong backend.</p>'
+    +'<div class="field"><label>Gửi cho ai</label>'
+      +'<div class="radio-cards">'
+        +'<label class="radio-card sel" onclick="pickSendOpt(this,\'self\')"><span class="rc-ic">🧪</span><span style="flex:1"><span class="rc-t">Gửi thử cho tôi</span><span class="rc-s">Chỉ gửi tới email của bạn để xem trước</span></span><input type="radio" name="sendopt" value="self" checked/></label>'
+        +(canAll?'<label class="radio-card" onclick="pickSendOpt(this,\'pic\')"><span class="rc-ic">👤</span><span style="flex:1"><span class="rc-t">Gửi báo cáo của 1 PIC</span><span class="rc-s">Chọn 1 nhân sự để gửi báo cáo của họ</span></span><input type="radio" name="sendopt" value="pic"/></label>':'')
+        +(canAll?'<label class="radio-card" onclick="pickSendOpt(this,\'all\')"><span class="rc-ic">📢</span><span style="flex:1"><span class="rc-t">Gửi cho tất cả PIC</span><span class="rc-s">Mỗi PIC nhận báo cáo riêng của mình</span></span><input type="radio" name="sendopt" value="all"/></label>':'')
+      +'</div></div>'
+    +'<div class="field" id="sr-pic-wrap" style="display:none"><label>Chọn PIC</label>'
+      +'<select id="sr-pic">'+pics.map(function(p){return '<option>'+esc(p)+'</option>';}).join("")+'</select></div>'
     +'<div class="modal-footer"><button class="btn-secondary" onclick="closeModal()">Hủy</button>'
     +'<button class="btn-primary" id="sr-btn" onclick="doSendReport()">📤 Gửi</button></div>'
     +'</div></div>';
   showModal(html);
+  S._sendOpt='self';
+}
+function pickSendOpt(el,opt){
+  S._sendOpt=opt;
+  document.querySelectorAll('#modals .radio-card').forEach(function(c){c.classList.remove('sel');});
+  el.classList.add('sel');
+  var r=el.querySelector('input'); if(r)r.checked=true;
+  $("sr-pic-wrap").style.display = (opt==='pic') ? 'block' : 'none';
 }
 function doSendReport(){
+  var opt=S._sendOpt||'self';
+  var body={action:"weeklyReport", from:S.reportFrom, to:S.reportTo, option:opt};
+  if(opt==='pic') body.toPic=$("sr-pic").value;
   $("sr-btn").disabled=true;
   overlay(true,"Đang gửi","Gửi email báo cáo…");
-  apiPost({action:"sendWeeklyReport",from:S.reportFrom,to:S.reportTo,note:$("sr-note").value})
-    .then(function(){ overlay(false); closeModal(); toast("✓ Đã gửi báo cáo"); reloadSoft(); })
+  apiPost(body)
+    .then(function(r){ overlay(false); closeModal(); toast(r&&r.message?("✓ "+r.message):"✓ Đã gửi báo cáo"); reloadSoft(); })
     .catch(function(e){ overlay(false); $("sr-btn").disabled=false; toast("⚠️ "+e.message); });
+}
+/* ── GỬI BÁO CÁO THÁNG (Monthly) ── */
+function openSendMonth(){
+  var pics=picListAll();
+  var canAll=canAssign();
+  var html='<div class="modal-box"><div class="modal-head"><h3>📤 Gửi báo cáo tháng</h3><button class="modal-close" onclick="closeModal()">✕</button></div>'
+    +'<div class="modal-body">'
+    +'<p style="font-size:14px;color:var(--sub);line-height:1.6;margin-bottom:14px">Gửi báo cáo tháng <b>'+esc(fmtMonth(S.monthSel)||'')+'</b> (kèm plan tháng sau).</p>'
+    +'<div class="field"><label>Gửi cho ai</label>'
+      +'<div class="radio-cards">'
+        +'<label class="radio-card sel" onclick="pickSendOpt(this,\'self\')"><span class="rc-ic">🧪</span><span style="flex:1"><span class="rc-t">Gửi thử cho tôi</span><span class="rc-s">Chỉ gửi tới email của bạn để xem trước</span></span><input type="radio" name="sendopt" value="self" checked/></label>'
+        +(canAll?'<label class="radio-card" onclick="pickSendOpt(this,\'pic\')"><span class="rc-ic">👤</span><span style="flex:1"><span class="rc-t">Gửi của 1 PIC</span><span class="rc-s">Chọn 1 nhân sự</span></span><input type="radio" name="sendopt" value="pic"/></label>':'')
+        +(canAll?'<label class="radio-card" onclick="pickSendOpt(this,\'all\')"><span class="rc-ic">📢</span><span style="flex:1"><span class="rc-t">Gửi cho tất cả PIC</span><span class="rc-s">Mỗi PIC nhận báo cáo riêng</span></span><input type="radio" name="sendopt" value="all"/></label>':'')
+      +'</div></div>'
+    +'<div class="field" id="sr-pic-wrap" style="display:none"><label>Chọn PIC</label>'
+      +'<select id="sr-pic">'+pics.map(function(p){return '<option>'+esc(p)+'</option>';}).join("")+'</select></div>'
+    +'<div class="modal-footer"><button class="btn-secondary" onclick="closeModal()">Hủy</button>'
+    +'<button class="btn-primary" id="sm-send-btn" onclick="doSendMonth()">📤 Gửi</button></div>'
+    +'</div></div>';
+  showModal(html);
+  S._sendOpt='self';
+}
+function doSendMonth(){
+  var opt=S._sendOpt||'self';
+  var body={action:"monthlyReport", month:S.monthSel, option:opt};
+  if(opt==='pic') body.toPic=$("sr-pic").value;
+  $("sm-send-btn").disabled=true;
+  overlay(true,"Đang gửi","Gửi email báo cáo tháng…");
+  apiPost(body)
+    .then(function(r){ overlay(false); closeModal(); toast(r&&r.message?("✓ "+r.message):"✓ Đã gửi báo cáo tháng"); reloadSoft(); })
+    .catch(function(e){ overlay(false); $("sm-send-btn").disabled=false; toast("⚠️ "+e.message); });
 }
 
 /* ── VOICE INPUT ── */
