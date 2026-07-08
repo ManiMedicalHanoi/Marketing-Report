@@ -1445,6 +1445,13 @@ function ktStatus(kt){
 function allSubs(){
   var out=[]; S.keyTasks.forEach(function(k){ (k.subs||[]).forEach(function(s){ out.push({k:k,s:s}); }); }); return out;
 }
+/* ⭐ FIX PIC mặc định: luôn có S.user.pic và đưa lên đầu danh sách */
+function picOptionsWithMeFirst(){
+  var me=S.user&&S.user.pic||"";
+  var all=picListAll();
+  var rest=all.filter(function(p){return p!==me;});
+  return me ? [me].concat(rest) : all;
+}
 function picListAll(){
   var set={}; S.keyTasks.forEach(function(k){ if(k.pic)set[k.pic]=1; (k.subs||[]).forEach(function(s){if(s.pic)set[s.pic]=1;}); });
   S.monthly.forEach(function(m){if(m.pic)set[m.pic]=1;});
@@ -2261,7 +2268,7 @@ function openEdit(sno){
   if(!canEditPic(s.pic)){ toast("🔒 Chỉ "+(s.pic||"PIC")+" sửa được"); return; }
   S.editCtx={no:sno};
   var pct=subPct(s);
-  var picOpts=picListAll();
+  var picOpts=picOptionsWithMeFirst();
   var html='<div class="modal-box modal-lg"><div class="modal-head"><h3>✏️ Cập nhật sub-task</h3><button class="modal-close" onclick="closeModal()">✕</button></div>'
     +'<div class="modal-body">'
     +'<div class="field-hint" style="margin-bottom:12px;color:var(--mmh-blue)">📂 '+esc(k?k.keyTask:'')+'</div>'
@@ -2316,7 +2323,7 @@ function saveEdit(){
 
 /* ── THÊM KEY TASK ── */
 function openAddKey(){
-  var picOpts=picListAll();
+  var picOpts=picOptionsWithMeFirst();
   var typeOpts=S.typeOptions.length?S.typeOptions:[...new Set(S.keyTasks.map(function(k){return k.type;}).filter(Boolean))];
   var canAsg=canAssign();
   var myPic=S.user.pic;
@@ -2355,7 +2362,7 @@ function saveAddKey(){
 /* ── THÊM SUB TASK ── */
 function openAddSub(kno){
   var keys=S.keyTasks;
-  var picOpts=picListAll();
+  var picOpts=picOptionsWithMeFirst();
   var canAsg=canAssign();
   var myPic=S.user.pic;
   var picField = canAsg
@@ -2395,7 +2402,7 @@ function saveAddSub(){
 function openEditKey(kno){
   var k=S.keyTasks.filter(function(x){return x.no===kno;})[0];
   if(!k){ toast("Không tìm thấy"); return; }
-  var picOpts=picListAll();
+  var picOpts=picOptionsWithMeFirst();
   var typeOpts=S.typeOptions.length?S.typeOptions:[...new Set(S.keyTasks.map(function(x){return x.type;}).filter(Boolean))];
   var html='<div class="modal-box"><div class="modal-head"><h3>✏️ Sửa Key Task</h3><button class="modal-close" onclick="closeModal()">✕</button></div>'
     +'<div class="modal-body">'
@@ -2460,7 +2467,7 @@ function doDelRow(sno){
 
 /* ── MONTHLY modals ── */
 function openAddMonth(){
-  var picOpts=picListAll();
+  var picOpts=picOptionsWithMeFirst();
   var typeOpts=S.typeOptions.length?S.typeOptions:[...new Set(S.keyTasks.map(function(k){return k.type;}).filter(Boolean))];
   var thisMonth=S.monthSel||(function(){var d=new Date();return d.getFullYear()+("0"+(d.getMonth()+1)).slice(-2);})();
   var html='<div class="modal-box modal-lg"><div class="modal-head"><h3>📅 Thêm mục Monthly</h3><button class="modal-close" onclick="closeModal()">✕</button></div>'
