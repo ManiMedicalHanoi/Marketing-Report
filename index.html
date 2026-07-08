@@ -497,6 +497,11 @@ button{cursor:pointer}
 .sr-result .rlink{display:inline-flex;align-items:center;gap:3px;background:var(--lb3);color:var(--mmh-blue);border-radius:6px;padding:1px 7px;font-size:11px;font-weight:700;margin-right:4px;text-decoration:none}
 .sr-result .rlink:hover{background:var(--mmh-blue);color:#fff}
 .sr-result-empty{font-size:12px;color:var(--faint);font-style:italic}
+/* ⭐ Kết quả Key Task inline */
+.kt-result{padding:9px 18px 11px 44px;font-size:12.5px;color:var(--sub);line-height:1.5;background:var(--pale);border-top:1px dashed var(--border);word-break:break-word}
+.kt-result-lbl{font-weight:700;color:var(--mmh-navy);font-size:11.5px}
+.kt-result .rlink{display:inline-flex;align-items:center;gap:3px;background:#fff;color:var(--mmh-blue);border:1px solid var(--lb1);border-radius:6px;padding:1px 7px;font-size:11px;font-weight:700;margin:0 4px 2px 0;text-decoration:none}
+.kt-result .rlink:hover{background:var(--mmh-blue);color:#fff}
 .sr-dot{width:10px;height:10px;border-radius:50%}
 .sr-no{font-size:11.5px;color:var(--faint);font-weight:700;font-family:'DM Mono',monospace}
 .sr-name{font-size:14px;font-weight:600;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
@@ -775,6 +780,49 @@ button{cursor:pointer}
 .denied-box h2{font-size:20px;color:var(--mmh-navy);font-weight:800;margin-bottom:10px}
 .denied-box p{font-size:14px;color:var(--sub);line-height:1.6}
 .denied-box .who{margin-top:14px;font-size:13px;color:var(--faint)}
+/* ══ GATE / LOGIN ══ */
+#gate{position:fixed;inset:0;z-index:800;display:flex;align-items:center;justify-content:center;padding:24px;
+  background:radial-gradient(130% 120% at 100% 0,#1a4478 0,#003047 60%);overflow-y:auto}
+#gate::before{content:"";position:absolute;right:-140px;top:-140px;width:460px;height:460px;border-radius:50%;background:var(--mmh-yellow);opacity:.07}
+.gate-card{position:relative;z-index:1;background:#fff;border-radius:24px;box-shadow:var(--sh-lg);max-width:480px;width:100%;padding:36px 32px;text-align:center;animation:pop .3s var(--ease);margin:auto}
+@keyframes pop{from{transform:scale(.96);opacity:0}to{transform:none;opacity:1}}
+.gate-logo{width:64px;height:64px;background:var(--mmh-yellow);border-radius:18px;display:flex;align-items:center;justify-content:center;margin:0 auto 16px;box-shadow:0 8px 22px rgba(0,0,0,.18)}
+.gate-logo span{color:var(--mmh-navy);font-size:20px;font-weight:800;letter-spacing:-.5px}
+.gate-card h1{font-size:24px;font-weight:800;color:var(--mmh-navy)}
+.gate-card .sub{font-size:13.5px;color:var(--sub);margin-top:6px;line-height:1.5}
+.gate-spinner{width:38px;height:38px;border:3.5px solid var(--lb1);border-top-color:var(--mmh-blue);border-radius:50%;animation:spin .8s linear infinite;margin:22px auto 8px}
+@keyframes spin{to{transform:rotate(360deg)}}
+.gate-status{font-size:13px;color:var(--sub);margin-top:10px;min-height:18px}
+.gate-err{display:none;margin-top:18px;background:var(--danger-bg);border:1px solid #f5c2c2;border-radius:12px;padding:14px 16px;text-align:left}
+.gate-err.show{display:block}
+.gate-err b{color:var(--danger-fg);font-size:14px}
+.gate-err p{font-size:12.5px;color:var(--sub);line-height:1.6;margin-top:6px}
+.gate-err code{background:#fff;padding:1px 5px;border-radius:4px;font-size:11px}
+.gate-btn{margin-top:16px;background:var(--mmh-blue);color:#fff;border:none;padding:12px 22px;border-radius:12px;font-size:14px;font-weight:700}
+.gate-mail{margin-top:8px}
+
+/* Bước 1: chọn Department */
+.pic-picker-title{margin:18px 0 14px;font-size:16px;font-weight:800;color:var(--dept-c,var(--mmh-navy));text-align:left}
+.dept-list{display:flex;flex-direction:column;gap:11px}
+.dept-card{display:flex;align-items:center;gap:14px;width:100%;background:#fff;border:1.5px solid var(--border);border-radius:16px;padding:16px 18px;cursor:pointer;transition:.16s;text-align:left;position:relative;overflow:hidden}
+.dept-card::before{content:"";position:absolute;left:0;top:0;bottom:0;width:4px;background:var(--dept-c)}
+.dept-card:hover{border-color:var(--dept-c);transform:translateY(-2px);box-shadow:var(--sh-md)}
+.dept-ic{width:48px;height:48px;border-radius:13px;background:color-mix(in srgb,var(--dept-c) 12%,#fff);display:flex;align-items:center;justify-content:center;font-size:24px;flex:0 0 auto}
+.dept-info{flex:1;display:flex;flex-direction:column;line-height:1.35}
+.dept-info b{font-size:16px;color:var(--mmh-navy)}
+.dept-info small{font-size:12px;color:var(--sub);margin-top:2px}
+.dept-count{font-size:11.5px;font-weight:700;color:var(--dept-c);background:color-mix(in srgb,var(--dept-c) 10%,#fff);border-radius:20px;padding:5px 12px;white-space:nowrap;flex:0 0 auto}
+
+/* Bước 2: chọn người */
+.picker-back{background:none;border:none;color:var(--mmh-blue);font-size:13px;font-weight:700;cursor:pointer;padding:6px 0;margin-top:4px;display:inline-flex;align-items:center;gap:4px}
+.picker-back:hover{text-decoration:underline}
+.pic-picker-list{display:flex;flex-direction:column;gap:8px;text-align:left;max-height:52vh;overflow-y:auto;padding-right:2px}
+.pic-choice{display:flex;align-items:center;gap:12px;width:100%;background:#f7f9fc;border:1px solid #e2e8f5;border-radius:12px;padding:11px 13px;cursor:pointer;transition:.15s;text-align:left}
+.pic-choice:hover{background:#eef3fb;border-color:var(--mmh-blue);transform:translateY(-1px)}
+.pic-choice-av{width:40px;height:40px;border-radius:10px;color:#fff;font-weight:800;font-size:15px;display:flex;align-items:center;justify-content:center;flex:0 0 auto}
+.pic-choice-info{display:flex;flex-direction:column;line-height:1.35}
+.pic-choice-info b{font-size:14.5px;color:var(--mmh-navy)}
+.pic-choice-info small{font-size:11.5px;color:var(--sub)}
 </style>
 </head>
 <body>
@@ -1024,7 +1072,14 @@ function timeFilterBar(){
   +'</div>';
 }
 function isManager(){ return S.user && S.user.role==="manager"; }
-function canEditPic(pic){ if(isManager())return true; return String(pic||"").toLowerCase()===String(S.user.pic||"").toLowerCase(); }
+/* ⭐ Ai được giao việc (assign) cho PIC khác: người có canAssign (Director/HOD/Team Leader).
+   Gồm Nguyen Ha, Tuyen, Thuong, Giang, Minh Viet, Hoa… theo USER_MAP.canAssign=true. */
+function canAssign(){
+  if(!S.user) return false;
+  var me=(S.picList||[]).filter(function(u){return u.pic===S.user.pic;})[0];
+  return !!(me && me.canAssign);
+}
+function canEditPic(pic){ if(canAssign())return true; return String(pic||"").toLowerCase()===String(S.user.pic||"").toLowerCase(); }
 
 /* ── OVERLAY / TOAST ── */
 var _tt;
@@ -1033,11 +1088,11 @@ function overlay(on,title,msg){ var o=$("overlay"); if(title)$("ov-title").textC
 
 /* ══════════════ API ══════════════ */
 var _jsonpSeq = 0;
-function jsonp(params){
+function jsonp(params, timeoutMs){
   return new Promise(function(resolve,reject){
     var cbName = "__mmh_cb_" + (Date.now()) + "_" + (++_jsonpSeq);
     var s = document.createElement("script");
-    var timer = setTimeout(function(){ cleanup(); reject(new Error("Hết thời gian chờ máy chủ (timeout). Kiểm tra link /exec và quyền Web App (Anyone).")); }, 30000);
+    var timer = setTimeout(function(){ cleanup(); reject(new Error("__TIMEOUT__")); }, timeoutMs||30000);
     function cleanup(){ clearTimeout(timer); delete window[cbName]; if(s.parentNode) s.parentNode.removeChild(s); }
     window[cbName] = function(data){ cleanup(); resolve(data); };
     params.callback = cbName;
@@ -1069,18 +1124,25 @@ function apiPostBody(body){
 function apiGet(action,extra){
   var params={action:action};
   if(extra) Object.keys(extra).forEach(function(k){params[k]=extra[k];});
-  return jsonp(params).then(function(j){ if(j&&j.ok===false)throw new Error(j.error||"Lỗi"); return j; });
+  return jsonp(params).then(function(j){ if(j&&j.ok===false)throw new Error(j.error||"Lỗi"); return j; })
+    .catch(function(e){
+      if(e && e.message==="__TIMEOUT__") throw new Error("Máy chủ phản hồi chậm. Kiểm tra link /exec và quyền Web App (Anyone).");
+      throw e;
+    });
 }
-/* apiPost: thử JSONP GET trước; nếu payload quá dài (__TOO_LONG__) → fallback POST body. */
+/* apiPost: thao tác GHI. Dùng timeout dài (60s) vì insert/ghi sheet có thể chậm.
+   Nếu JSONP timeout (script tag) → KHÔNG coi là lỗi cứng: rất có thể sheet đã ghi xong,
+   trả về cờ soft-timeout để caller refetch xác nhận (hết tình trạng "timeout ảo"). */
 function apiPost(body){
   if(!body.action) throw new Error("thiếu action");
   var params={}; Object.keys(body).forEach(function(k){
     var v=body[k];
     params[k]=(v!==null && typeof v==="object") ? JSON.stringify(v) : v;
   });
-  return jsonp(params).then(function(j){ if(j&&j.ok===false)throw new Error(j.error||"Lỗi"); return j; })
+  return jsonp(params, 60000).then(function(j){ if(j&&j.ok===false)throw new Error(j.error||"Lỗi"); return j; })
     .catch(function(e){
-      if(e && e.message==="__TOO_LONG__"){ return apiPostBody(body); }
+      if(e && e.message==="__TOO_LONG__"){ return apiPostBody(body).then(function(){ return { ok:true, softTimeout:true }; }); }
+      if(e && e.message==="__TIMEOUT__"){ return { ok:true, softTimeout:true }; }  // có thể đã ghi xong → refetch
       throw e;
     });
 }
@@ -1122,19 +1184,79 @@ function setUser(u){
   S.user={ email:"", pic:u.pic, role:u.role, title:u.title, level:u.level, known:true };
   try{ localStorage.setItem("mmh_pic", u.pic); }catch(_){}
 }
+/* ⭐ Nhóm PIC theo Department cho màn hình đăng nhập.
+   3 nhóm: Management / Sales & Marketing / Back Office.
+   Quyền vào (view/edit) khớp ma trận:
+     - Management: Nguyen Ha, Tuyen, Hoa
+     - Sales & Marketing: Nguyen Ha, Tuyen + member phòng
+     - Back Office: Nguyen Ha, Tuyen, Hoa + member phòng  */
+var DEPT_DEFS=[
+  {id:"mgmt", label:"Management", icon:"🏢", desc:"Ban giám đốc & Trưởng phòng",
+   color:"#003047"},
+  {id:"sm",   label:"Sales & Marketing", icon:"📈", desc:"Product · Marketing · Dental Sales",
+   color:"#3A5CAA"},
+  {id:"bo",   label:"Back Office", icon:"🗂️", desc:"Kho · Kế toán · Mua hàng",
+   color:"#0E8A6E"}
+];
+function picDeptId(u){
+  var lead=["nguyen ha","tuyen","hoa"];
+  // Management chỉ gồm director + 2 HOD
+  if(u.level==="director" || u.level==="hod") {
+    // Tuyen thuộc S&M nhưng cũng là management; Hoa back-office cũng management
+  }
+  var d=String(u.dept||"").toLowerCase();
+  if(/back.?office/.test(d)) return "bo";
+  return "sm";
+}
+function picsInDept(deptId){
+  // Ai hiện trong nhóm nào để CHỌN đăng nhập
+  if(deptId==="mgmt"){
+    return S.picList.filter(function(u){ return ["nguyen ha","tuyen","hoa"].indexOf(u.pic.toLowerCase())>=0; });
+  }
+  if(deptId==="sm"){
+    return S.picList.filter(function(u){
+      return picDeptId(u)==="sm" || ["nguyen ha","tuyen"].indexOf(u.pic.toLowerCase())>=0;
+    });
+  }
+  if(deptId==="bo"){
+    return S.picList.filter(function(u){
+      return picDeptId(u)==="bo" || ["nguyen ha","tuyen","hoa"].indexOf(u.pic.toLowerCase())>=0;
+    });
+  }
+  return S.picList;
+}
 function showPicPicker(){
   $("gate-spin").style.display="none";
   $("gate-status").style.display="none";
   $("gate-err").classList.remove("show");
-  var opts=S.picList.map(function(u){
-    var badge = u.role==="manager" ? "⭐ Quản lý" : "PIC";
-    return '<button class="pic-choice" onclick="pickPic(\''+esc(u.pic).replace(/'/g,"\\'")+'\')">'+
+  // Bước 1: chọn Department (card lớn, đẹp)
+  var cards=DEPT_DEFS.map(function(d){
+    var n=picsInDept(d.id).length;
+    return '<button class="dept-card" onclick="pickDept(\''+d.id+'\')" style="--dept-c:'+d.color+'">'
+      +'<span class="dept-ic">'+d.icon+'</span>'
+      +'<span class="dept-info"><b>'+esc(d.label)+'</b><small>'+esc(d.desc)+'</small></span>'
+      +'<span class="dept-count">'+n+' người</span>'
+      +'</button>';
+  }).join("");
+  $("gate-mail").innerHTML=
+    '<div class="pic-picker-title">Chọn phòng ban của bạn</div>'+
+    '<div class="dept-list">'+cards+'</div>';
+}
+function pickDept(deptId){
+  var dept=DEPT_DEFS.filter(function(d){return d.id===deptId;})[0];
+  var people=picsInDept(deptId);
+  var opts=people.map(function(u){
+    var badge = (u.level==="director") ? "⭐ Director"
+              : (u.level==="hod") ? "⭐ HOD"
+              : (u.level==="lead") ? "👤 Team Leader" : "PIC";
+    return '<button class="pic-choice" onclick="pickPic(\''+esc(u.pic).replace(/\x27/g,"\\x27")+'\')">'+
              '<span class="pic-choice-av" style="background:'+avColor(u.pic)+'">'+esc(initials(u.pic))+'</span>'+
              '<span class="pic-choice-info"><b>'+esc(u.pic)+'</b><small>'+esc(u.title||"")+' · '+badge+'</small></span>'+
            '</button>';
   }).join("");
   $("gate-mail").innerHTML=
-    '<div class="pic-picker-title">Chọn bạn là ai để tiếp tục</div>'+
+    '<button class="picker-back" onclick="showPicPicker()">← Chọn phòng khác</button>'+
+    '<div class="pic-picker-title" style="--dept-c:'+dept.color+'">'+dept.icon+' '+esc(dept.label)+'</div>'+
     '<div class="pic-picker-list">'+opts+'</div>';
 }
 function pickPic(name){
@@ -1168,12 +1290,11 @@ function startApp(){
   buildSourceTabs();
   buildTabs();
   var me=(S.picList||[]).filter(function(u){return u.pic===S.user.pic;})[0]||{};
-  var seesAll = !!me.canAssign || String(S.user.pic||"").toLowerCase()==="ha";
+  var seesAll = !!me.canAssign || ["nguyen ha","tuyen"].indexOf(String(S.user.pic||"").toLowerCase())>=0;
   if(S.user.pic && !seesAll){ S.detailPics=[S.user.pic]; S.monthPics=[S.user.pic]; }
   else { S.detailPics=[]; S.monthPics=[]; }
   switchTab("overview");
   $("fab-wrap").style.display="flex";
-  if(!isManager()){ var fk=$("fab-key"); if(fk) fk.style.display="none"; }
   var rail=document.getElementById("activity-rail"); if(rail) rail.style.display="flex";
   renderActivity();
 }
@@ -1184,7 +1305,7 @@ var SOURCE_META={
   management: {label:"Management",            icon:'<path d="M20 7h-9M14 17H5M17 3v4M17 17v4M7 7v4M7 13v4"/><circle cx="17" cy="7" r="2"/><circle cx="7" cy="13" r="2"/>'}
 };
 /* Ai được phép xem Management: Ha / Tuyen / Hoa */
-var MGMT_ALLOWED=["ha","tuyen","hoa"];
+var MGMT_ALLOWED=["nguyen ha","tuyen","hoa","mani hq"];
 function canSeeManagement(){
   var p=String(S.user&&S.user.pic||"").trim().toLowerCase();
   return MGMT_ALLOWED.indexOf(p)>=0;
@@ -1226,7 +1347,7 @@ function switchSource(src){
     buildSourceTabs();
     $("denied-page").style.display="none";
     var me=(S.picList||[]).filter(function(u){return u.pic===S.user.pic;})[0]||{};
-    var seesAll=!!me.canAssign || String(S.user.pic||"").toLowerCase()==="ha";
+    var seesAll=!!me.canAssign || ["nguyen ha","tuyen"].indexOf(String(S.user.pic||"").toLowerCase())>=0;
     S.detailPics = (S.user.pic && !seesAll) ? [S.user.pic] : [];
     switchTab("overview");
     renderActivity();
@@ -1245,7 +1366,7 @@ function showDeniedPage(){
   dp.innerHTML='<div class="denied-box"><div class="di">🔒</div>'
     +'<h2>Không có quyền truy cập Management</h2>'
     +'<p>Dữ liệu <b>Management (Task Tracker)</b> chỉ dành cho Director và Head of Department.</p>'
-    +'<p class="who">Người được phép: <b>Ha (Director)</b> · <b>Tuyen (HOD S&amp;M)</b> · <b>Hoa (HOD Back-office)</b></p>'
+    +'<p class="who">Người được phép: <b>Nguyen Ha (Director)</b> · <b>Tuyen (HOD S&amp;M)</b> · <b>Hoa (HOD Back-office)</b></p>'
     +'<div style="margin-top:20px"><button class="btn-secondary" onclick="switchSource(\'marketing\')">← Quay lại Marketing Department</button></div>'
     +'</div>';
   $("tabnav").style.display="none";
@@ -1260,7 +1381,6 @@ function toggleFab(){
 function closeFab(){ $("fab-menu").classList.remove("show"); $("fab-btn").classList.remove("open"); }
 function fabAddKey(){
   closeFab();
-  if(!isManager()){ toast("Chỉ quản lý được thêm Key Task"); return; }
   switchTab("detail"); setTimeout(openAddKey,60);
 }
 function fabAddSub(){
@@ -1697,6 +1817,17 @@ function resultCell(s){
   var txtHtml = textOnly ? esc(textOnly.slice(0,140))+(textOnly.length>140?'…':'') : '';
   return '<div class="sr-result" title="'+esc(raw.slice(0,300))+'">'+chips+moreLink+(txtHtml?' '+txtHtml:'')+'</div>';
 }
+/* ⭐ #3: kết quả của Key Task hiển thị inline (dưới header key) */
+function keyResultInline(k){
+  var raw=String(k.result||"").trim();
+  if(!raw) return '';
+  var links=extractLinks(raw);
+  var textOnly=raw.replace(/https?:\/\/[^\s)]+/g,"").replace(/\s+/g," ").trim();
+  var chips=links.slice(0,4).map(function(u,i){
+    return '<a class="rlink" href="'+esc(u)+'" target="_blank" rel="noopener" onclick="event.stopPropagation()">🔗 Link'+(links.length>1?(i+1):"")+'</a>';
+  }).join("");
+  return '<span class="kt-result-lbl">📄 Kết quả:</span> '+chips+(textOnly?' '+esc(textOnly.slice(0,220))+(textOnly.length>220?'…':''):'');
+}
 function showReferral(sno,name){
   var sub=null;
   allKeyTasks().forEach(function(k){ (k.subs||[]).forEach(function(s){ if(s.no===sno) sub=s; }); });
@@ -1809,13 +1940,18 @@ function detailKeyPanels(keys, from, to, picFilter){
         +'<span class="khm khm-pct" style="color:'+km.dot+'">'+kpct+'%</span>'
         +'<span class="khm khm-status"><span class="tc-status '+km.cls+'">'+esc(kst)+'</span></span>'
       +'</div>';
-    if(isManager()){
+    if(canEditPic(k.pic) || canAssign()){
       h+='<div class="kt-actions" onclick="event.stopPropagation()">'
-        +'<button class="icon-btn" title="Sửa Key Task" onclick="openEditKey(\''+jsq(k.no)+'\')">✏️</button>'
-        +'<button class="icon-btn" title="Xóa Key Task" onclick="delKey(\''+jsq(k.no)+'\')">🗑️</button>'
-        +'</div>';
+        +'<button class="icon-btn" title="Sửa Key Task" onclick="openEditKey(\''+jsq(k.no)+'\')">✏️</button>';
+      if(canAssign()) h+='<button class="icon-btn" title="Xóa Key Task" onclick="delKey(\''+jsq(k.no)+'\')">🗑️</button>';
+      h+='</div>';
     }
     h+='</div>';
+    // ⭐ #3: Kết quả của Key Task hiển thị NGAY (nếu có), không cần mở
+    var kres=String(k.result||"").trim();
+    if(kres){
+      h+='<div class="kt-result">'+keyResultInline(k)+'</div>';
+    }
     h+='<div class="kt-body'+(open?' open':'')+'">';
     if(hiddenCount>0){
       h+='<div class="sub-toggle-all" onclick="toggleShowAllSubs(\''+jsq(k.no)+'\')">▾ Hiện thêm '+hiddenCount+' sub-task ngoài khoảng thời gian</div>';
@@ -2180,16 +2316,21 @@ function saveEdit(){
 
 /* ── THÊM KEY TASK ── */
 function openAddKey(){
-  if(!isManager()){ toast("Chỉ quản lý được thêm Key Task"); return; }
   var picOpts=picListAll();
   var typeOpts=S.typeOptions.length?S.typeOptions:[...new Set(S.keyTasks.map(function(k){return k.type;}).filter(Boolean))];
+  var canAsg=canAssign();
+  var myPic=S.user.pic;
+  // ⭐ PIC mặc định = chính mình; chỉ người được assign mới đổi được sang PIC khác
+  var picField = canAsg
+    ? '<select id="ak-pic">'+picOpts.map(function(p){return '<option'+(p===myPic?' selected':'')+'>'+esc(p)+'</option>';}).join("")+'</select>'
+    : '<select id="ak-pic" disabled><option selected>'+esc(myPic)+'</option></select>';
   var html='<div class="modal-box"><div class="modal-head"><h3>🗂️ Thêm Key Task</h3><button class="modal-close" onclick="closeModal()">✕</button></div>'
     +'<div class="modal-body">'
     +'<div class="field"><label>Tên Key Task</label><input id="ak-name" placeholder="Nhập tên key task…"/></div>'
     +'<div class="field-row">'
       +'<div class="field"><label>Loại</label><input id="ak-type" class="combo-input" list="ak-typelist" placeholder="Chọn/nhập loại"/>'
         +'<datalist id="ak-typelist">'+typeOpts.map(function(t){return '<option value="'+esc(t)+'">';}).join("")+'</datalist></div>'
-      +'<div class="field"><label>PIC phụ trách</label><select id="ak-pic">'+picOpts.map(function(p){return '<option>'+esc(p)+'</option>';}).join("")+'</select></div>'
+      +'<div class="field"><label>PIC phụ trách'+(canAsg?'':' <span style="color:var(--faint);font-weight:600;text-transform:none">(mặc định là bạn)</span>')+'</label>'+picField+'</div>'
     +'</div>'
     +'<div class="field-row">'
       +'<div class="field"><label>Bắt đầu</label><input type="date" id="ak-start"/></div>'
@@ -2203,10 +2344,11 @@ function openAddKey(){
 function saveAddKey(){
   var name=$("ak-name").value.trim();
   if(!name){ toast("Nhập tên key task"); return; }
+  var pic=$("ak-pic").value || S.user.pic;   // select disabled vẫn có value
   $("ak-save").disabled=true;
   overlay(true,"Đang thêm","Tạo key task…");
-  apiPost({action:"addKey",keyTask:name,type:$("ak-type").value,pic:$("ak-pic").value,start:$("ak-start").value,planned:$("ak-planned").value})
-    .then(function(){ overlay(false); closeModal(); toast("✓ Đã thêm key task"); reload(); })
+  apiPost({action:"addKey",keyTask:name,type:$("ak-type").value,pic:pic,start:$("ak-start").value,planned:$("ak-planned").value})
+    .then(function(r){ overlay(false); closeModal(); toast(r&&r.softTimeout?"✓ Đã thêm (đang đồng bộ…)":"✓ Đã thêm key task"); reload(); })
     .catch(function(e){ overlay(false); $("ak-save").disabled=false; toast("⚠️ "+e.message); });
 }
 
@@ -2214,13 +2356,18 @@ function saveAddKey(){
 function openAddSub(kno){
   var keys=S.keyTasks;
   var picOpts=picListAll();
+  var canAsg=canAssign();
+  var myPic=S.user.pic;
+  var picField = canAsg
+    ? '<select id="as-pic">'+picOpts.map(function(p){return '<option'+(p===myPic?' selected':'')+'>'+esc(p)+'</option>';}).join("")+'</select>'
+    : '<select id="as-pic" disabled><option selected>'+esc(myPic)+'</option></select>';
   var html='<div class="modal-box"><div class="modal-head"><h3>➕ Thêm Sub-task</h3><button class="modal-close" onclick="closeModal()">✕</button></div>'
     +'<div class="modal-body">'
     +'<div class="field"><label>Thuộc Key Task</label><select id="as-key">'
       +keys.map(function(k){return '<option value="'+esc(k.no)+'"'+(k.no===kno?' selected':'')+'>'+esc(k.keyTask)+'</option>';}).join("")+'</select></div>'
     +'<div class="field"><label>Tên sub-task</label><input id="as-name" placeholder="Nhập tên sub-task…"/></div>'
     +'<div class="field-row">'
-      +'<div class="field"><label>PIC</label><select id="as-pic">'+picOpts.map(function(p){return '<option'+(p===S.user.pic?' selected':'')+'>'+esc(p)+'</option>';}).join("")+'</select></div>'
+      +'<div class="field"><label>PIC'+(canAsg?'':' <span style="color:var(--faint);font-weight:600;text-transform:none">(mặc định là bạn)</span>')+'</label>'+picField+'</div>'
       +'<div class="field"><label>Trạng thái</label><select id="as-status">'+S.statusOptions.map(function(o){return '<option>'+esc(o)+'</option>';}).join("")+'</select></div>'
     +'</div>'
     +'<div class="field-row">'
@@ -2236,10 +2383,11 @@ function saveAddSub(){
   var kno=$("as-key").value;
   var name=$("as-name").value.trim();
   if(!name){ toast("Nhập tên sub-task"); return; }
+  var pic=$("as-pic").value || S.user.pic;
   $("as-save").disabled=true;
   overlay(true,"Đang thêm","Tạo sub-task…");
-  apiPost({action:"addSub",keyNo:kno,name:name,pic:$("as-pic").value,status:$("as-status").value,start:$("as-start").value,planned:$("as-planned").value})
-    .then(function(){ overlay(false); closeModal(); toast("✓ Đã thêm sub-task"); reload(); })
+  apiPost({action:"addSub",keyNo:kno,parentNo:kno,name:name,pic:pic,status:$("as-status").value,start:$("as-start").value,planned:$("as-planned").value})
+    .then(function(r){ overlay(false); closeModal(); toast(r&&r.softTimeout?"✓ Đã thêm (đang đồng bộ…)":"✓ Đã thêm sub-task"); reload(); })
     .catch(function(e){ overlay(false); $("as-save").disabled=false; toast("⚠️ "+e.message); });
 }
 
