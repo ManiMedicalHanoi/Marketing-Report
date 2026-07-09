@@ -738,6 +738,12 @@ button{cursor:pointer}
 
 /* ══ ⭐ MỚI: BỘ LỌC BẢNG TIN HOẠT ĐỘNG (PIC + Loại hành động) ══ */
 .act-filters{display:flex;gap:7px;margin-top:9px}
+.act-clear-btn{font-size:11px;font-weight:700;color:var(--danger-fg);background:#fff;border:1.5px solid #f0c8c8;border-radius:8px;padding:4px 9px;cursor:pointer;white-space:nowrap}
+.act-clear-btn:hover{background:var(--danger-bg)}
+.act-navrow{display:flex;align-items:center;gap:6px;margin-top:8px}
+.act-nav-btn{width:28px;height:28px;border-radius:7px;border:1.5px solid var(--border);background:#fff;color:var(--mmh-blue);font-size:16px;font-weight:800;line-height:1;cursor:pointer;flex:0 0 auto}
+.act-nav-btn:hover{background:var(--lb3);border-color:var(--mmh-blue)}
+.act-nav-label{flex:1;text-align:center;font-size:12px;font-weight:700;color:var(--mmh-navy)}
 .act-fsel{flex:1;position:relative}
 .act-fsel select{width:100%;appearance:none;-webkit-appearance:none;padding:7px 26px 7px 10px;border:1.5px solid var(--border);border-radius:8px;font-size:11.5px;font-weight:600;background:#fff;color:var(--text);outline:none;font-family:inherit;cursor:pointer}
 .act-fsel select:focus{border-color:var(--mmh-blue)}
@@ -879,12 +885,21 @@ button{cursor:pointer}
     </button>
     <div class="act-panel">
       <div class="act-head">
-        <b>📢 Bảng tin hoạt động</b>
-        <div class="act-scope">
-          <button id="act-scope-week" class="act-scope-btn active" onclick="setActivityScope('week')">Tuần này</button>
-          <button id="act-scope-month" class="act-scope-btn" onclick="setActivityScope('month')">Tháng này</button>
+        <div style="display:flex;align-items:center;gap:8px;margin-bottom:9px">
+          <b style="margin:0;flex:1">📢 Bảng tin hoạt động</b>
+          <button class="act-clear-btn" onclick="clearActivityLog()" title="Xóa sạch lịch sử (cần mật khẩu)">🗑 Xóa log</button>
         </div>
-        <!-- ⭐ MỚI: 2 bộ lọc PIC + Loại hành động -->
+        <div class="act-scope">
+          <button id="act-scope-week" class="act-scope-btn active" onclick="setActivityScope('week')">Tuần</button>
+          <button id="act-scope-month" class="act-scope-btn" onclick="setActivityScope('month')">Tháng</button>
+        </div>
+        <!-- ⭐ #4: điều hướng tuần/tháng khác -->
+        <div class="act-navrow">
+          <button class="act-nav-btn" onclick="shiftActivity(-1)" title="Trước">‹</button>
+          <span class="act-nav-label" id="act-nav-label">Tuần này</span>
+          <button class="act-nav-btn" onclick="shiftActivity(1)" title="Sau">›</button>
+        </div>
+        <!-- 2 bộ lọc PIC + Loại hành động -->
         <div class="act-filters">
           <div class="act-fsel"><select id="act-filter-pic" onchange="setActivityPic(this.value)"><option value="">👥 All PIC</option></select></div>
           <div class="act-fsel"><select id="act-filter-type" onchange="setActivityType(this.value)">
@@ -995,7 +1010,7 @@ var S={
   detailShowAllSubs:{},
   priorityMode:false, priorityMarks:{},
   activityLog:[], activityScope:"week", activityOpen:false,
-  activityPic:"", activityType:"",   /* ⭐ MỚI: bộ lọc bảng tin */
+  activityPic:"", activityType:"", activityOffset:0,   /* ⭐ bộ lọc + điều hướng tuần/tháng */
   monthSel:"", monthType:"", monthTypes:[], monthPics:[],
   reportFrom:"", reportTo:"", reportPics:[], reportTypes:[], reportFilterOpen:"",
   editCtx:null,
@@ -1289,10 +1304,8 @@ function startApp(){
   else { rp.className="tb-role pic"; rp.textContent=S.user.title||"PIC"; }
   buildSourceTabs();
   buildTabs();
-  var me=(S.picList||[]).filter(function(u){return u.pic===S.user.pic;})[0]||{};
-  var seesAll = !!me.canAssign || ["nguyen ha","tuyen"].indexOf(String(S.user.pic||"").toLowerCase())>=0;
-  if(S.user.pic && !seesAll){ S.detailPics=[S.user.pic]; S.monthPics=[S.user.pic]; }
-  else { S.detailPics=[]; S.monthPics=[]; }
+  // ⭐ #5: mặc định KHÔNG lọc riêng theo PIC — mọi người thấy tất cả task khi vào
+  S.detailPics=[]; S.monthPics=[];
   switchTab("overview");
   $("fab-wrap").style.display="flex";
   var rail=document.getElementById("activity-rail"); if(rail) rail.style.display="flex";
@@ -1345,10 +1358,10 @@ function switchSource(src){
     applyBootData(res);
     overlay(false);
     buildSourceTabs();
+    buildTabs();   // ⭐ #3: ẩn tab Monthly khi ở Management
     $("denied-page").style.display="none";
-    var me=(S.picList||[]).filter(function(u){return u.pic===S.user.pic;})[0]||{};
-    var seesAll=!!me.canAssign || ["nguyen ha","tuyen"].indexOf(String(S.user.pic||"").toLowerCase())>=0;
-    S.detailPics = (S.user.pic && !seesAll) ? [S.user.pic] : [];
+    // ⭐ #5: mặc định KHÔNG lọc riêng theo PIC — mọi người thấy tất cả task
+    S.detailPics = [];
     switchTab("overview");
     renderActivity();
     toast("✓ Đã chuyển sang "+SOURCE_META[src].label);
@@ -1880,16 +1893,37 @@ function renderDetail(){
     return true;
   });
   var h="";
+  // ⭐ #5: tab phụ lọc thời gian (Tất cả / Tuần này / Tháng này) như tab Tiến độ
+  var tm=S.detailTimeMode||"all";
+  h+='<div class="detail-timerow">'
+    +'<div class="tf-seg tf-seg-sm">'
+      +'<button class="'+(tm==="all"?"active":"")+'" onclick="setDetailTime(\'all\')">Tất cả</button>'
+      +'<button class="'+(tm==="week"?"active":"")+'" onclick="setDetailTime(\'week\')">Công việc trong tuần</button>'
+      +'<button class="'+(tm==="month"?"active":"")+'" onclick="setDetailTime(\'month\')">CV trong tháng</button>'
+    +'</div>'
+    +(tm!=="all"?'<div class="dt-timebar"><button class="tf-arrow" onclick="shiftDate(-1)"><svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg></button>'
+      +'<span class="tf-label" style="min-width:auto">'+dateRangeLabel()+'</span>'
+      +'<button class="tf-arrow" onclick="shiftDate(1)"><svg viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg></button></div>':'<span class="dt-hint">Đang hiển thị <b>toàn bộ</b> công việc</span>')
+  +'</div>';
   h+='<div class="detail-toolbar">';
   h+='<div class="search"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>'
     +'<input type="text" placeholder="Tìm key task, sub-task, PIC…" value="'+esc(S.detailQ||"")+'" oninput="S.detailQ=this.value;clearTimeout(window._dq);window._dq=setTimeout(renderDetail,220)"/></div>';
   h+=multiFilterDropdown("type","Loại việc",types.map(function(t){return {val:t,label:t,color:typeColor(t)};}),selTypes);
   h+=multiFilterDropdown("pic","Nhân sự",pics.map(function(p){return {val:p,label:p,av:true};}),selPics);
-  if(isManager()) h+='<button class="btn-primary" onclick="openAddKey()"><svg viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>Key Task</button>';
+  if(canAssign()||isManager()) h+='<button class="btn-primary" onclick="openAddKey()"><svg viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>Key Task</button>';
   h+='</div>';
+  // truyền from/to khi lọc theo thời gian
+  var fFrom = tm!=="all" ? S.dateFrom : null;
+  var fTo   = tm!=="all" ? S.dateTo   : null;
   if(!filtered.length){ h+='<div class="empty"><div class="ic">📋</div><p>Không có công việc khớp bộ lọc.</p></div>'; }
-  else h+=detailKeyPanels(filtered, null, null, null);
+  else h+=detailKeyPanels(filtered, fFrom, fTo, null);
   $("tab-detail").innerHTML=h;
+}
+function setDetailTime(mode){
+  S.detailTimeMode=mode;
+  if(mode==="week") setDateMode("week");
+  else if(mode==="month") setDateMode("month");
+  else renderDetail();
 }
 function multiFilterDropdown(kind,label,items,sel){
   var open=(S.detailFilterOpen===kind);
@@ -2093,7 +2127,11 @@ function quickStatus(sno,val){
   var sub=findSub(sno); if(!sub)return;
   if(!canEditPic(sub.pic)){ toast("🔒 Chỉ "+(sub.pic||"PIC")+" sửa được"); reloadSoft(); return; }
   var prog=subPct(sub);
-  if(isDone(val))prog=100; else if(isCancelled(val))prog=0; else if(prog>=100)prog=90;
+  // ⭐ #2: Completed→100; Cancelled/To Do→0; In Progress mà đang 0 → 25%
+  if(isDone(val)) prog=100;
+  else if(isCancelled(val)) prog=0;
+  else if(/to\s*do/i.test(val)) prog=0;
+  else if(isInProgress(val) && prog<=0) prog=25;
   sub.status=val; sub.progress=prog/100;
   overlay(true,"Đang lưu","Cập nhật trạng thái…");
   apiPost({action:"updateProgress",no:sno,progress:prog,status:val}).then(function(){
@@ -2236,7 +2274,7 @@ function renderMonth(){
     +months.map(function(m){return '<option value="'+esc(m)+'"'+(m===S.monthSel?' selected':'')+'>'+esc(fmtMonth(m))+'</option>';}).join("")+'</select></div>';
   h+='<span class="mro-mini">'+rows.length+' mục</span>';
   h+='<div class="sp" style="flex:1"></div>';
-  if(canAssign()) h+='<button class="btn-secondary" onclick="openSendMonth()"><svg viewBox="0 0 24 24" style="width:16px;height:16px;stroke:currentColor;fill:none;stroke-width:2"><path d="M22 2 11 13M22 2 15 22l-4-9-9-4 20-7z"/></svg> Gửi báo cáo tháng</button>';
+  if(canAssign()) h+='<button class="btn-secondary" onclick="openSendMonth()"><svg viewBox="0 0 24 24" style="width:16px;height:16px;stroke:currentColor;fill:none;stroke-width:2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg> Xuất PDF báo cáo tháng</button>';
   if(canAssign()||isManager()) h+='<button class="btn-primary" onclick="openAddMonth()"><svg viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>Thêm mục</button>';
   h+='</div>';
   if(!rows.length){ h+='<div class="empty"><div class="ic">📅</div><p>Chưa có báo cáo tháng cho '+esc(fmtMonth(S.monthSel)||'kỳ này')+'.</p></div>'; }
@@ -2291,7 +2329,7 @@ function openEdit(sno){
     +'</div>'
     +'<div class="prog-field'+((!isDone(s.status)&&!isCancelled(s.status))?' show':'')+'" id="ed-prog-wrap">'
       +'<div class="prog-field-top"><label>Tiến độ</label><span class="prog-field-val" id="ed-prog-val">'+pct+'%</span></div>'
-      +'<input type="range" class="prog-slider" id="ed-prog" min="0" max="100" step="5" value="'+pct+'" oninput="$(\'ed-prog-val\').textContent=this.value+\'%\'"/>'
+      +'<input type="range" class="prog-slider" id="ed-prog" min="0" max="100" step="5" value="'+pct+'" oninput="edProgChange(this.value)"/>'
     +'</div>'
     +'<div class="field-row">'
       +'<div class="field"><label>Bắt đầu</label><input type="date" id="ed-start" value="'+esc(toISO(s.start))+'"/></div>'
@@ -2311,7 +2349,26 @@ function edStatusChange(){
   var wrap=$("ed-prog-wrap");
   if(isDone(st)){ $("ed-prog").value=100; $("ed-prog-val").textContent="100%"; wrap.classList.remove("show"); }
   else if(isCancelled(st)){ wrap.classList.remove("show"); }
-  else { wrap.classList.add("show"); }
+  else {
+    wrap.classList.add("show");
+    // ⭐ #2: To Do → In Progress: nếu đang 0% thì set 25%
+    if(isInProgress(st)){
+      var cur=parseInt($("ed-prog").value,10)||0;
+      if(cur<=0){ $("ed-prog").value=25; $("ed-prog-val").textContent="25%"; }
+    }
+  }
+}
+/* ⭐ #2: kéo slider trong modal → tự đổi status. 0→>0: In Progress; =100: Completed */
+function edProgChange(v){
+  var val=parseInt(v,10)||0;
+  $("ed-prog-val").textContent=val+"%";
+  var sel=$("ed-status");
+  var cur=sel.value;
+  if(val>=100){ if(!isDone(cur)) setSelectVal(sel,"Completed"); }
+  else if(val>0){ if(/to\s*do/i.test(cur)||!cur) setSelectVal(sel,"In Progress"); }
+}
+function setSelectVal(sel,val){
+  for(var i=0;i<sel.options.length;i++){ if(sel.options[i].value===val){ sel.selectedIndex=i; return; } }
 }
 function saveEdit(){
   var sno=S.editCtx.no;
@@ -2527,72 +2584,65 @@ function saveEditMonth(mno){
 
 /* ── GỬI BÁO CÁO ── */
 function openSendReport(){
-  var pics=picListAll();
-  var canAll=canAssign();
   var html='<div class="modal-box"><div class="modal-head"><h3>📤 Gửi báo cáo tuần</h3><button class="modal-close" onclick="closeModal()">✕</button></div>'
     +'<div class="modal-body">'
-    +'<p style="font-size:14px;color:var(--sub);line-height:1.6;margin-bottom:14px">Gửi email báo cáo tuần <b>'+fmtVNFull(S.reportFrom)+' – '+fmtVNFull(S.reportTo)+'</b> (kèm plan tuần sau) theo cấu hình người nhận trong backend.</p>'
-    +'<div class="field"><label>Gửi cho ai</label>'
-      +'<div class="radio-cards">'
-        +'<label class="radio-card sel" onclick="pickSendOpt(this,\'self\')"><span class="rc-ic">🧪</span><span style="flex:1"><span class="rc-t">Gửi thử cho tôi</span><span class="rc-s">Chỉ gửi tới email của bạn để xem trước</span></span><input type="radio" name="sendopt" value="self" checked/></label>'
-        +(canAll?'<label class="radio-card" onclick="pickSendOpt(this,\'pic\')"><span class="rc-ic">👤</span><span style="flex:1"><span class="rc-t">Gửi báo cáo của 1 PIC</span><span class="rc-s">Chọn 1 nhân sự để gửi báo cáo của họ</span></span><input type="radio" name="sendopt" value="pic"/></label>':'')
-        +(canAll?'<label class="radio-card" onclick="pickSendOpt(this,\'all\')"><span class="rc-ic">📢</span><span style="flex:1"><span class="rc-t">Gửi cho tất cả PIC</span><span class="rc-s">Mỗi PIC nhận báo cáo riêng của mình</span></span><input type="radio" name="sendopt" value="all"/></label>':'')
-      +'</div></div>'
-    +'<div class="field" id="sr-pic-wrap" style="display:none"><label>Chọn PIC</label>'
-      +'<select id="sr-pic">'+pics.map(function(p){return '<option>'+esc(p)+'</option>';}).join("")+'</select></div>'
-    +'<div class="modal-footer"><button class="btn-secondary" onclick="closeModal()">Hủy</button>'
-    +'<button class="btn-primary" id="sr-btn" onclick="doSendReport()">📤 Gửi</button></div>'
+    +'<p style="font-size:14px;color:var(--sub);line-height:1.6;margin-bottom:6px">Báo cáo tuần <b>'+fmtVNFull(S.reportFrom)+' – '+fmtVNFull(S.reportTo)+'</b> (kèm plan tuần sau).</p>'
+    +'<p style="font-size:12.5px;color:var(--faint);line-height:1.55;margin-bottom:16px">Mỗi PIC gửi phần việc của mình; người nhận là <b>toàn bộ PIC cùng phòng ban</b>, CC cho HOD / Team Leader / Director / Hoa.</p>'
+    +'<div class="modal-footer" style="justify-content:space-between">'
+      +'<button class="btn-secondary" onclick="doSendReport(\'self\')">🧪 Gửi thử cho tôi</button>'
+      +'<button class="btn-primary" id="sr-btn" onclick="doSendReport(\'send\')">📤 Gửi báo cáo</button></div>'
     +'</div></div>';
   showModal(html);
-  S._sendOpt='self';
 }
-function pickSendOpt(el,opt){
-  S._sendOpt=opt;
-  document.querySelectorAll('#modals .radio-card').forEach(function(c){c.classList.remove('sel');});
-  el.classList.add('sel');
-  var r=el.querySelector('input'); if(r)r.checked=true;
-  $("sr-pic-wrap").style.display = (opt==='pic') ? 'block' : 'none';
-}
-function doSendReport(){
-  var opt=S._sendOpt||'self';
-  var body={action:"weeklyReport", from:S.reportFrom, to:S.reportTo, option:opt};
-  if(opt==='pic') body.toPic=$("sr-pic").value;
-  $("sr-btn").disabled=true;
-  overlay(true,"Đang gửi","Gửi email báo cáo…");
+function doSendReport(mode){
+  // mode 'self' = gửi thử tới mình; 'send' = gửi thật tới cả phòng ban
+  var body={action:"weeklyReport", from:S.reportFrom, to:S.reportTo, option:(mode==='self'?'self':'dept')};
+  var btn = mode==='self' ? null : $("sr-btn");
+  if(btn) btn.disabled=true;
+  overlay(true,"Đang gửi", mode==='self'?"Gửi thử…":"Gửi email báo cáo…");
   apiPost(body)
-    .then(function(r){ overlay(false); closeModal(); toast(r&&r.message?("✓ "+r.message):"✓ Đã gửi báo cáo"); reloadSoft(); })
-    .catch(function(e){ overlay(false); $("sr-btn").disabled=false; toast("⚠️ "+e.message); });
+    .then(function(r){ overlay(false); closeModal(); toast(r&&r.message?("✓ "+r.message):"✓ Đã gửi"); reloadSoft(); })
+    .catch(function(e){ overlay(false); if(btn)btn.disabled=false; toast("⚠️ "+e.message); });
 }
 /* ── GỬI BÁO CÁO THÁNG (Monthly) ── */
 function openSendMonth(){
-  var pics=picListAll();
-  var canAll=canAssign();
-  var html='<div class="modal-box"><div class="modal-head"><h3>📤 Gửi báo cáo tháng</h3><button class="modal-close" onclick="closeModal()">✕</button></div>'
+  var html='<div class="modal-box"><div class="modal-head"><h3>📄 Xuất báo cáo tháng (PDF)</h3><button class="modal-close" onclick="closeModal()">✕</button></div>'
     +'<div class="modal-body">'
-    +'<p style="font-size:14px;color:var(--sub);line-height:1.6;margin-bottom:14px">Gửi báo cáo tháng <b>'+esc(fmtMonth(S.monthSel)||'')+'</b> (kèm plan tháng sau).</p>'
-    +'<div class="field"><label>Gửi cho ai</label>'
-      +'<div class="radio-cards">'
-        +'<label class="radio-card sel" onclick="pickSendOpt(this,\'self\')"><span class="rc-ic">🧪</span><span style="flex:1"><span class="rc-t">Gửi thử cho tôi</span><span class="rc-s">Chỉ gửi tới email của bạn để xem trước</span></span><input type="radio" name="sendopt" value="self" checked/></label>'
-        +(canAll?'<label class="radio-card" onclick="pickSendOpt(this,\'pic\')"><span class="rc-ic">👤</span><span style="flex:1"><span class="rc-t">Gửi của 1 PIC</span><span class="rc-s">Chọn 1 nhân sự</span></span><input type="radio" name="sendopt" value="pic"/></label>':'')
-        +(canAll?'<label class="radio-card" onclick="pickSendOpt(this,\'all\')"><span class="rc-ic">📢</span><span style="flex:1"><span class="rc-t">Gửi cho tất cả PIC</span><span class="rc-s">Mỗi PIC nhận báo cáo riêng</span></span><input type="radio" name="sendopt" value="all"/></label>':'')
-      +'</div></div>'
-    +'<div class="field" id="sr-pic-wrap" style="display:none"><label>Chọn PIC</label>'
-      +'<select id="sr-pic">'+pics.map(function(p){return '<option>'+esc(p)+'</option>';}).join("")+'</select></div>'
+    +'<p style="font-size:14px;color:var(--sub);line-height:1.7;margin-bottom:8px">Tạo 2 file PDF cho tháng <b>'+esc(fmtMonth(S.monthSel)||'')+'</b>:</p>'
+    +'<ul style="font-size:13.5px;color:var(--text);line-height:1.8;margin:0 0 16px 18px">'
+      +'<li><b>Kết quả tháng này</b> — '+esc(fmtMonth(S.monthSel)||'')+'</li>'
+      +'<li><b>Kế hoạch tháng sau</b></li></ul>'
+    +'<p style="font-size:12.5px;color:var(--faint);line-height:1.55">File tải trực tiếp về máy, không gửi email.</p>'
     +'<div class="modal-footer"><button class="btn-secondary" onclick="closeModal()">Hủy</button>'
-    +'<button class="btn-primary" id="sm-send-btn" onclick="doSendMonth()">📤 Gửi</button></div>'
+    +'<button class="btn-primary" id="sm-send-btn" onclick="downloadMonthReport()">📄 Tạo &amp; tải PDF</button></div>'
     +'</div></div>';
   showModal(html);
-  S._sendOpt='self';
 }
-function doSendMonth(){
-  var opt=S._sendOpt||'self';
-  var body={action:"monthlyReport", month:S.monthSel, option:opt};
-  if(opt==='pic') body.toPic=$("sr-pic").value;
+function downloadMonthReport(){
   $("sm-send-btn").disabled=true;
-  overlay(true,"Đang gửi","Gửi email báo cáo tháng…");
-  apiPost(body)
-    .then(function(r){ overlay(false); closeModal(); toast(r&&r.message?("✓ "+r.message):"✓ Đã gửi báo cáo tháng"); reloadSoft(); })
+  overlay(true,"Đang tạo","Dựng file PDF báo cáo tháng…");
+  apiPost({action:"monthlyReport", month:S.monthSel, option:"download"})
+    .then(function(r){
+      overlay(false); closeModal();
+      var files=(r&&r.files)||[];
+      if(!files.length){ toast("⚠️ Không tạo được PDF"); return; }
+      files.forEach(function(f,i){ setTimeout(function(){ downloadB64Pdf(f.b64, f.name); }, i*400); });
+      toast("✓ "+(r.message||("Đã tạo "+files.length+" file PDF")));
+    })
     .catch(function(e){ overlay(false); $("sm-send-btn").disabled=false; toast("⚠️ "+e.message); });
+}
+/* tải file PDF từ chuỗi base64 */
+function downloadB64Pdf(b64, filename){
+  try{
+    var bin=atob(b64), len=bin.length, bytes=new Uint8Array(len);
+    for(var i=0;i<len;i++) bytes[i]=bin.charCodeAt(i);
+    var blob=new Blob([bytes], {type:"application/pdf"});
+    var url=URL.createObjectURL(blob);
+    var a=document.createElement("a");
+    a.href=url; a.download=filename||"report.pdf";
+    document.body.appendChild(a); a.click();
+    setTimeout(function(){ URL.revokeObjectURL(url); a.remove(); }, 1500);
+  }catch(e){ toast("⚠️ Lỗi tải PDF: "+e.message); }
 }
 
 /* ── VOICE INPUT ── */
@@ -2681,34 +2731,63 @@ function actTypeKey(a){
   return "update";
 }
 function actInScope(a){
-  // theo tuần/tháng
   var d=a.time||a.at||a.date||"";
   var iso=String(d).slice(0,10);
   var okTime=true;
   if(iso){
-    var today=new Date(), ref;
-    if(S.activityScope==="week"){ var mon=mondayOf(today); ref=toISO(mon); okTime=(iso>=ref); }
-    else { var first=toISO(new Date(today.getFullYear(),today.getMonth(),1)); okTime=(iso>=first); }
+    var off=S.activityOffset||0;
+    if(S.activityScope==="week"){
+      var mon=mondayOf(new Date()); mon.setDate(mon.getDate()+off*7);
+      var sun=new Date(mon); sun.setDate(mon.getDate()+6);
+      okTime=(iso>=toISO(mon) && iso<=toISO(sun));
+    } else {
+      var today=new Date();
+      var first=new Date(today.getFullYear(), today.getMonth()+off, 1);
+      var last=new Date(today.getFullYear(), today.getMonth()+off+1, 0);
+      okTime=(iso>=toISO(first) && iso<=toISO(last));
+    }
   }
-  // ⭐ lọc PIC
   if(S.activityPic){
     var who=String(a.pic||a.who||a.user||"").toLowerCase();
     if(who!==S.activityPic.toLowerCase()) return false;
   }
-  // ⭐ lọc loại hành động
   if(S.activityType){
     if(actTypeKey(a)!==S.activityType) return false;
   }
   return okTime;
 }
+function activityRangeLabel(){
+  var off=S.activityOffset||0;
+  if(S.activityScope==="week"){
+    if(off===0) return "Tuần này";
+    var mon=mondayOf(new Date()); mon.setDate(mon.getDate()+off*7);
+    var sun=new Date(mon); sun.setDate(mon.getDate()+6);
+    return fmtVN(toISO(mon))+" – "+fmtVN(toISO(sun));
+  } else {
+    if(off===0) return "Tháng này";
+    var today=new Date(), f=new Date(today.getFullYear(), today.getMonth()+off, 1);
+    return "Tháng "+("0"+(f.getMonth()+1)).slice(-2)+"/"+f.getFullYear();
+  }
+}
 function setActivityScope(scope){
-  S.activityScope=scope;
+  S.activityScope=scope; S.activityOffset=0;
   $("act-scope-week").classList.toggle("active",scope==="week");
   $("act-scope-month").classList.toggle("active",scope==="month");
   renderActivity();
 }
-function setActivityPic(v){ S.activityPic=v; renderActivity(); }        /* ⭐ */
-function setActivityType(v){ S.activityType=v; renderActivity(); }      /* ⭐ */
+function shiftActivity(dir){ S.activityOffset=(S.activityOffset||0)+dir; renderActivity(); }
+function setActivityPic(v){ S.activityPic=v; renderActivity(); }
+function setActivityType(v){ S.activityType=v; renderActivity(); }
+/* ⭐ #4: xóa sạch lịch sử — cần mật khẩu 1234 */
+function clearActivityLog(){
+  var pass=prompt("Nhập mật khẩu để xóa sạch lịch sử thông báo:");
+  if(pass===null) return;
+  if(pass!=="1234"){ toast("⚠️ Sai mật khẩu"); return; }
+  overlay(true,"Đang xóa","Xóa lịch sử thông báo…");
+  apiPost({action:"clearActivity", pass:"1234"}).then(function(){
+    S.activityLog=[]; overlay(false); toast("✓ Đã xóa sạch lịch sử"); renderActivity();
+  }).catch(function(e){ overlay(false); toast("⚠️ "+e.message); });
+}
 function toggleActivityRail(){
   var rail=$("activity-rail");
   rail.classList.toggle("collapsed");
@@ -2738,6 +2817,7 @@ function populateActivityPicFilter(){
 }
 function renderActivity(){
   populateActivityPicFilter();
+  var lbl=$("act-nav-label"); if(lbl) lbl.textContent=activityRangeLabel();
   var track=$("act-track"); if(!track) return;
   var logs=(S.activityLog||[]).filter(actInScope);
   // sắp xếp mới nhất trước
