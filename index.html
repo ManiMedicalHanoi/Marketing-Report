@@ -1064,6 +1064,15 @@ function subInRange(s, from, to){
   var inR=function(d){ return d && String(d).slice(0,10)>=from && String(d).slice(0,10)<=to; };
   return inR(s.start)||inR(eff)||inR(s.actual)||isInProgress(s.status);
 }
+/* ⭐ #2: lọc CHẶT cho tab "Tất cả công việc" — chỉ hiện task có start/deadline trong khoảng.
+   KHÔNG hiện task đã Completed, KHÔNG hiện task ngoài khoảng dù đang In Progress. */
+function subInRangeStrict(s, from, to){
+  if(isDone(s.status)) return false;          // ẩn task đã hoàn thành
+  if(isCancelled(s.status)) return false;     // ẩn task đã hủy
+  var eff=s.revised||s.planned||"";
+  var inR=function(d){ return d && String(d).slice(0,10)>=from && String(d).slice(0,10)<=to; };
+  return inR(s.start)||inR(eff);              // chỉ theo start hoặc deadline
+}
 function keyInRange(k, from, to){
   var subs=k.subs||[];
   if(!subs.length) return true;
@@ -1895,29 +1904,7 @@ function renderDetail(){
   var kts=allKeyTasks();
   var types=[...new Set(kts.map(function(k){return k.type;}).filter(Boolean))];
   var pics=picListAll();
-  var q=(S.detailQ||"").toLowerCase();
   var selTypes=S.detailTypes||[], selPics=S.detailPics||[];
-  var tmode=S.detailTimeMode||"all";
-  var wFrom = tmode!=="all" ? S.dateFrom : null;
-  var wTo   = tmode!=="all" ? S.dateTo   : null;
-  var filtered=kts.filter(function(k){
-    if(selTypes.length && selTypes.indexOf(k.type)<0) return false;
-    if(selPics.length){
-      var hit=(selPics.indexOf(k.pic)>=0) || (k.subs||[]).some(function(s){return selPics.indexOf(s.pic)>=0;});
-      if(!hit) return false;
-    }
-    if(q){
-      var hay=(k.keyTask||"")+" "+(k.type||"")+" "+(k.pic||"")+" "+(k.subs||[]).map(function(s){return (s.name||s.subTask||"")+" "+(s.pic||"");}).join(" ");
-      if(hay.toLowerCase().indexOf(q)<0) return false;
-    }
-    // ⭐ #1: khi lọc theo tuần/tháng, chỉ hiện key có ít nhất 1 sub active trong khoảng
-    if(wFrom && wTo){
-      var subs=k.subs||[];
-      if(!subs.length) return keyInRange(k, wFrom, wTo);
-      if(!subs.some(function(s){return subInRange(s, wFrom, wTo);})) return false;
-    }
-    return true;
-  });
   var h="";
   // ⭐ #5: tab phụ lọc thời gian (Tất cả / Tuần này / Tháng này) như tab Tiến độ
   var tm=S.detailTimeMode||"all";
@@ -1933,16 +1920,42 @@ function renderDetail(){
   +'</div>';
   h+='<div class="detail-toolbar">';
   h+='<div class="search"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>'
-    +'<input type="text" placeholder="Tìm key task, sub-task, PIC…" value="'+esc(S.detailQ||"")+'" oninput="S.detailQ=this.value;clearTimeout(window._dq);window._dq=setTimeout(renderDetail,220)"/></div>';
+    +'<input type="text" id="detail-search" placeholder="Tìm key task, sub-task, PIC…" value="'+esc(S.detailQ||"")+'" oninput="S.detailQ=this.value;clearTimeout(window._dq);window._dq=setTimeout(renderDetailList,200)"/></div>';
   h+=multiFilterDropdown("type","Loại việc",types.map(function(t){return {val:t,label:t,color:typeColor(t)};}),selTypes);
   h+=multiFilterDropdown("pic","Nhân sự",pics.map(function(p){return {val:p,label:p,av:true};}),selPics);
   h+='</div>';
-  // truyền from/to khi lọc theo thời gian
-  var fFrom = tm!=="all" ? S.dateFrom : null;
-  var fTo   = tm!=="all" ? S.dateTo   : null;
-  if(!filtered.length){ h+='<div class="empty"><div class="ic">📋</div><p>Không có công việc khớp bộ lọc.</p></div>'; }
-  else h+=detailKeyPanels(filtered, fFrom, fTo, null);
+  h+='<div id="detail-list"></div>';
   $("tab-detail").innerHTML=h;
+  renderDetailList();   // render danh sách lần đầu
+}
+/* ⭐ #3: chỉ dựng lại DANH SÁCH (không đụng ô search → không mất focus/nhảy con trỏ) */
+function renderDetailList(){
+  var el=$("detail-list"); if(!el) return;
+  var kts=allKeyTasks();
+  var q=(S.detailQ||"").toLowerCase();
+  var selTypes=S.detailTypes||[], selPics=S.detailPics||[];
+  var tm=S.detailTimeMode||"all";
+  var wFrom = tm!=="all" ? S.dateFrom : null;
+  var wTo   = tm!=="all" ? S.dateTo   : null;
+  var filtered=kts.filter(function(k){
+    if(selTypes.length && selTypes.indexOf(k.type)<0) return false;
+    if(selPics.length){
+      var hit=(selPics.indexOf(k.pic)>=0) || (k.subs||[]).some(function(s){return selPics.indexOf(s.pic)>=0;});
+      if(!hit) return false;
+    }
+    if(q){
+      var hay=(k.keyTask||"")+" "+(k.type||"")+" "+(k.pic||"")+" "+(k.subs||[]).map(function(s){return (s.name||s.subTask||"")+" "+(s.pic||"");}).join(" ");
+      if(hay.toLowerCase().indexOf(q)<0) return false;
+    }
+    if(wFrom && wTo){
+      var subs=k.subs||[];
+      if(!subs.length) return false;
+      if(!subs.some(function(s){return subInRangeStrict(s, wFrom, wTo);})) return false;
+    }
+    return true;
+  });
+  if(!filtered.length){ el.innerHTML='<div class="empty"><div class="ic">📋</div><p>Không có công việc khớp bộ lọc.</p></div>'; return; }
+  el.innerHTML=detailKeyPanels(filtered, wFrom, wTo, null);
 }
 function setDetailTime(mode){
   S.detailTimeMode=mode;
@@ -2009,7 +2022,7 @@ function detailKeyPanels(keys, from, to, picFilter){
     var showAll=!!S.detailShowAllSubs[k.no];
     var subsInRange=subs, hiddenCount=0;
     if(from && to && !showAll){
-      var inr=subs.filter(function(s){return subInRange(s,from,to);});
+      var inr=subs.filter(function(s){return subInRangeStrict(s,from,to);});
       hiddenCount=subs.length-inr.length;
       subsInRange=inr;
     }
@@ -2345,8 +2358,8 @@ function renderMonth(){
           +'<span class="mr-pic2"><span class="mr-pic2-av" style="background:'+avColor(m.pic)+'">'+esc(initials(m.pic||'?'))+'</span>'+esc(m.pic||'—')+'</span>'
         +'</div></div>'
         +'<div class="mr-card2-body'+(filled?'':' is-empty')+'">'+(filled?linkify(m.content):'Chưa có nội dung.')+'</div>';
-      if(canEdit) h+='<div style="padding:10px 19px 15px;display:flex;gap:8px"><button class="btn-secondary" onclick="openEditMonth(\''+jsq(m.no)+'\')">✏️ Cập nhật</button>'
-        +'<button class="btn-secondary" style="color:var(--danger-fg);border-color:#f0c8c8" onclick="delMonth(\''+jsq(m.no)+'\',\''+jsq(m.title||m.keyTask||'')+'\')">🗑️ Xóa</button></div>';
+      if(canEdit) h+='<div style="padding:10px 19px 15px;display:flex;gap:8px"><button class="btn-secondary" onclick="openEditMonth('+(m.row||0)+')">✏️ Cập nhật</button>'
+        +'<button class="btn-secondary" style="color:var(--danger-fg);border-color:#f0c8c8" onclick="delMonth(\''+jsq(m.no)+'\','+(m.row||0)+',\''+jsq(m.title||m.keyTask||'')+'\')">🗑️ Xóa</button></div>';
       h+='</div>';
     });
     h+='</div>';
@@ -2360,11 +2373,11 @@ function shiftMonth(dir){
   if(ni>=0&&ni<months.length){ S.monthSel=months[ni]; renderMonth(); }
 }
 /* ⭐ #1: xóa 1 mục Monthly trong sheet MONTH */
-function delMonth(no,title){
+function delMonth(no,row,title){
   if(!confirm('Xóa mục "'+(title||no)+'" khỏi báo cáo tháng?\nKhông thể hoàn tác.')) return;
   overlay(true,"Đang xóa","Xóa khỏi sheet MONTH…");
-  apiPost({action:"deleteMonth",no:no}).then(function(r){
-    S.monthly=(S.monthly||[]).filter(function(m){return m.no!==no;});
+  apiPost({action:"deleteMonth",no:no,row:row}).then(function(r){
+    S.monthly=(S.monthly||[]).filter(function(m){ return row?(m.row!==row):(m.no!==no); });
     overlay(false); toast("✓ "+(r&&r.message||"Đã xóa")); renderMonth(); reloadSoft();
   }).catch(function(e){ overlay(false); toast("⚠️ "+e.message); });
 }
@@ -2636,8 +2649,8 @@ function saveAddMonth(){
     .then(function(){ overlay(false); closeModal(); toast("✓ Đã thêm"); reload(); })
     .catch(function(e){ overlay(false); $("am-save").disabled=false; toast("⚠️ "+e.message); });
 }
-function openEditMonth(mno){
-  var m=S.monthly.filter(function(x){return x.no===mno;})[0]; if(!m){toast("Không tìm thấy");return;}
+function openEditMonth(mrow){
+  var m=S.monthly.filter(function(x){return x.row===mrow;})[0]; if(!m){toast("Không tìm thấy");return;}
   if(!canEditPic(m.pic)){ toast("🔒 Chỉ "+(m.pic||"PIC")+" sửa được"); return; }
   var html='<div class="modal-box modal-lg"><div class="modal-head"><h3>✏️ Cập nhật Monthly</h3><button class="modal-close" onclick="closeModal()">✕</button></div>'
     +'<div class="modal-body">'
@@ -2645,14 +2658,14 @@ function openEditMonth(mno){
     +'<div class="field"><div class="field-label-row"><label>Nội dung báo cáo tháng</label><button class="voice-btn" onclick="toggleVoice(\'em-content\')">🎤 Đọc</button></div>'
       +'<textarea id="em-content" rows="8">'+esc(m.content||"")+'</textarea></div>'
     +'<div class="modal-footer"><button class="btn-secondary" onclick="closeModal()">Hủy</button>'
-    +'<button class="btn-primary" id="em-save" onclick="saveEditMonth(\''+jsq(mno)+'\')">💾 Lưu</button></div>'
+    +'<button class="btn-primary" id="em-save" onclick="saveEditMonth('+mrow+',\''+jsq(m.no||"")+'\')">💾 Lưu</button></div>'
     +'</div></div>';
   showModal(html);
 }
-function saveEditMonth(mno){
+function saveEditMonth(mrow,mno){
   $("em-save").disabled=true;
   overlay(true,"Đang lưu","Cập nhật monthly…");
-  apiPost({action:"updateMonth",no:mno,content:$("em-content").value})
+  apiPost({action:"updateMonth",no:mno,row:mrow,content:$("em-content").value})
     .then(function(){ overlay(false); closeModal(); toast("✓ Đã lưu"); reloadSoft(); })
     .catch(function(e){ overlay(false); $("em-save").disabled=false; toast("⚠️ "+e.message); });
 }
