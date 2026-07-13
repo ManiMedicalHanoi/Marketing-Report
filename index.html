@@ -579,6 +579,9 @@ button{cursor:pointer}
 .mfd-av{width:24px;height:24px;border-radius:50%;color:#fff;font-size:10px;font-weight:800;display:flex;align-items:center;justify-content:center;flex:0 0 auto}
 .mfd-name{font-size:13.5px;color:var(--text);font-weight:600}
 .mfd-empty{padding:14px;text-align:center;font-size:13px;color:var(--faint)}
+.mfd-all{background:var(--pale)}
+.mfd-all.on{background:#E8EEF9}
+.mfd-sep{height:1px;background:var(--border);margin:6px 4px}
 @media(max-width:720px){ .mfd-panel{left:auto;right:0} }
 
 /* ══ STATUS DROPDOWN & % QUICK EDIT ══ */
@@ -1148,6 +1151,7 @@ var S={
   activityPic:"", activityType:"", activityOffset:0,   /* ⭐ bộ lọc + điều hướng tuần/tháng */
   monthSel:"", monthType:"", monthTypes:[], monthPics:[],
   reportFrom:"", reportTo:"", reportPics:[], reportTypes:[], reportFilterOpen:"",
+  sendWeek:"", sendMonth:"",   /* ⭐ v5.3: kỳ báo cáo chọn trong hộp thoại gửi */
   editCtx:null,
 };
 function initDateFilter(){
@@ -1993,7 +1997,15 @@ function ganttRange(){
 function renderGantt(){
   var kts=allKeyTasks();
   var types=[...new Set(kts.map(function(k){return k.type;}).filter(Boolean))];
-  if(S.ganttType) kts=kts.filter(function(k){return k.type===S.ganttType;});
+  var gPics=picListAll();
+  /* ⭐ v5.3: Gantt dùng CHUNG bộ lọc dropdown (Loại việc + Nhân sự) có lựa chọn "Tất cả",
+     thay cho hàng chip cũ dễ tràn màn hình. */
+  var selGT=S.ganttTypes||[], selGP=S.ganttPics||[];
+  if(S.ganttType && selGT.indexOf(S.ganttType)<0) selGT=[S.ganttType];   // tương thích ngược
+  if(selGT.length) kts=kts.filter(function(k){ return selGT.indexOf(k.type)>=0; });
+  if(selGP.length) kts=kts.filter(function(k){
+    return selGP.indexOf(picOf(k))>=0 || (k.subs||[]).some(function(s){ return selGP.indexOf(picOf(s))>=0; });
+  });
   // ⭐ SMART SEARCH: lọc theo key/sub/PIC/type (không re-render ô input → không mất focus)
   var gq=(S.ganttQ||"").trim().toLowerCase();
   if(gq){
@@ -2040,8 +2052,9 @@ function renderGantt(){
     +'<button class="gantt-expand-all" onclick="ganttExpandAll()">⇕ Mở/Ẩn sub-task</button>'
     +'</div>';
 
-  h+='<div class="chips" style="margin-bottom:14px"><button class="chip'+(S.ganttType===""?" active":"")+'" onclick="S.ganttType=\'\';renderGantt()">Tất cả loại</button>'
-    +types.map(function(t){return '<button class="chip'+(S.ganttType===t?" active":"")+'" style="'+(S.ganttType===t?'background:'+typeColor(t):'')+'" onclick="S.ganttType=\''+jsq(t)+'\';renderGantt()">'+esc(t)+'</button>';}).join("")
+  h+='<div class="detail-toolbar" style="margin-bottom:14px">'
+    +multiFilterDropdown("gtype","Loại việc",types.map(function(t){return {val:t,label:t,color:typeColor(t)};}),selGT)
+    +multiFilterDropdown("gpic","Nhân sự",gPics.map(function(p){return {val:p,label:p,av:true};}),selGP)
     +'</div>';
 
   // header các cột
@@ -2308,6 +2321,12 @@ function multiFilterDropdown(kind,label,items,sel){
     +'<svg class="mfd-ic" viewBox="0 0 24 24"><polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"/></svg>'
     +esc(label)+(cnt?' ('+cnt+')':'')
     +'<svg class="mfd-caret" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg></button>';
+  /* ⭐ v5.3: mọi bộ lọc (Loại việc / Nhân sự) đều có lựa chọn "Tất cả" ở đầu danh sách.
+     Bấm "Tất cả" = bỏ hết lựa chọn ⇒ hiển thị toàn bộ. */
+  var allOn=(cnt===0);
+  var allItem='<div class="mfd-item mfd-all'+(allOn?' on':'')+'" onclick="clearDetailFilter(\''+kind+'\')">'
+    +'<span class="mfd-check'+(allOn?' on':'')+'">'+(allOn?'✓':'')+'</span>'
+    +'<span class="mfd-name" style="font-weight:800">Tất cả'+(items.length?' ('+items.length+')':'')+'</span></div>';
   var list=items.length?items.map(function(it){
     var on=sel.indexOf(it.val)>=0;
     var icon = it.av ? '<span class="mfd-av" style="background:'+avColor(it.val)+'">'+esc(initials(it.val))+'</span>'
@@ -2316,6 +2335,7 @@ function multiFilterDropdown(kind,label,items,sel){
       +'<span class="mfd-check'+(on?' on':'')+'">'+(on?'✓':'')+'</span>'+icon
       +'<span class="mfd-name">'+esc(it.label)+'</span></div>';
   }).join(""):'<div class="mfd-empty">Không có mục</div>';
+  list = allItem + '<div class="mfd-sep"></div>' + list;
   return '<div class="mfd'+(open?' open':'')+'">'+head
     +'<div class="mfd-panel"><div class="mfd-head"><b>'+esc(label)+'</b>'
     +(cnt?'<button class="mfd-clear" onclick="clearDetailFilter(\''+kind+'\')">Xóa lọc</button>':'')
@@ -2335,7 +2355,7 @@ function toggleDetailFilterVal(kind,val){
   else if(kind==="pic")arr=S.detailPics;
   else if(kind==="mtype")arr=(S.monthTypes=S.monthTypes||[]);
   else if(kind==="mpic")arr=(S.monthPics=S.monthPics||[]);
-  else if(kind==="gtype")arr=(S.ganttTypes=S.ganttTypes||[]);
+  else if(kind==="gtype"){ S.ganttType=""; arr=(S.ganttTypes=S.ganttTypes||[]); }
   else if(kind==="gpic")arr=(S.ganttPics=S.ganttPics||[]);
   else if(kind==="otype")arr=(S.ovTypes=S.ovTypes||[]);
   else if(kind==="opic")arr=(S.ovPics=S.ovPics||[]);
@@ -2349,7 +2369,7 @@ function clearDetailFilter(kind){
   else if(kind==="pic")S.detailPics=[];
   else if(kind==="mtype")S.monthTypes=[];
   else if(kind==="mpic")S.monthPics=[];
-  else if(kind==="gtype")S.ganttTypes=[];
+  else if(kind==="gtype"){ S.ganttTypes=[]; S.ganttType=""; }
   else if(kind==="gpic")S.ganttPics=[];
   else if(kind==="otype")S.ovTypes=[];
   else if(kind==="opic"){ S.ovPics=[]; S.overviewPic=""; }
@@ -2617,7 +2637,12 @@ function multiFilterDropdownReport(pics,sel){
   var head='<button class="mfd-btn'+(cnt?' active':'')+'" onclick="S.reportFilterOpen=(S.reportFilterOpen===\'pic\'?\'\':\'pic\');renderReport()">'
     +'<svg class="mfd-ic" viewBox="0 0 24 24"><polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"/></svg>'
     +'Nhân sự'+(cnt?' ('+cnt+')':'')+'<svg class="mfd-caret" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg></button>';
-  var list=pics.map(function(p){
+  var allOn=(cnt===0);   // ⭐ v5.3: lựa chọn "Tất cả"
+  var list='<div class="mfd-item mfd-all'+(allOn?' on':'')+'" onclick="S.reportPics=[];renderReport()">'
+    +'<span class="mfd-check'+(allOn?' on':'')+'">'+(allOn?'✓':'')+'</span>'
+    +'<span class="mfd-name" style="font-weight:800">Tất cả'+(pics.length?' ('+pics.length+')':'')+'</span></div>'
+    +'<div class="mfd-sep"></div>'
+    +pics.map(function(p){
     var on=sel.indexOf(p)>=0;
     return '<div class="mfd-item" onclick="toggleReportPic(\''+jsq(p)+'\')">'
       +'<span class="mfd-check'+(on?' on':'')+'">'+(on?'✓':'')+'</span>'
@@ -2736,10 +2761,12 @@ function renderMonth(){
   }
   $("tab-month").innerHTML=h;
 }
+/* ⭐ v5.3 FIX: months được sort GIẢM DẦN (mới → cũ) nên "+1" trước đây lại nhảy về tháng cũ.
+   Nay: mũi tên PHẢI (dir=+1) = tháng SAU · mũi tên TRÁI (dir=−1) = tháng TRƯỚC. */
 function shiftMonth(dir){
   var months=[...new Set(S.monthly.map(function(m){return m.month;}).filter(Boolean))].sort().reverse();
   var i=months.indexOf(S.monthSel);
-  var ni=i+dir;
+  var ni=i-dir;
   if(ni>=0&&ni<months.length){ S.monthSel=months[ni]; renderMonth(); }
 }
 /* ⭐ #1: xóa 1 mục Monthly trong sheet MONTH */
@@ -3071,13 +3098,30 @@ function saveEditMonth(mrow,mno){
     .catch(function(e){ overlay(false); $("em-save").disabled=false; toast("⚠️ "+e.message); });
 }
 
-/* ── ⭐ v5: GỬI BÁO CÁO TUẦN — 2 lựa chọn rõ ràng ── */
+/* ── ⭐ v5.3: GỬI BÁO CÁO TUẦN — CHỌN TUẦN ngay trong hộp thoại (mặc định TUẦN HIỆN TẠI) ── */
+function weekOptionsHtml(sel){
+  var cur=toISO(mondayOf(new Date()));
+  var out=[];
+  for(var i=-1;i<=8;i++){                       // 1 tuần tới + 8 tuần gần đây
+    var mon=addDaysISO(cur, -i*7);
+    var sun=addDaysISO(mon, 6);
+    var lbl=fmtVNFull(mon)+' – '+fmtVNFull(sun)
+          + (mon===cur?'  (tuần này)' : (i===-1?'  (tuần sau)':''));
+    out.push('<option value="'+mon+'"'+(mon===sel?' selected':'')+'>'+esc(lbl)+'</option>');
+  }
+  return out.join("");
+}
+function setSendWeek(v){ S.sendWeek=v; openSendReport(); }
 function openSendReport(){
-  var nFrom=addDaysISO(S.reportTo,1), nTo=addDaysISO(S.reportTo,7);
+  if(!S.sendWeek) S.sendWeek = toISO(mondayOf(new Date()));   // ⭐ mặc định TUẦN HIỆN TẠI
+  var wFrom=S.sendWeek, wTo=addDaysISO(wFrom,6);
+  var nFrom=addDaysISO(wTo,1), nTo=addDaysISO(wTo,7);
   var html='<div class="modal-box"><div class="modal-head"><h3>📤 Gửi báo cáo tuần</h3><button class="modal-close" onclick="closeModal()">✕</button></div>'
     +'<div class="modal-body">'
+    +'<div class="field"><label>Tuần báo cáo</label>'
+      +'<select id="sr-week" onchange="setSendWeek(this.value)">'+weekOptionsHtml(wFrom)+'</select></div>'
     +'<div class="field-hint" style="margin-bottom:14px;padding:11px 13px;background:var(--pale);border-radius:10px;line-height:1.7;font-size:13px">'
-      +'📅 <b>Kết quả tuần này:</b> '+fmtVNFull(S.reportFrom)+' – '+fmtVNFull(S.reportTo)+'<br>'
+      +'📅 <b>Kết quả tuần:</b> '+fmtVNFull(wFrom)+' – '+fmtVNFull(wTo)+'<br>'
       +'🗓️ <b>Plan tuần sau:</b> '+fmtVNFull(nFrom)+' – '+fmtVNFull(nTo)+'<br>'
       +'<span style="color:var(--faint)">Email + PDF gồm 2 phần. Thanh % có màu theo mức, dòng <b style="color:#D9433F">quá hạn</b> được bôi đỏ.</span>'
     +'</div>'
@@ -3102,9 +3146,10 @@ function openSendReport(){
 }
 function doSendReport(){
   var opt=(document.querySelector('input[name=ropt]:checked')||{}).value||"self";
+  var wFrom=S.sendWeek||S.reportFrom, wTo=addDaysISO(wFrom,6);   // ⭐ v5.3: gửi ĐÚNG tuần đã chọn
   var btn=$("sr-btn"); if(btn) btn.disabled=true;
   overlay(true,"Đang gửi", opt==="dept"?"Tạo PDF & gửi tới team…":"Tạo PDF & gửi thử…");
-  apiPost({action:"weeklyReport", from:S.reportFrom, to:S.reportTo, option:opt})
+  apiPost({action:"weeklyReport", from:wFrom, to:wTo, option:opt})
     .then(function(r){ overlay(false); closeModal(); toast("✓ "+((r&&r.message)||"Đã gửi báo cáo")); })
     .catch(function(e){ overlay(false); if(btn)btn.disabled=false; toast("⚠️ "+e.message); });
 }
@@ -3121,22 +3166,37 @@ function nextMonthLocal(m){
   mo++; if(mo>12){ mo=1; y++; }
   return y+("0"+mo).slice(-2);
 }
+function curMonthStr(){ var d=new Date(); return d.getFullYear()+("0"+(d.getMonth()+1)).slice(-2); }
+/* ⭐ v5.3: danh sách tháng để chọn = tháng có trong sheet ∪ tháng hiện tại ∪ tháng sau */
+function monthOptionsHtml(sel){
+  var set={};
+  (S.monthly||[]).forEach(function(m){ if(m.month) set[m.month]=1; });
+  var cur=curMonthStr(); set[cur]=1; set[nextMonthLocal(cur)]=1;
+  var months=Object.keys(set).sort().reverse();
+  return months.map(function(m){
+    return '<option value="'+esc(m)+'"'+(m===sel?' selected':'')+'>'+esc(fmtMonth(m))+(m===cur?'  (tháng này)':'')+'</option>';
+  }).join("");
+}
+function setSendMonth(v){ S.sendMonth=v; openSendMonth(); }
 function openSendMonth(){
   if(S.source==="management"){ toast("Sheet Management không có báo cáo tháng"); return; }
-  var m=S.monthSel||"";
-  if(!m){ toast("Chưa chọn tháng"); return; }
+  if(!S.sendMonth) S.sendMonth = curMonthStr();       // ⭐ mặc định THÁNG HIỆN TẠI
+  var m=S.sendMonth;
   var nm=nextMonthLocal(m);
   var html='<div class="modal-box"><div class="modal-head"><h3>📄 Báo cáo tháng</h3><button class="modal-close" onclick="closeModal()">✕</button></div>'
     +'<div class="modal-body">'
+    +'<div class="field"><label>Tháng báo cáo</label>'
+      +'<select id="sm-month" onchange="setSendMonth(this.value)">'+monthOptionsHtml(m)+'</select></div>'
     +'<div class="field-hint" style="margin-bottom:14px;padding:11px 13px;background:var(--pale);border-radius:10px;line-height:1.7;font-size:13px">'
       +'📅 <b>① Kết quả tháng:</b> '+esc(fmtMonth(m))+'<br>'
-      +'🗓️ <b>② Kế hoạch tháng:</b> '+esc(fmtMonth(nm))+'</div>'
+      +'🗓️ <b>② Kế hoạch tháng:</b> '+esc(fmtMonth(nm))+'<br>'
+      +'<span style="color:var(--faint)">PDF đính kèm email <b>y hệt</b> file tải trực tiếp (toàn bộ PIC, nhóm theo loại việc).</span></div>'
     +'<label style="font-size:12px;font-weight:700;color:var(--sub);text-transform:uppercase;letter-spacing:.3px;display:block;margin-bottom:10px">Chọn cách gửi</label>'
     +'<div class="radio-cards">'
       +'<label class="radio-card sel" onclick="selReportOpt(this,\'self\')">'
         +'<input type="radio" name="mopt" value="self" checked/><div class="rc-ic">🧪</div>'
         +'<div><div class="rc-t">Gửi thử cho chính tôi</div>'
-        +'<div class="rc-s">Các mục Monthly của <b>'+esc(S.user.pic)+'</b>.</div></div></label>'
+        +'<div class="rc-s">Gửi tới email của <b>'+esc(S.user.pic)+'</b> để kiểm tra nội dung trước.</div></div></label>'
       +'<label class="radio-card" onclick="selReportOpt(this,\'dept\')">'
         +'<input type="radio" name="mopt" value="dept"/><div class="rc-ic">📢</div>'
         +'<div><div class="rc-t">Gửi cho đồng nghiệp cùng team</div>'
@@ -3156,7 +3216,7 @@ function doSendMonth(){
   var btn=$("sm-send-btn"); if(btn) btn.disabled=true;
   overlay(true, opt==="download"?"Đang tạo PDF":"Đang gửi",
                 opt==="download"?"Dựng file PDF báo cáo tháng…":"Tạo PDF & gửi email…");
-  apiPost({action:"monthlyReport", month:S.monthSel, option:opt})
+  apiPost({action:"monthlyReport", month:(S.sendMonth||S.monthSel), option:opt})   // ⭐ v5.3: đúng tháng đã chọn
     .then(function(r){
       overlay(false); closeModal();
       if(r&&r.download&&r.files&&r.files.length){
