@@ -42,6 +42,11 @@ button{cursor:pointer}
 .tb-title h1{color:#fff;font-size:20px;font-weight:800;line-height:1.1}
 .tb-title p{color:#c7d6ef;font-size:12.5px;margin-top:2px}
 .tb-sp{flex:1}
+/* ⭐ v5.5: công tắc ngôn ngữ */
+.lang-sw{display:flex;background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.22);border-radius:10px;padding:3px;gap:2px}
+.lang-btn{border:none;background:transparent;color:#c7d6ef;font-size:12px;font-weight:800;padding:5px 10px;border-radius:7px;cursor:pointer;letter-spacing:.4px}
+.lang-btn.on{background:var(--mmh-yellow);color:var(--mmh-navy)}
+.lang-btn:hover:not(.on){color:#fff}
 /* ⭐ v5.4: link nhanh tới các webapp MMH khác */
 .tb-links{display:flex;align-items:center;gap:7px;margin-left:6px;flex-wrap:wrap}
 .tb-link{display:inline-flex;align-items:center;gap:6px;text-decoration:none;color:#fff;background:rgba(255,255,255,.10);border:1px solid rgba(255,255,255,.20);border-radius:10px;padding:7px 12px;font-size:12.5px;font-weight:700;white-space:nowrap;transition:.15s}
@@ -360,6 +365,38 @@ button{cursor:pointer}
 .bar-row:hover .bar-fill{filter:brightness(1.08)}
 @keyframes barGrow{from{width:0}}
 .donut-wrap{display:flex;align-items:center;gap:20px;flex-wrap:wrap}
+/* ⭐ v5.5: khu biểu đồ Tổng quan */
+.chart-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+@media(max-width:1100px){ .chart-grid{grid-template-columns:1fr} }
+.chart-card h3{font-size:13px;font-weight:800;color:var(--mmh-navy);text-transform:uppercase;letter-spacing:.4px;margin-bottom:14px}
+.chart-empty{padding:30px;text-align:center;color:var(--faint);font-size:13.5px}
+.donut-big{gap:26px;justify-content:center}
+.donut-big .donut-c-val{font-size:40px}
+.donut-big .donut-c-sub{font-size:12.5px}
+.donut-big .donut-legend{min-width:190px;gap:11px;max-height:230px;overflow-y:auto}
+.donut-big .donut-lg{font-size:14.5px}
+.donut-big .donut-lg-name{flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:var(--text);font-weight:600}
+.donut-big .donut-lg-val{font-weight:800;color:var(--mmh-navy);white-space:nowrap}
+.donut-big .donut-dot{width:13px;height:13px;border-radius:4px;flex:0 0 auto}
+/* biểu đồ tiến độ cột ngang */
+.pb-wrap{display:flex;flex-direction:column;gap:14px}
+.pb-hero{display:flex;align-items:center;gap:20px;background:var(--pale);border-radius:12px;padding:14px 18px;flex-wrap:wrap}
+.pb-hero-l{display:flex;flex-direction:column;line-height:1.1}
+.pb-hero-l b{font-size:34px;font-weight:800;color:var(--mmh-navy)}
+.pb-hero-l span{font-size:12px;color:var(--sub);font-weight:700;text-transform:uppercase;letter-spacing:.3px}
+.pb-hero-r{flex:1;min-width:220px;display:flex;flex-direction:column;gap:6px}
+.pb-hero-n{font-size:12.5px;color:var(--sub);font-weight:700}
+.pb-list{display:flex;flex-direction:column;gap:10px}
+.pb-row{display:flex;align-items:center;gap:12px}
+.pb-lb{flex:0 0 130px;font-size:12.5px;font-weight:700;color:var(--sub);text-align:right;white-space:nowrap}
+.pb-track{position:relative;flex:1;height:22px;background:var(--lb3);border-radius:11px;overflow:hidden;display:block}
+.pb-track.big{height:16px}
+.pb-fill{position:absolute;left:0;top:0;bottom:0;border-radius:11px;transition:width .5s var(--ease)}
+.pb-inpct{position:absolute;right:10px;top:0;line-height:22px;font-size:11.5px;font-weight:800;color:var(--mmh-navy)}
+.pb-val{flex:0 0 62px;font-size:13.5px;font-weight:800;color:var(--mmh-navy);text-align:right}
+.pb-val small{color:var(--faint);font-weight:600}
+.pb-note{font-size:12px;color:var(--faint)}
+@media(max-width:640px){ .pb-lb{flex:0 0 84px;font-size:11px} .donut-big{gap:14px} }
 .donut-svg{position:relative;flex:0 0 auto}
 .donut-center{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;pointer-events:none}
 .donut-c-val{font-size:28px;font-weight:800;color:var(--mmh-navy);line-height:1}
@@ -896,7 +933,23 @@ button{cursor:pointer}
 .rp-subrow.od-row .rp-c-dl{color:#D9433F;font-weight:800}
 
 /* ══════════ ⭐ v5: NOTIFICATION công việc của tôi (cross-department) ══════════ */
-#mytask-bar{background:linear-gradient(120deg,#FFF9E6,#FFF3D6);border:1.5px solid #F0C64A;border-radius:var(--r-lg);padding:12px 16px;margin-bottom:16px;display:flex;align-items:center;gap:14px;flex-wrap:wrap;box-shadow:var(--sh-sm)}
+#mytask-bar{background:linear-gradient(120deg,#FFF9E6,#FFF3D6);border:1.5px solid #F0C64A;border-radius:var(--r-lg);padding:12px 16px;margin-bottom:16px;display:flex;flex-direction:column;gap:10px;box-shadow:var(--sh-sm);overflow:hidden}
+.mt-row1{display:flex;align-items:center;gap:14px;flex-wrap:wrap;width:100%}
+/* ⭐ v5.5: banner QUÁ HẠN chạy ngang, chậm, đủ đọc */
+.mq-wrap{width:100%;overflow:hidden;border-top:1px dashed #E7C766;padding-top:9px;-webkit-mask-image:linear-gradient(90deg,transparent,#000 3%,#000 97%,transparent);mask-image:linear-gradient(90deg,transparent,#000 3%,#000 97%,transparent)}
+.mq-track{display:inline-flex;align-items:center;gap:12px;white-space:nowrap;animation-name:mqscroll;animation-timing-function:linear;animation-iteration-count:infinite;will-change:transform}
+.mq-wrap:hover .mq-track{animation-play-state:paused}
+@keyframes mqscroll{ from{transform:translateX(0)} to{transform:translateX(-50%)} }
+.mq-item{display:inline-flex;align-items:center;gap:7px;background:#fff;border:1px solid #EBD9A4;border-radius:20px;padding:5px 12px 5px 5px;font-size:12.5px;color:var(--sub);cursor:pointer;transition:.15s}
+.mq-item:hover{border-color:var(--mmh-blue);transform:translateY(-1px)}
+.mq-item.od{border-color:#F0B4B4;background:#FFF6F6}
+.mq-item b{color:var(--mmh-navy);font-weight:800}
+.mq-av{width:23px;height:23px;border-radius:50%;color:#fff;font-size:9.5px;font-weight:800;display:flex;align-items:center;justify-content:center;flex:0 0 auto}
+.mq-n{font-weight:700}
+.mq-od{background:#D9433F;color:#fff;font-weight:800;border-radius:9px;padding:1px 8px;font-size:11px}
+.mq-ok{color:#1E9E5A;font-weight:800;font-size:11.5px}
+@media(prefers-reduced-motion:reduce){ .mq-track{animation:none} .mq-wrap{overflow-x:auto} }
+.src-badge.live{background:var(--mmh-yellow);color:var(--mmh-navy)}
 #mytask-bar.hidden{display:none}
 .mt-ic{font-size:20px;flex:0 0 auto}
 .mt-txt{font-size:14px;color:#8A5A00;font-weight:600;flex:1;min-width:180px;line-height:1.5}
@@ -960,8 +1013,8 @@ button{cursor:pointer}
 <div id="gate">
   <div class="gate-card">
     <div class="gate-logo"><span>MMH</span></div>
-    <h1>Report Hub</h1>
-    <div class="sub">Marketing &amp; Product · Weekly / Monthly Tracker</div>
+    <h1>MMH Report</h1>
+    <div class="sub" data-i18n="app.sub">Weekly / Monthly Tracker · Toàn bộ phòng ban</div>
     <div class="gate-spinner" id="gate-spin"></div>
     <div class="gate-status" id="gate-status">Đang tải danh sách người dùng…</div>
     <div class="gate-err" id="gate-err">
@@ -976,10 +1029,11 @@ button{cursor:pointer}
 <div id="app" style="display:none">
   <div id="topbar"><div class="tb-inner">
     <div class="tb-logo"><span>MMH</span></div>
-    <div class="tb-title"><h1>Report Hub</h1><p>Marketing &amp; Product · Weekly / Monthly Tracker</p></div>
+    <div class="tb-title"><h1>MMH Report</h1><p data-i18n="app.sub">Weekly / Monthly Tracker · Toàn bộ phòng ban</p></div>
     <!-- ⭐ v5.4: link nhanh sang các webapp MMH khác -->
     <div class="tb-links"><a class="tb-link" href="https://manimedicalhanoi.github.io/Tender-Result/" target="_blank" rel="noopener" title="Thông tin thầu">📑 Thông tin thầu<svg viewBox="0 0 24 24"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg></a><a class="tb-link" href="https://manimedicalhanoi.github.io/Product-Data/" target="_blank" rel="noopener" title="Product Data">📦 Product Data<svg viewBox="0 0 24 24"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg></a><a class="tb-link" href="https://manimedicalhanoi.github.io/MMH-FY67-Turnover/" target="_blank" rel="noopener" title="Dự trù & Doanh số">📈 Dự trù & Doanh số<svg viewBox="0 0 24 24"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg></a></div>
     <div class="tb-sp"></div>
+    <div id="lang-switch" class="lang-sw"></div>   <!-- ⭐ v5.5: VN / EN -->
     <div class="tb-user">
       <div class="tb-av" id="u-av">?</div>
       <div class="tb-ut"><b id="u-name">—</b><span id="u-email">—</span></div>
@@ -1133,6 +1187,8 @@ function subPct(s){
   if(typeof v==='number' && v>0 && v<=1) p=Math.round(v*100);
   else { p=parseInt(v,10); if(isNaN(p))p=0; }
   if(p<0)p=0; if(p>100)p=100;
+  /* ⭐ v5.5 QUY TẮC: In Progress luôn ≥ 25% (0% chỉ dành cho To Do) */
+  if(isInProgress(s.status) && p<25) p=25;
   return p;
 }
 var TYPE_COLORS={
@@ -1482,12 +1538,23 @@ function startApp(){
   // ⭐ v5: LỌC SẴN theo PIC đang login (kể cả Manager/HOD/Team Leader) nếu họ CÓ task ở nguồn này.
   //        Vẫn bỏ lọc được để xem toàn bộ.
   applyDefaultPicFilter();
-  switchTab("overview");
+  /* ⭐ v5.5: mở web là vào thẳng "Tất cả công việc", lọc sẵn PIC của mình, phạm vi TUẦN NÀY */
+  var me=String((S.user&&S.user.pic)||"");
+  if(me){
+    S.detailPics=[me];
+    S.detailTimeMode="week";
+    setDateMode("week");            // đặt dateFrom/dateTo = tuần hiện tại
+  }
+  switchTab("detail");
   $("fab-wrap").style.display="flex";
   var rail=document.getElementById("activity-rail"); if(rail) rail.style.display="flex";
   renderActivity();
   renderMyTaskBar();
   scanMyTasks();   // ⭐ quét task của tôi ở CẢ 3 phòng ban (chạy nền)
+  /* ⭐ v5.5: ngôn ngữ */
+  renderLangSwitch();
+  startI18nObserver();
+  translateNode(document.body);
 }
 /* ⭐ v5: đặt bộ lọc PIC = chính mình nếu mình có task ở nguồn hiện tại */
 function applyDefaultPicFilter(){
@@ -1518,13 +1585,51 @@ function isMgmtFull(){
   return MGMT_FULL.indexOf(p)>=0;
 }
 function canSeeManagement(){ return true; }
+/* ⭐ v5.5: bộ lọc ĐANG áp dụng ở tab hiện tại (để badge phản ứng real-time) */
+function activeFilterSel(){
+  switch(S.tab){
+    case "overview": return { pics:S.ovPics||[],     types:S.ovTypes||[],     useDate:true };
+    case "gantt":    return { pics:S.ganttPics||[],  types:S.ganttTypes||[],  useDate:true };
+    case "detail":   return { pics:S.detailPics||[], types:S.detailTypes||[], useDate:(S.detailTimeMode!=="all") };
+    case "report":   return { pics:S.reportPics||[], types:[],                useDate:false, report:true };
+    case "month":    return { pics:S.monthPics||[],  types:S.monthTypes||[],  useDate:false, monthly:true };
+  }
+  return { pics:[], types:[], useDate:false };
+}
+/* Số việc khớp bộ lọc hiện tại ở NGUỒN ĐANG XEM */
+function filteredCount(){
+  var f=activeFilterSel();
+  if(f.monthly){
+    return (S.monthly||[]).filter(function(m){
+      if(S.monthSel && m.month!==S.monthSel) return false;
+      if(f.types.length && f.types.indexOf(m.type)<0) return false;
+      if(f.pics.length && f.pics.indexOf(picOf(m))<0) return false;
+      return true;
+    }).length;
+  }
+  var from=S.dateFrom, to=S.dateTo, n=0;
+  if(f.report){ from=S.reportFrom; to=S.reportTo; }
+  (S.keyTasks||[]).forEach(function(k){ (k.subs||[]).forEach(function(sb){
+    var typ=sb.type||k.type||"";
+    if(f.types.length && f.types.indexOf(typ)<0) return;
+    if(f.pics.length && f.pics.indexOf(picOf(sb))<0) return;
+    if((f.useDate||f.report) && !subInRange(sb, from, to)) return;
+    n++;
+  });});
+  return n;
+}
 function buildSourceTabs(){
   var el=$("sourcetabs"); if(!el) return;
   el.innerHTML=["marketing","backoffice","management"].map(function(src){
     var m=SOURCE_META[src];
     var active=(S.source===src);
-    var badge = (S.crossCount && S.crossCount[src]) ? '<span class="src-badge">'+S.crossCount[src]+'</span>' : '';
-    return '<button class="src-tab'+(active?" active":"")+'" onclick="switchSource(\''+src+'\')">'
+    /* ⭐ v5.5: nguồn ĐANG XEM → badge = số việc khớp bộ lọc (nhân sự · loại việc · thời gian),
+       các nguồn khác → số việc chưa hoàn thành của tôi (như cũ). */
+    var n, ttl;
+    if(active){ n=filteredCount(); ttl="Số việc khớp bộ lọc hiện tại"; }
+    else { n=(S.crossCount&&S.crossCount[src])||0; ttl="Việc chưa hoàn thành của bạn"; }
+    var badge = n ? '<span class="src-badge'+(active?' live':'')+'">'+n+'</span>' : '';
+    return '<button class="src-tab'+(active?" active":"")+'" onclick="switchSource(\''+src+'\')" title="'+esc(ttl)+'">'
       +'<svg viewBox="0 0 24 24">'+m.icon+'</svg>'+esc(m.label)+badge
       +'</button>';
   }).join("");
@@ -1630,6 +1735,195 @@ function switchTab(id){
   else if(id==="detail") renderDetail();
   else if(id==="month") renderMonth();
   else if(id==="report") renderReport();
+}
+
+/* ══════════════════════════════════════════════════════════════════════
+   ⭐ v5.5 — ĐA NGÔN NGỮ (Tiếng Việt ⇄ English)
+   Cơ chế: toàn bộ giao diện được sinh ra bằng tiếng Việt như cũ; khi người dùng
+   chọn EN, một bộ dịch sẽ quét DOM (text node + placeholder/title/aria-label) và
+   thay bằng bản tiếng Anh. MutationObserver bảo đảm mọi lần render lại (đổi tab,
+   lọc, mở modal, toast…) đều được dịch ngay. Dữ liệu từ Google Sheet KHÔNG bị đụng.
+   ══════════════════════════════════════════════════════════════════════ */
+var LANG = (function(){ try{ return localStorage.getItem("mmh_lang")||"vi"; }catch(e){ return "vi"; } })();
+
+/* Chuỗi có key (dùng trực tiếp trong code mới) */
+var T_KEYS = {
+  "chart.byType":   { vi:"Sub-task theo loại công việc", en:"Sub-tasks by work type" },
+  "chart.byStatus": { vi:"Sub-task theo trạng thái",     en:"Sub-tasks by status" },
+  "chart.progress": { vi:"Tiến độ hoàn thành theo kỳ",   en:"Completion progress by period" },
+  "chart.nodata":   { vi:"Chưa có dữ liệu",              en:"No data yet" },
+  "chart.overall":  { vi:"Hoàn thành",                   en:"Completed" },
+  "chart.byWeek":   { vi:"Mỗi dòng = 1 tuần · số sub-task đã hoàn thành / tổng sub-task trong tuần đó",
+                      en:"Each row = 1 week · completed sub-tasks / total sub-tasks in that week" },
+  "chart.byMonth":  { vi:"Mỗi dòng = 1 tháng · số sub-task đã hoàn thành / tổng sub-task trong tháng đó",
+                      en:"Each row = 1 month · completed sub-tasks / total sub-tasks in that month" },
+  "unit.task":      { vi:"việc",     en:"tasks" },
+  "unit.subtask":   { vi:"sub-task", en:"sub-tasks" },
+  "unit.type":      { vi:"loại việc", en:"work types" }
+};
+function t(k){ var e=T_KEYS[k]; return e ? (e[LANG]||e.vi) : k; }
+
+/* Từ điển câu/cụm cố định VI → EN (khớp chính xác sau khi trim) */
+var DICT_EN = {
+  /* Tabs & nav */
+  "Tổng quan":"Overview", "Tiến độ công việc":"Timeline", "Tất cả công việc":"All tasks",
+  "Báo cáo tuần":"Weekly report", "Monthly Report":"Monthly report",
+  "Marketing Department":"Marketing Department", "Back Office":"Back Office", "Management":"Management",
+  "Weekly / Monthly Tracker · Toàn bộ phòng ban":"Weekly / Monthly Tracker · All departments",
+  "Thông tin thầu":"Tender results", "Product Data":"Product data", "Dự trù & Doanh số":"Forecast & Turnover",
+  /* Filters / toolbar */
+  "Nhân sự":"Assignee", "Loại việc":"Work type", "Tất cả":"All", "Xóa lọc":"Clear", "Xóa":"Clear",
+  "Xóa bộ lọc":"Clear filters", "✕ Xóa bộ lọc":"✕ Clear filters",
+  "Lọc theo nhân sự":"Filter by assignee", "Không có mục":"No items",
+  "Công việc trong tuần":"This week's tasks", "CV trong tháng":"This month's tasks",
+  "Tuần này":"This week", "Tháng này":"This month", "Tuần":"Week", "Tháng":"Month", "Ngày":"Day",
+  "Từ":"From", "Đến":"To", "Khoảng thời gian":"Date range",
+  "Tìm key task, sub-task, PIC…":"Search key task, sub-task, assignee…",
+  "⇕ Mở/Ẩn sub-task":"⇕ Expand / collapse sub-tasks",
+  "— chưa gán —":"— unassigned —",
+  /* Overview */
+  "Tổng số việc":"Total tasks", "Công việc hôm nay":"Due today", "Đã xong gần đây":"Recently completed",
+  "Đang thực hiện":"In progress", "Quá hạn":"Overdue", "Hiệu suất theo nhân sự":"Performance by assignee",
+  "Phân tích & tiến độ":"Analytics & progress", "Phân tích &amp; tiến độ":"Analytics & progress",
+  "Hoàn thành":"Completed", "Đang làm":"In progress", "Chờ (To Do)":"To Do",
+  "✅ Đã hoàn thành":"✅ Completed", "🔵 Đang thực hiện":"🔵 In progress",
+  "⚪ Đã lên kế hoạch (To Do)":"⚪ Planned (To Do)", "Chưa có việc hoàn thành":"No completed tasks",
+  "Không có việc":"No tasks", "← Tất cả PIC":"← All assignees",
+  "Không có nhân sự nào có việc trong khoảng đã chọn.":"No assignee has tasks in the selected period.",
+  "Không có công việc khớp bộ lọc.":"No tasks match the filters.",
+  "Đang hiển thị":"Showing", "toàn bộ":"all", "công việc":"tasks",
+  /* Sub-task / detail */
+  "Key Task":"Key task", "Sub Task":"Sub task", "KEY TASK":"KEY TASK",
+  "— bấm để xem sub · bấm sub để xem kết quả":"— click to expand · click a sub-task for results",
+  "bấm sub-task để sửa":"click a sub-task to edit", "— bấm sub-task để sửa":"— click a sub-task to edit",
+  "QUÁ HẠN":"OVERDUE", "ngoài khoảng lọc":"outside filter range", "✓ đã xong (ngoài kỳ)":"✓ done (outside period)",
+  "Thêm Key Task":"Add key task", "Thêm Sub Task":"Add sub task", "Thêm mục":"Add item",
+  "Hủy":"Cancel", "💾 Lưu":"💾 Save", "Lưu":"Save", "✏️ Cập nhật":"✏️ Update", "🗑️ Xóa":"🗑️ Delete",
+  "✏️ Cập nhật sub-task":"✏️ Update sub-task", "✏️ Cập nhật Monthly":"✏️ Update monthly item",
+  "Tên sub-task":"Sub-task name", "Trạng thái":"Status", "Tiến độ":"Progress",
+  "Ngày bắt đầu":"Start date", "Deadline dự kiến":"Planned deadline", "Deadline điều chỉnh":"Revised deadline",
+  "Kết quả / Link":"Result / Link", "Nội dung báo cáo tháng":"Monthly report content",
+  "🎤 Đọc":"🎤 Voice", "Chưa có nội dung.":"No content yet.", "Chưa điền":"Not filled", "✓ Đã điền":"Filled",
+  /* Reports */
+  "📤 Gửi báo cáo tuần":"📤 Send weekly report", "📄 Báo cáo tháng":"📄 Monthly report",
+  "Gửi báo cáo":"Send report", "📤 Gửi báo cáo":"📤 Send report", "Thực hiện":"Run",
+  "Tuần báo cáo":"Report week", "Tháng báo cáo":"Report month",
+  "Chọn cách gửi":"Delivery option", "Gửi thử cho chính tôi":"Send a test to myself",
+  "Gửi cho đồng nghiệp cùng team":"Send to my team", "Tải 2 file PDF về máy":"Download both PDF files",
+  "Xuất PDF báo cáo tháng":"Export monthly PDF",
+  "Kết quả tuần này":"This week's results", "Plan tuần sau":"Next week's plan",
+  "(tuần này)":"(this week)", "(tuần sau)":"(next week)", "(tháng này)":"(this month)",
+  /* Activity */
+  "📢 Bảng tin hoạt động":"📢 Activity feed", "Hoạt động":"Activity", "🗑 Xóa log":"🗑 Clear log",
+  "Thêm mới":"Created", "Cập nhật":"Updated", "Hoàn thành":"Completed", "Giao việc":"Assigned",
+  "Ưu tiên":"Priority", "Báo cáo":"Report", "vừa xong":"just now",
+  /* Misc */
+  "Quản lý":"Manager", "PIC":"Assignee", "Đang tải":"Loading", "Đang lưu":"Saving", "Đang gửi":"Sending",
+  "Chọn phòng ban của bạn":"Choose your department", "← Chọn phòng khác":"← Choose another department",
+  "Ban giám đốc & Trưởng phòng":"Directors & Heads", "Product · Marketing · Dental Sales":"Product · Marketing · Dental Sales",
+  "Kho · Kế toán · Mua hàng":"Stock · Accounting · Purchasing",
+  "Sales & Marketing":"Sales & Marketing"
+};
+
+/* Quy tắc động (có số / tên) VI → EN */
+var RULES_EN = [
+  [/^Xin chào (.+?) — bạn còn $/, "Hi $1 — you still have "],
+  [/^ việc $/, " tasks "],
+  [/^chưa hoàn thành$/, "unfinished"],
+  [/^ · $/, " · "],
+  [/^(\d+) việc QUÁ HẠN$/, "$1 OVERDUE"],
+  [/^\. Bấm để mở phòng ban tương ứng:$/, ". Click to open the department:"],
+  [/^(\d+) quá hạn$/, "$1 overdue"],
+  [/^(\d+) người có việc trong kỳ · bấm để xem chi tiết$/, "$1 people with tasks · click for details"],
+  [/^(\d+) việc trong kỳ$/, "$1 tasks in period"],
+  [/^\+(\d+) việc khác$/, "+$1 more"],
+  [/^(\d+) mục$/, "$1 items"],
+  [/^(\d+) người$/, "$1 people"],
+  [/^Công việc của (.+)$/, "Tasks of $1"],
+  [/^(.+) không có việc trong khoảng đã chọn\.$/, "$1 has no tasks in the selected period."],
+  [/^Chưa có báo cáo tháng cho (.+)\.$/, "No monthly report for $1."],
+  [/^Chưa có key task nào trong khoảng này\.$/, "No key task in this range."],
+  [/^Không tìm thấy công việc khớp "(.+)"\.$/, 'No task matches "$1".'],
+  [/^👥 Đang xem tất cả (\d+) nhân sự$/, "👥 Showing all $1 assignees"],
+  [/^Tất cả \((\d+)\)$/, "All ($1)"],
+  [/^(\d+) việc chưa xong$/, "$1 open"],
+  [/^(\d+) quá hạn$/, "$1 overdue"],
+  [/^Tuần (.+)$/, "Week $1"],
+  [/^Tháng (\d{2}\/\d{4})$/, "Month $1"]
+];
+
+function trEN(str){
+  var raw=String(str);
+  var key=raw.trim();
+  if(!key) return null;
+  if(DICT_EN[key]!==undefined){
+    return raw.replace(key, DICT_EN[key]);
+  }
+  for(var i=0;i<RULES_EN.length;i++){
+    if(RULES_EN[i][0].test(key)){
+      return raw.replace(key, key.replace(RULES_EN[i][0], RULES_EN[i][1]));
+    }
+  }
+  return null;
+}
+
+var _i18nObserver=null, _i18nBusy=false, _i18nTimer=null;
+var I18N_SKIP={SCRIPT:1,STYLE:1,TEXTAREA:1};
+function translateNode(root){
+  if(LANG!=="en" || !root) return;
+  _i18nBusy=true;
+  try{
+    var walker=document.createTreeWalker(root, NodeFilter.SHOW_TEXT, {
+      acceptNode:function(n){
+        if(!n.nodeValue || !n.nodeValue.trim()) return NodeFilter.FILTER_REJECT;
+        var p=n.parentNode;
+        if(!p || I18N_SKIP[p.nodeName]) return NodeFilter.FILTER_REJECT;
+        if(p.closest && p.closest("[data-noi18n]")) return NodeFilter.FILTER_REJECT;
+        return NodeFilter.FILTER_ACCEPT;
+      }
+    });
+    var nodes=[], n;
+    while((n=walker.nextNode())) nodes.push(n);
+    nodes.forEach(function(node){
+      var out=trEN(node.nodeValue);
+      if(out!==null && out!==node.nodeValue) node.nodeValue=out;
+    });
+    var els=root.querySelectorAll?root.querySelectorAll("[placeholder],[title]"):[];
+    [].forEach.call(els, function(el){
+      ["placeholder","title"].forEach(function(a){
+        var v=el.getAttribute(a);
+        if(!v) return;
+        var o=trEN(v);
+        if(o!==null && o!==v) el.setAttribute(a,o);
+      });
+    });
+  }catch(e){ console.error("i18n",e); }
+  _i18nBusy=false;
+}
+function startI18nObserver(){
+  if(_i18nObserver || !window.MutationObserver) return;
+  _i18nObserver=new MutationObserver(function(){
+    if(LANG!=="en" || _i18nBusy) return;
+    clearTimeout(_i18nTimer);
+    _i18nTimer=setTimeout(function(){ translateNode(document.body); }, 30);
+  });
+  _i18nObserver.observe(document.body, {childList:true, subtree:true, characterData:false});
+}
+function setLang(l){
+  if(l===LANG) return;
+  LANG=l;
+  try{ localStorage.setItem("mmh_lang", l); }catch(e){}
+  renderLangSwitch();
+  if(l==="vi"){ location.reload(); return; }     // về VN: render lại sạch từ đầu
+  buildTabs(); buildSourceTabs(); rerenderActive(); renderActivity(); renderMyTaskBar();
+  translateNode(document.body);
+  startI18nObserver();
+}
+function renderLangSwitch(){
+  var el=document.getElementById("lang-switch");
+  if(!el) return;
+  el.innerHTML='<button class="lang-btn'+(LANG==="vi"?" on":"")+'" onclick="setLang(\'vi\')">VN</button>'
+              +'<button class="lang-btn'+(LANG==="en"?" on":"")+'" onclick="setLang(\'en\')">EN</button>';
 }
 
 /* ══════════════ DATA HELPERS ══════════════ */
@@ -1834,17 +2128,23 @@ function renderOverview(){
         +'</div>';
     });
     h+='</div>';
-    h+='<div class="section-title"><h2>Phân bổ theo loại công việc</h2></div>';
+    /* ⭐ v5.5: KHU BIỂU ĐỒ MỚI — 2 donut lớn + biểu đồ tiến độ cột ngang */
+    h+='<div class="section-title"><h2>Phân tích &amp; tiến độ</h2><span class="hint">'+esc(dateRangeLabel())+'</span></div>';
     var done=total.filter(function(o){return isDone(o.s.status);}).length;
     var prog2=total.filter(function(o){return isInProgress(o.s.status);}).length;
     var todo=total.filter(function(o){return /to\s*do/i.test(o.s.status)||!o.s.status;}).length;
     var cancel=pool.filter(function(o){return isCancelled(o.s.status);}).length;
-    h+='<div class="grid2">';
-    h+='<div class="panel panel-pad"><h3>Key Task theo Type</h3>'+barsHTML(groupCount(kts,function(k){return k.type||"(khác)";}))+'</div>';
-    h+='<div class="panel panel-pad"><h3>Sub-task theo trạng thái (trong kỳ)</h3>'
-      +donutHTML([["Completed",done,"#22c55e"],["In Progress",prog2,"#3b82f6"],["To Do",todo,"#94a3b8"],["Cancelled",cancel,"#b8b2c2"]], total.length, "việc")
+    var typeEntries=groupCount(total,function(o){ return o.s.type||o.k.type||"(khác)"; });
+    h+='<div class="chart-grid">';
+    h+='<div class="panel panel-pad chart-card"><h3>'+t("chart.byType")+'</h3>'
+      +donutBig(typeEntries.map(function(e){return [e[0],e[1],typeColor(e[0])];}), String(typeEntries.length), t("unit.type"))
+      +'</div>';
+    h+='<div class="panel panel-pad chart-card"><h3>'+t("chart.byStatus")+'</h3>'
+      +donutBig([["Completed",done,"#22c55e"],["In Progress",prog2,"#3b82f6"],["To Do",todo,"#94a3b8"],["Cancelled",cancel,"#b8b2c2"]], String(total.length), t("unit.task"))
       +'</div>';
     h+='</div>';
+    h+='<div class="panel panel-pad chart-card" style="margin-top:16px"><h3>'+t("chart.progress")+'</h3>'
+      +progressBarsHTML(total, from, to)+'</div>';
   } else {
     h+='<div class="section-title"><h2>Công việc của '+esc(pfilter)+' <span style="font-size:12.5px;color:var(--faint);font-weight:600">— bấm sub-task để sửa</span></h2>'
       +'<span class="sp"></span><button class="btn-secondary" onclick="setOverviewPic(\'\')">← Tất cả PIC</button></div>';
@@ -1853,6 +2153,7 @@ function renderOverview(){
     else h+=detailKeyPanels(myKeys, from, to, pfilter);
   }
   $("tab-overview").innerHTML=h;
+  buildSourceTabs();   /* ⭐ v5.5: badge theo bộ lọc */
 }
 /* ⭐ v5.2: bấm ô nhân sự = chọn đúng 1 người trong bộ lọc mới */
 function setOverviewPic(p){ S.overviewPic=p||""; S.ovPics=p?[p]:[]; renderOverview(); }
@@ -1914,6 +2215,74 @@ function kpiCard(val,label,ic,cls){
   return '<div class="kpi-card '+(cls||"")+'"><div class="kpi-ic">'+ic+'</div><div class="kpi-val">'+val+'</div><div class="kpi-label">'+esc(label)+'</div></div>';
 }
 function groupCount(rows,fn){ var m={}; rows.forEach(function(r){ var k=fn(r)||"(khác)"; m[k]=(m[k]||0)+1; }); return Object.keys(m).map(function(k){return[k,m[k]];}).sort(function(a,b){return b[1]-a[1];}); }
+/* ⭐ v5.5: DONUT LỚN — bán kính to hơn, chú thích rõ, có tooltip & % */
+function donutBig(entries,centerLabel,centerSub,colorFn){
+  var list=entries.filter(function(e){return e[1]>0;});
+  var total=list.reduce(function(a,e){return a+e[1];},0);
+  if(!total) return '<div class="chart-empty">'+t("chart.nodata")+'</div>';
+  var R=76, SW=30, C=2*Math.PI*R, off=0, CX=100;
+  var segs=list.map(function(e){
+    var col=e[2]||(colorFn?colorFn(e[0]):"#3A5CAA");
+    var frac=e[1]/total, len=frac*C;
+    var seg='<circle cx="'+CX+'" cy="'+CX+'" r="'+R+'" fill="none" stroke="'+col+'" stroke-width="'+SW+'" '
+      +'stroke-dasharray="'+len+' '+(C-len)+'" stroke-dashoffset="'+(-off)+'" transform="rotate(-90 '+CX+' '+CX+')" '
+      +'style="transition:stroke-dashoffset .6s"><title>'+esc(e[0])+': '+e[1]+' ('+Math.round(frac*100)+'%)</title></circle>';
+    off+=len; return seg;
+  }).join("");
+  var legend=list.map(function(e){
+    var col=e[2]||(colorFn?colorFn(e[0]):"#3A5CAA");
+    return '<div class="donut-lg"><span class="donut-dot" style="background:'+col+'"></span>'
+      +'<span class="donut-lg-name" title="'+esc(e[0])+'">'+esc(e[0])+'</span>'
+      +'<span class="donut-lg-val">'+e[1]+' <small>· '+Math.round(e[1]/total*100)+'%</small></span></div>';
+  }).join("");
+  return '<div class="donut-wrap donut-big"><div class="donut-svg"><svg viewBox="0 0 200 200" width="210" height="210">'
+    +'<circle cx="100" cy="100" r="76" fill="none" stroke="var(--lb3)" stroke-width="30"/>'+segs
+    +'</svg><div class="donut-center"><div class="donut-c-val">'+esc(centerLabel)+'</div><div class="donut-c-sub">'+esc(centerSub||"")+'</div></div></div>'
+    +'<div class="donut-legend">'+legend+'</div></div>';
+}
+/* ⭐ v5.5: BIỂU ĐỒ TIẾN ĐỘ CỘT NGANG — completed / tổng sub-task theo từng kỳ (tuần hoặc tháng) */
+function progressBarsHTML(pool, from, to){
+  if(!pool.length) return '<div class="chart-empty">'+t("chart.nodata")+'</div>';
+  var spanDays = Math.round((new Date(to+"T00:00:00") - new Date(from+"T00:00:00"))/86400000)+1;
+  var byMonth = spanDays > 70;                       // >10 tuần → gom theo tháng cho gọn
+  var buckets=[], idx={};
+  function bucketOf(iso){
+    if(!iso) return null;
+    if(byMonth){
+      var k=String(iso).slice(0,7);
+      return { key:k, label:fmtMonth(k.replace("-","")) };
+    }
+    var mon=toISO(mondayOf(new Date(iso+"T00:00:00")));
+    return { key:mon, label:fmtVN(mon)+"–"+fmtVN(addDaysISO(mon,6)) };
+  }
+  pool.forEach(function(o){
+    var d=effDate(o.s)||o.s.start||o.s.actual;
+    var b=bucketOf(toISO(d)); if(!b) return;
+    if(!idx[b.key]){ idx[b.key]={key:b.key,label:b.label,done:0,total:0}; buckets.push(idx[b.key]); }
+    var bk=idx[b.key];
+    if(isCancelled(o.s.status)) return;
+    bk.total++;
+    if(isDone(o.s.status)) bk.done++;
+  });
+  buckets.sort(function(a,b){ return a.key<b.key?-1:1; });
+  if(!buckets.length) return '<div class="chart-empty">'+t("chart.nodata")+'</div>';
+  var gd=buckets.reduce(function(a,b){return a+b.done;},0), gt=buckets.reduce(function(a,b){return a+b.total;},0);
+  var grate=gt?Math.round(gd/gt*100):0;
+  var rows=buckets.map(function(b){
+    var pct=b.total?Math.round(b.done/b.total*100):0;
+    return '<div class="pb-row" title="'+esc(b.label)+': '+b.done+'/'+b.total+' ('+pct+'%)">'
+      +'<span class="pb-lb">'+esc(b.label)+'</span>'
+      +'<span class="pb-track"><span class="pb-fill" style="width:'+pct+'%;background:'+progColor(pct)+'"></span>'
+        +'<span class="pb-inpct">'+pct+'%</span></span>'
+      +'<span class="pb-val">'+b.done+'<small>/'+b.total+'</small></span></div>';
+  }).join("");
+  return '<div class="pb-wrap">'
+    +'<div class="pb-hero"><div class="pb-hero-l"><b>'+grate+'%</b><span>'+t("chart.overall")+'</span></div>'
+      +'<div class="pb-hero-r"><span class="pb-track big"><span class="pb-fill" style="width:'+grate+'%;background:'+progColor(grate)+'"></span></span>'
+      +'<span class="pb-hero-n">'+gd+' / '+gt+' '+t("unit.subtask")+'</span></div></div>'
+    +'<div class="pb-list">'+rows+'</div>'
+    +'<div class="pb-note">'+(byMonth?t("chart.byMonth"):t("chart.byWeek"))+'</div></div>';
+}
 function donutHTML(entries,centerLabel,centerSub){
   var total=entries.reduce(function(a,e){return a+e[1];},0);
   if(!total) return '<p style="color:var(--faint);font-size:13px;text-align:center;padding:20px">Chưa có dữ liệu</p>';
@@ -2207,6 +2576,7 @@ function renderGantt(bodyOnly){
   if(bodyOnly && bodyEl){ bodyEl.innerHTML=hBody; return; }
 
   $("tab-gantt").innerHTML = h + '<div id="gantt-body">' + hBody + '</div>';
+  buildSourceTabs();   /* ⭐ v5.5: badge theo bộ lọc */
 
   var gi=$("gantt-search");
   if(gi){
@@ -2339,6 +2709,7 @@ function renderDetailList(){
   });
   if(!filtered.length){ el.innerHTML='<div class="empty"><div class="ic">📋</div><p>Không có công việc khớp bộ lọc.</p></div>'; return; }
   el.innerHTML=detailKeyPanels(filtered, wFrom, wTo, null);
+  buildSourceTabs();   /* ⭐ v5.5: badge theo bộ lọc */
 }
 function setDetailTime(mode){
   S.detailTimeMode=mode;
@@ -2583,9 +2954,12 @@ function commitProg(sno,val){
   var sub=findSub(sno); if(!sub)return;
   if(!canEditPic(sub.pic)){ toast("🔒 Chỉ "+(sub.pic||"PIC")+" sửa được"); return; }
   var v=parseInt(val,10); if(isNaN(v))v=0;
+  /* ⭐ v5.5: kéo thanh % → tự đổi trạng thái theo quy tắc
+     0% ⇒ To Do · >0% ⇒ In Progress (tối thiểu 25%) · 100% ⇒ Completed */
   var newStatus=sub.status;
-  if(v>=100){ newStatus="Completed"; }
-  else if(v>0 && (/to\s*do/i.test(sub.status)||!sub.status)){ newStatus="In Progress"; }
+  if(v>=100){ newStatus="Completed"; v=100; }
+  else if(v>0){ newStatus="In Progress"; if(v<25) v=25; }
+  else { newStatus=isCancelled(sub.status)?sub.status:"To Do"; v=0; }
   sub.progress=v/100; sub.status=newStatus;
   rerenderActive();                 // đổi màu + thanh + status ngay lập tức
   quietSave(sno,{action:"updateProgress",no:sno,progress:v,status:newStatus});
@@ -2662,6 +3036,7 @@ function renderReport(){
   h+=reportSection("this","Kết quả tuần này", thisFrom,thisTo, thisData);
   h+=reportSection("next","Plan tuần sau",   nextFrom,nextTo, nextData);
   $("tab-report").innerHTML=h;
+  buildSourceTabs();   /* ⭐ v5.5: badge theo bộ lọc */
 }
 function multiFilterDropdownReport(pics,sel){
   var open=(S.reportFilterOpen==="pic");
@@ -2792,6 +3167,7 @@ function renderMonth(){
     h+='</div>';
   }
   $("tab-month").innerHTML=h;
+  buildSourceTabs();   /* ⭐ v5.5: badge theo bộ lọc */
 }
 /* ⭐ v5.3 FIX: months được sort GIẢM DẦN (mới → cũ) nên "+1" trước đây lại nhảy về tháng cũ.
    Nay: mũi tên PHẢI (dir=+1) = tháng SAU · mũi tên TRÁI (dir=−1) = tháng TRƯỚC. */
@@ -3423,11 +3799,25 @@ function totalMyOverdue(){
   });
   return n;
 }
+/* ⭐ v5.5: thống kê việc CHƯA XONG / QUÁ HẠN của TỪNG nhân sự ở nguồn đang xem */
+function picOpenStats(){
+  var m={};
+  (S.keyTasks||[]).forEach(function(k){ (k.subs||[]).forEach(function(sb){
+    if(isDone(sb.status)||isCancelled(sb.status)) return;
+    var p=picOf(sb);
+    if(!m[p]) m[p]={pic:p, open:0, overdue:0};
+    m[p].open++;
+    if(isOverdue(sb)) m[p].overdue++;
+  });});
+  return Object.keys(m).map(function(k){return m[k];})
+    .sort(function(a,b){ return (b.overdue-a.overdue)||(b.open-a.open); });
+}
 function renderMyTaskBar(){
   var bar=$("mytask-bar"); if(!bar) return;
   if(S.myTaskDismissed){ bar.classList.add("hidden"); return; }
   var total=totalMyTasks();
-  if(!total){ bar.classList.add("hidden"); return; }
+  var stats=picOpenStats();
+  if(!total && !stats.length){ bar.classList.add("hidden"); return; }
   var od=totalMyOverdue();
   var chips=["marketing","backoffice","management"].map(function(src){
     var n=S.crossCount[src]||0;
@@ -3439,13 +3829,32 @@ function renderMyTaskBar(){
       +(odn?'<span class="n od">'+odn+' quá hạn</span>':'')
       +'</button>';
   }).join("");
+
+  /* ⭐ Banner CHẠY NGANG: mọi nhân sự còn việc chưa xong + số việc quá hạn */
+  var items=stats.map(function(st){
+    return '<span class="mq-item'+(st.overdue?' od':'')+'" onclick="setOverviewPic(\''+jsq(st.pic)+'\');switchTab(\'overview\')">'
+      +'<span class="mq-av" style="background:'+avColor(st.pic)+'">'+esc(initials(st.pic))+'</span>'
+      +'<b>'+esc(st.pic)+'</b>'
+      +'<span class="mq-n">'+st.open+' việc chưa xong</span>'
+      +(st.overdue?'<span class="mq-od">'+st.overdue+' quá hạn</span>':'<span class="mq-ok">✓ đúng hạn</span>')
+      +'</span>';
+  }).join("");
+  var dur=Math.max(38, stats.length*7);   // chạy CHẬM, đủ đọc
+  var marquee = items
+    ? '<div class="mq-wrap"><div class="mq-track" style="animation-duration:'+dur+'s">'+items+items+'</div></div>'
+    : "";
+
   bar.classList.remove("hidden");
-  bar.innerHTML='<span class="mt-ic">'+(od?'🔴':'📌')+'</span>'
-    +'<span class="mt-txt">Xin chào <b>'+esc(S.user.pic)+'</b> — bạn còn <b>'+total+'</b> việc <b>chưa hoàn thành</b>'
-    +(od?' · <b style="color:#B3261E">'+od+' việc QUÁ HẠN</b>':'')
-    +'. Bấm để mở phòng ban tương ứng:</span>'
-    +'<span class="mt-chips">'+chips+'</span>'
-    +'<button class="mt-close" onclick="dismissMyTaskBar()" title="Ẩn">✕</button>';
+  bar.innerHTML=
+     '<div class="mt-row1">'
+      +'<span class="mt-ic">'+(od?'🔴':'📌')+'</span>'
+      +'<span class="mt-txt">Xin chào <b>'+esc(S.user.pic)+'</b> — bạn còn <b>'+total+'</b> việc <b>chưa hoàn thành</b>'
+      +(od?' · <b style="color:#B3261E">'+od+' việc QUÁ HẠN</b>':'')
+      +'. Bấm để mở phòng ban tương ứng:</span>'
+      +'<span class="mt-chips">'+chips+'</span>'
+      +'<button class="mt-close" onclick="dismissMyTaskBar()" title="Ẩn">✕</button>'
+    +'</div>'
+    + marquee;
 }
 function dismissMyTaskBar(){ S.myTaskDismissed=true; renderMyTaskBar(); }
 
