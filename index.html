@@ -1564,11 +1564,13 @@ function toggleFab(){
 function closeFab(){ $("fab-menu").classList.remove("show"); $("fab-btn").classList.remove("open"); }
 function fabAddKey(){
   closeFab();
-  switchTab("detail"); setTimeout(openAddKey,60);
+  try{ switchTab("detail"); }catch(e){ console.error(e); }   /* ⭐ v5.2: lỗi render KHÔNG được chặn hộp thêm task */
+  setTimeout(openAddKey,60);
 }
 function fabAddSub(){
   closeFab();
-  switchTab("detail"); setTimeout(function(){ openAddSub(null); },60);
+  try{ switchTab("detail"); }catch(e){ console.error(e); }
+  setTimeout(function(){ openAddSub(null); },60);
 }
 document.addEventListener("click",function(e){
   var w=$("fab-wrap");
@@ -2442,7 +2444,11 @@ function subRowVertical(k,s,from,to){
   var links=extractLinks(s.result);
   var priOn=!!S.priorityMarks[s.no];
   var hasPri=S.priorityMode;
-  var h='<div class="sub-row'+(outRange?' out-range':'')+(priOn?' pri-marked':'')+'" id="sub-'+esc(s.no)+'">';
+  var od=isOverdue(s);   /* ⭐ v5.2 FIX: trước đây thiếu dòng này → ReferenceError:
+                            renderDetail() chết giữa chừng ⇒ tab "Tất cả công việc" trắng trơn,
+                            và fabAddKey()/fabAddSub() (gọi switchTab('detail') trước) cũng đứt
+                            ⇒ không mở được hộp thêm task. */
+  var h='<div class="sub-row'+(od?' od-row':'')+(outRange?' out-range':'')+(priOn?' pri-marked':'')+'" id="sub-'+esc(s.no)+'">';
   // single-click: mở/đóng ghi chú · double-click: mở dialog cập nhật (nếu có quyền)
   h+='<div class="sr-main'+(hasPri?' has-pri':'')+'" onclick="toggleSubComment(\''+jsq(s.no)+'\')" ondblclick="openEdit(\''+jsq(s.no)+'\')" title="Click: xem ghi chú · Double-click: cập nhật">';
   if(hasPri){
