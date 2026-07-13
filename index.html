@@ -830,6 +830,17 @@ button{cursor:pointer}
 .pic-choice-info b{font-size:14.5px;color:var(--mmh-navy)}
 .pic-choice-info small{font-size:11.5px;color:var(--sub)}
 
+
+/* ⭐ v5.1: bộ lọc PIC tab Tổng quan — gọn */
+.ov-picbar{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:16px}
+.ov-picbar .chips{flex:1;min-width:0}
+.ov-picsel select{min-width:230px;font-weight:600}
+.ov-cur{display:inline-flex;align-items:center;gap:7px;background:var(--mmh-navy);color:#fff;border-radius:18px;padding:7px 8px 7px 7px;font-size:13px;font-weight:700}
+.ov-cur .cav{width:22px;height:22px;border-radius:50%;color:#fff;font-size:9px;font-weight:800;display:flex;align-items:center;justify-content:center}
+.ov-clear{background:rgba(255,255,255,.2);border:none;color:#fff;width:19px;height:19px;border-radius:50%;font-size:10px;cursor:pointer;display:flex;align-items:center;justify-content:center;margin-left:2px}
+.ov-clear:hover{background:rgba(255,255,255,.4)}
+@media(max-width:720px){ .ov-picsel{flex:1} .ov-picsel select{width:100%;min-width:0} }
+
 /* ══════════ ⭐ v5: GANTT TOOLBAR + UNIT + SUB RESULT ══════════ */
 .gantt-toolbar{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:12px}
 .gantt-unit-seg button{padding:8px 16px;font-size:13px}
@@ -1125,6 +1136,8 @@ var S={
   ganttOpenSub:{},               /* ⭐ sub đang mở xem kết quả trên Gantt */
   dateMode:"week", dateFrom:"", dateTo:"",
   overviewPic:"", overviewFlip:{},
+  ovPics:[], ovTypes:[],          /* ⭐ v5.2: bộ lọc Tổng quan (Nhân sự / Loại việc) — kiểu Marketing */
+  _picSet:null,                   /* ⭐ v5.2: whitelist PIC thật (cache) */
   ganttType:"", ganttTypes:[], ganttPics:[], ganttQ:"", ganttOpen:{},
   detailType:"", detailTypes:[], detailPics:[], detailQ:"", detailOpen:{},
   detailFilterOpen:"",
@@ -1325,6 +1338,8 @@ function applyBootData(res){
   S.statusOptions=res.statusOptions||S.statusOptions;
   S.typeOptions=res.typeOptions||[];
   S.picList=res.picList||[];
+  S._picSet=null;                 /* ⭐ v5.2: dựng lại whitelist PIC cho nguồn mới */
+  S.ovPics=[]; S.ovTypes=[];
 }
 function setUser(u){
   S.user={ email:"", pic:u.pic, role:u.role, title:u.title, level:u.level, known:true };
@@ -1615,9 +1630,45 @@ function ktStatus(kt){
 function allSubs(){
   var out=[]; S.keyTasks.forEach(function(k){ (k.subs||[]).forEach(function(s){ out.push({k:k,s:s}); }); }); return out;
 }
+/* ══════════════ ⭐ v5.2: WHITELIST PIC THẬT ══════════════
+   Vấn đề cũ: nếu 1 nguồn (vd Back Office) map lệch cột PIC, giá trị lọt vào là
+   TÊN TASK ("202509 Accounting, Tax…") → bộ lọc "Nhân sự" đầy tên công việc.
+   → Chỉ chấp nhận tên nằm trong danh bạ (S.pics = USER_MAP + Master!B của sheet,
+     S.picList = danh bạ app). Tên lạ chỉ được nhận nếu TRÔNG GIỐNG TÊN NGƯỜI. */
+var NO_PIC="— chưa gán —";
+function picKnownSet(){
+  if(S._picSet) return S._picSet;
+  var set={};
+  (S.pics||[]).forEach(function(p){ var v=String(p||"").trim(); if(v) set[v.toLowerCase()]=1; });
+  (S.picList||[]).forEach(function(u){ var v=String(u&&u.pic||"").trim(); if(v) set[v.toLowerCase()]=1; });
+  S._picSet=set; return set;
+}
+/* Heuristic: chuỗi nào KHÔNG thể là tên người */
+function looksLikeTaskText(v){
+  var s=String(v||"").trim();
+  if(!s) return true;
+  if(s.length>26) return true;                       // tên người không dài thế
+  if(/^\d{4,6}/.test(s)) return true;                // "202509 …" → tên task
+  if(/[\n\r\/\\:;|]/.test(s)) return true;           // dấu phân cách / xuống dòng
+  if(/https?:/i.test(s)) return true;                // link
+  if((s.match(/\s+/g)||[]).length>3) return true;    // > 4 từ
+  return false;
+}
+function isRealPic(v){
+  var s=String(v||"").trim();
+  if(!s) return false;
+  if(picKnownSet()[s.toLowerCase()]) return true;    // có trong danh bạ → chắc chắn đúng
+  return !looksLikeTaskText(s);                      // Trang / Hang… (chưa có email) vẫn nhận
+}
+/* PIC hiển thị: rỗng hoặc rác → "— chưa gán —" */
+function picOf(o){ var p=(o&&o.pic)||""; return isRealPic(p) ? String(p).trim() : NO_PIC; }
+
+/* ⭐ v5.2: chỉ lấy PIC THẬT (bỏ rỗng, bỏ tên task lọt vào do map lệch cột) */
 function picListAll(){
-  var set={}; S.keyTasks.forEach(function(k){ if(k.pic)set[k.pic]=1; (k.subs||[]).forEach(function(s){if(s.pic)set[s.pic]=1;}); });
-  S.monthly.forEach(function(m){if(m.pic)set[m.pic]=1;});
+  var set={};
+  function add(p){ if(isRealPic(p)) set[String(p).trim()]=1; }
+  S.keyTasks.forEach(function(k){ add(k.pic); (k.subs||[]).forEach(function(s){ add(s.pic); }); });
+  S.monthly.forEach(function(m){ add(m.pic); });
   return Object.keys(set).sort();
 }
 /* ⭐ Danh sách PIC đầy đủ từ picList (không phụ thuộc task đã có) — dùng cho dropdown chọn PIC.
@@ -1648,15 +1699,40 @@ function addDaysISO(iso,n){ var d=new Date(iso+"T00:00:00"); d.setDate(d.getDate
 function mondayOf(d){ var x=new Date(d); x.setHours(0,0,0,0); var w=(x.getDay()+6)%7; x.setDate(x.getDate()-w); return x; }
 
 /* ══════════════ TAB: OVERVIEW ══════════════ */
+/* ⭐ v5.1: Bộ lọc PIC ở tab Tổng quan — gọn gàng, không tràn màn hình.
+   ≤8 PIC  → hiện chip (như Marketing)
+   >8 PIC  → dropdown chọn + chip "Tất cả PIC" */
+function picLabel(p){ return (p && String(p).trim()) ? p : NO_PIC; }
+/* ⭐ v5.2: THANH LỌC TỔNG QUAN — dùng đúng kiểu dropdown của tab Marketing
+   (Nhân sự + Loại việc, multi-select, gọn 1 hàng, không tràn chip). */
+function ovFilterBar(pics, types){
+  var selP=S.ovPics||[], selT=S.ovTypes||[];
+  var h='<div class="ov-picbar">';
+  h+=multiFilterDropdown("opic","Nhân sự",pics.map(function(p){return {val:p,label:p,av:true};}),selP);
+  h+=multiFilterDropdown("otype","Loại việc",types.map(function(t){return {val:t,label:t,color:typeColor(t)};}),selT);
+  if(selP.length||selT.length){
+    h+='<button class="chip active" onclick="clearOvFilters()">✕ Xóa bộ lọc</button>';
+  }else{
+    h+='<span class="ov-cur" style="background:none;border:none;color:var(--faint);font-weight:600">👥 Đang xem tất cả '+pics.length+' nhân sự</span>';
+  }
+  h+='</div>';
+  return h;
+}
+function clearOvFilters(){ S.ovPics=[]; S.ovTypes=[]; S.overviewPic=""; renderOverview(); }
 function renderOverview(){
-  var kts=allKeyTasks();
+  var kts0=allKeyTasks();
   var pics=picListAll();
+  var types=[...new Set(kts0.map(function(k){return k.type;}).filter(Boolean))];
   var from=S.dateFrom, to=S.dateTo, todayISOv=toISO(new Date());
-  var pfilter=S.overviewPic;
+  /* ⭐ v5.2: bộ lọc mới (multi). Giữ tương thích S.overviewPic (drill-down 1 người). */
+  var selP=S.ovPics||[], selT=S.ovTypes||[];
+  var pfilter=(selP.length===1)?selP[0]:"";
+  S.overviewPic=pfilter;
+  var kts=selT.length ? kts0.filter(function(k){ return selT.indexOf(k.type)>=0; }) : kts0;
   function eff(s){ return s.revised||s.planned||""; }
   var pool=[];
   kts.forEach(function(k){ (k.subs||[]).forEach(function(s){
-    if(pfilter && s.pic!==pfilter) return;
+    if(selP.length && selP.indexOf(picOf(s))<0) return;
     pool.push({k:k,s:s});
   });});
   function inR(d){ return d && String(d).slice(0,10)>=from && String(d).slice(0,10)<=to; }
@@ -1666,13 +1742,8 @@ function renderOverview(){
   var inprog  = pool.filter(function(o){ return isInProgress(o.s.status); });
   var overdue = pool.filter(function(o){ return !isDone(o.s.status)&&!isCancelled(o.s.status) && eff(o.s) && toISO(eff(o.s))<todayISOv; });
   var h="";
-  h+='<div class="chips" style="margin-bottom:16px">';
-  h+='<button class="chip'+(pfilter===""?" active":"")+'" onclick="setOverviewPic(\'\')">👥 Tất cả PIC</button>';
-  pics.forEach(function(p){
-    h+='<button class="chip'+(pfilter===p?" active":"")+'" onclick="setOverviewPic(\''+jsq(p)+'\')">'
-      +'<span class="cav" style="background:'+avColor(p)+'">'+esc(initials(p))+'</span>'+esc(p)+'</button>';
-  });
-  h+='</div>';
+  // ⭐ v5.2: Bộ lọc GỌN kiểu Marketing — 2 dropdown (Nhân sự / Loại việc), không tràn màn hình
+  h+=ovFilterBar(pics, types);
   h+=timeFilterBar();
   h+='<div class="flip-row">'
     +flipCard('total',   total.length,   'Tổng số việc',   '📋', 'accent', total)
@@ -1682,10 +1753,22 @@ function renderOverview(){
     +flipCard('over',    overdue.length, 'Quá hạn',        '🔴','c-over', overdue)
     +'</div>';
   if(!pfilter){
-    h+='<div class="section-title"><h2>Hiệu suất theo nhân sự</h2><span class="hint">bấm để lọc · rê chuột xem chi tiết</span></div>';
+    /* ⭐ v5.2: chỉ hiện nhân sự CÓ việc trong kỳ → lưới gọn, hết rối */
+    var picStats={};
+    pics.forEach(function(p){ picStats[p]=[]; });
+    kts.forEach(function(k){ (k.subs||[]).forEach(function(s){
+      var p=picOf(s);
+      if(!picStats[p]) return;                       // bỏ PIC rác / chưa gán
+      if(selP.length && selP.indexOf(p)<0) return;
+      if(subInRange(s,from,to)) picStats[p].push({k:k,s:s});
+    });});
+    var shownPics=pics.filter(function(p){ return picStats[p].length>0; })
+                      .sort(function(a,b){ return picStats[b].length-picStats[a].length; });
+    h+='<div class="section-title"><h2>Hiệu suất theo nhân sự</h2><span class="hint">'+shownPics.length+' người có việc trong kỳ · bấm để xem chi tiết</span></div>';
+    if(!shownPics.length) h+='<div class="empty"><div class="ic">👥</div><p>Không có nhân sự nào có việc trong khoảng đã chọn.</p></div>';
     h+='<div class="cell-grid perf-grid" style="grid-template-columns:repeat(auto-fill,minmax(270px,1fr))">';
-    pics.forEach(function(p){
-      var ps=[]; kts.forEach(function(k){ (k.subs||[]).forEach(function(s){ if(s.pic===p && subInRange(s,from,to)) ps.push({k:k,s:s}); }); });
+    shownPics.forEach(function(p){
+      var ps=picStats[p];
       var active=ps.filter(function(o){return !isCancelled(o.s.status);});
       var doneList=active.filter(function(o){return isDone(o.s.status);});
       var progList=active.filter(function(o){return isInProgress(o.s.status);});
@@ -1741,13 +1824,14 @@ function renderOverview(){
   } else {
     h+='<div class="section-title"><h2>Công việc của '+esc(pfilter)+' <span style="font-size:12.5px;color:var(--faint);font-weight:600">— bấm sub-task để sửa</span></h2>'
       +'<span class="sp"></span><button class="btn-secondary" onclick="setOverviewPic(\'\')">← Tất cả PIC</button></div>';
-    var myKeys=kts.filter(function(k){ return (k.subs||[]).some(function(s){return s.pic===pfilter && subInRange(s,from,to);}) || (k.pic===pfilter && keyInRange(k,from,to)); });
+    var myKeys=kts.filter(function(k){ return (k.subs||[]).some(function(s){return picOf(s)===pfilter && subInRange(s,from,to);}) || (picOf(k)===pfilter && keyInRange(k,from,to)); });
     if(!myKeys.length){ h+='<div class="empty"><div class="ic">📭</div><p>'+esc(pfilter)+' không có việc trong khoảng đã chọn.</p></div>'; }
     else h+=detailKeyPanels(myKeys, from, to, pfilter);
   }
   $("tab-overview").innerHTML=h;
 }
-function setOverviewPic(p){ S.overviewPic=p; renderOverview(); }
+/* ⭐ v5.2: bấm ô nhân sự = chọn đúng 1 người trong bộ lọc mới */
+function setOverviewPic(p){ S.overviewPic=p||""; S.ovPics=p?[p]:[]; renderOverview(); }
 function toggleFlip(id){ S.overviewFlip[id]=!S.overviewFlip[id]; renderOverview(); }
 function flipCard(id,val,label,ic,cls,items){
   var flipped=!!S.overviewFlip[id];
@@ -2235,7 +2319,14 @@ function multiFilterDropdown(kind,label,items,sel){
     +(cnt?'<button class="mfd-clear" onclick="clearDetailFilter(\''+kind+'\')">Xóa lọc</button>':'')
     +'</div><div class="mfd-list">'+list+'</div></div></div>';
 }
-function toggleDetailFilter(kind){ S.detailFilterOpen=(S.detailFilterOpen===kind)?"":kind; if(kind==="mtype"||kind==="mpic")renderMonth(); else if(kind==="gtype"||kind==="gpic")renderGantt(); else renderDetail(); }
+/* ⭐ v5.2: thêm nhóm "opic"/"otype" cho tab Tổng quan */
+function mfdRender(kind){
+  if(kind==="mtype"||kind==="mpic") renderMonth();
+  else if(kind==="gtype"||kind==="gpic") renderGantt();
+  else if(kind==="opic"||kind==="otype") renderOverview();
+  else renderDetail();
+}
+function toggleDetailFilter(kind){ S.detailFilterOpen=(S.detailFilterOpen===kind)?"":kind; mfdRender(kind); }
 function toggleDetailFilterVal(kind,val){
   var arr;
   if(kind==="type")arr=S.detailTypes;
@@ -2244,10 +2335,12 @@ function toggleDetailFilterVal(kind,val){
   else if(kind==="mpic")arr=(S.monthPics=S.monthPics||[]);
   else if(kind==="gtype")arr=(S.ganttTypes=S.ganttTypes||[]);
   else if(kind==="gpic")arr=(S.ganttPics=S.ganttPics||[]);
+  else if(kind==="otype")arr=(S.ovTypes=S.ovTypes||[]);
+  else if(kind==="opic")arr=(S.ovPics=S.ovPics||[]);
   else return;
   var i=arr.indexOf(val);
   if(i>=0) arr.splice(i,1); else arr.push(val);
-  if(kind==="mtype"||kind==="mpic")renderMonth(); else if(kind==="gtype"||kind==="gpic")renderGantt(); else renderDetail();
+  mfdRender(kind);
 }
 function clearDetailFilter(kind){
   if(kind==="type")S.detailTypes=[];
@@ -2256,10 +2349,18 @@ function clearDetailFilter(kind){
   else if(kind==="mpic")S.monthPics=[];
   else if(kind==="gtype")S.ganttTypes=[];
   else if(kind==="gpic")S.ganttPics=[];
-  if(kind==="mtype"||kind==="mpic")renderMonth(); else if(kind==="gtype"||kind==="gpic")renderGantt(); else renderDetail();
+  else if(kind==="otype")S.ovTypes=[];
+  else if(kind==="opic"){ S.ovPics=[]; S.overviewPic=""; }
+  mfdRender(kind);
 }
 document.addEventListener("click",function(e){
-  if(S.detailFilterOpen && !e.target.closest(".mfd")){ var k=S.detailFilterOpen; S.detailFilterOpen=""; if(k==="mtype"||k==="mpic"){ if(S.tab==="month")renderMonth(); } else if(k==="gtype"||k==="gpic"){ if(S.tab==="gantt")renderGantt(); } else if(S.tab==="detail")renderDetail(); }
+  if(S.detailFilterOpen && !e.target.closest(".mfd")){
+    var k=S.detailFilterOpen; S.detailFilterOpen="";
+    if(k==="mtype"||k==="mpic"){ if(S.tab==="month")renderMonth(); }
+    else if(k==="gtype"||k==="gpic"){ if(S.tab==="gantt")renderGantt(); }
+    else if(k==="opic"||k==="otype"){ if(S.tab==="overview")renderOverview(); }
+    else if(S.tab==="detail")renderDetail();
+  }
 });
 
 /* Panels key + sub — DÙNG CHUNG cho Overview(lọc PIC) và Detail.
@@ -2269,7 +2370,7 @@ function detailKeyPanels(keys, from, to, picFilter){
     var open=!!S.detailOpen[k.no];
     var subs=(k.subs||[]).slice();
     // lọc theo PIC nếu đang ở overview-per-pic
-    if(picFilter) subs=subs.filter(function(s){return s.pic===picFilter;});
+    if(picFilter) subs=subs.filter(function(s){return picOf(s)===picFilter;});
     // lọc thời gian (nếu có) — trừ khi user yêu cầu hiện tất cả
     var showAll=!!S.detailShowAllSubs[k.no];
     var subsInRange=subs, hiddenCount=0;
@@ -2579,11 +2680,15 @@ function renderMonth(){
     if(!canAssign() && S.user && S.user.pic) S.monthPics=[S.user.pic];
   }
   var selTypes=S.monthTypes||[], selPics=S.monthPics||[];
-  var pics=[...new Set(S.monthly.map(function(m){return m.pic;}).filter(Boolean))];
+  /* ⭐ v5.2: PIC của MONTH (Back Office cột G) hay bị TRỐNG → gom vào "— chưa gán —",
+     và không bao giờ lấy tên task làm PIC nữa (whitelist isRealPic). */
+  var pics=[...new Set(S.monthly.map(picOf))].sort(function(a,b){
+    if(a===NO_PIC) return 1; if(b===NO_PIC) return -1; return a<b?-1:1;
+  });
   var rows=S.monthly.filter(function(m){
     if(S.monthSel && m.month!==S.monthSel) return false;
     if(selTypes.length && selTypes.indexOf(m.type)<0) return false;
-    if(selPics.length && selPics.indexOf(m.pic)<0) return false;
+    if(selPics.length && selPics.indexOf(picOf(m))<0) return false;
     return true;
   });
   var h="";
@@ -2612,7 +2717,9 @@ function renderMonth(){
         +'<div class="mr-card2-meta">'
           +'<span class="mr-type2" style="background:'+typeColor(m.type)+'22;color:'+typeColor(m.type)+'">'+esc(m.type||'—')+'</span>'
           +'<span class="mr-fill '+(filled?'done':'empty')+'">'+(filled?'✓ Đã điền':'Chưa điền')+'</span>'
-          +'<span class="mr-pic2"><span class="mr-pic2-av" style="background:'+avColor(m.pic)+'">'+esc(initials(m.pic||'?'))+'</span>'+esc(m.pic||'—')+'</span>'
+          +(isRealPic(m.pic)
+              ? '<span class="mr-pic2"><span class="mr-pic2-av" style="background:'+avColor(m.pic)+'">'+esc(initials(m.pic))+'</span>'+esc(String(m.pic).trim())+'</span>'
+              : '<span class="mr-pic2" style="color:var(--faint)"><span class="mr-pic2-av" style="background:#B8BFCC">?</span>'+esc(NO_PIC)+'</span>')
         +'</div></div>'
         +'<div class="mr-card2-body'+(filled?'':' is-empty')+'">'+(filled?linkify(m.content):'Chưa có nội dung.')+'</div>';
       if(canEdit) h+='<div style="padding:10px 19px 15px;display:flex;gap:8px"><button class="btn-secondary" onclick="openEditMonth('+(m.row||0)+')">✏️ Cập nhật</button>'
@@ -3181,13 +3288,22 @@ function jsonpTo(url, params){
     document.body.appendChild(sc);
   });
 }
+/* ⭐ v5.2: so tên PIC "chuẩn hoá" (bỏ dấu, bỏ khoảng trắng thừa, không phân biệt hoa/thường) */
+function normName(v){
+  return String(v||"").normalize("NFD").replace(/[\u0300-\u036f]/g,"")
+    .replace(/đ/gi,"d").replace(/\s+/g," ").trim().toLowerCase();
+}
 function scanMyTasks(){
   if(!S.user||!S.user.pic) return;
+  var me=normName(S.user.pic);
   var srcs=["marketing","backoffice","management"];
   var jobs=srcs.map(function(src){
     return jsonpTo(GAS_URLS[src], { action:"myTasks", pic:S.user.pic })
       .then(function(r){
         var tasks=(r&&r.ok&&r.tasks)?r.tasks:[];
+        /* ⭐ v5.2 CHỐT AN TOÀN: chỉ giữ việc ĐÚNG PIC đang đăng nhập.
+           (backend đã lọc; đây là lớp chặn thứ 2 phòng khi 1 nguồn trả sai) */
+        tasks=tasks.filter(function(t){ return !t || t.pic==null ? true : normName(t.pic)===me; });
         S.crossTasks[src]=tasks;
         S.crossCount[src]=tasks.length;
       })
@@ -3227,7 +3343,7 @@ function renderMyTaskBar(){
   }).join("");
   bar.classList.remove("hidden");
   bar.innerHTML='<span class="mt-ic">'+(od?'🔴':'📌')+'</span>'
-    +'<span class="mt-txt">Xin chào <b>'+esc(S.user.pic)+'</b> — bạn đang phụ trách <b>'+total+'</b> công việc'
+    +'<span class="mt-txt">Xin chào <b>'+esc(S.user.pic)+'</b> — bạn còn <b>'+total+'</b> việc <b>chưa hoàn thành</b>'
     +(od?' · <b style="color:#B3261E">'+od+' việc QUÁ HẠN</b>':'')
     +'. Bấm để mở phòng ban tương ứng:</span>'
     +'<span class="mt-chips">'+chips+'</span>'
