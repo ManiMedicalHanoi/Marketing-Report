@@ -425,6 +425,20 @@ button{cursor:pointer}
 #fab-menu{display:none;flex-direction:column;gap:8px;align-items:flex-end}
 #fab-menu.show{display:flex;animation:fabpop .18s ease}
 @keyframes fabpop{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+/* ⭐ v5.9: thanh hành động "nhắc việc ưu tiên" */
+#pri-bar{position:fixed;left:50%;bottom:-120px;transform:translateX(-50%);z-index:930;display:flex;align-items:center;gap:14px;
+  background:#fff;border:1.5px solid #E8C878;border-left:6px solid #E0900A;border-radius:16px;padding:12px 18px;
+  box-shadow:0 12px 40px rgba(14,47,95,.22);transition:bottom .3s var(--ease);max-width:94vw;flex-wrap:wrap}
+#pri-bar.show{bottom:26px}
+.pri-ic{font-size:20px;color:#E0900A}
+.pri-txt{font-size:14px;color:var(--sub)}
+.pri-txt b{color:var(--mmh-navy)}
+.pri-chips{display:flex;gap:6px;flex-wrap:wrap;max-width:420px}
+.pri-chip{display:inline-flex;align-items:center;gap:6px;background:var(--pale);border-radius:20px;padding:3px 10px 3px 3px;font-size:12px;color:var(--sub);font-weight:600}
+.pri-chip b{color:var(--mmh-navy)}
+.pri-av{width:21px;height:21px;border-radius:50%;color:#fff;font-size:9px;font-weight:800;display:flex;align-items:center;justify-content:center}
+.btn-secondary.pri-on{background:#FFF3CD;border-color:#E0900A;color:#8A5A00}
+@media(max-width:720px){ .pri-chips{display:none} #pri-bar{gap:10px;padding:10px 12px} }
 .fab-item{display:flex;align-items:center;gap:9px;background:#fff;border:1px solid var(--border);border-radius:12px;padding:11px 16px;font-size:14.5px;font-weight:700;color:var(--mmh-navy);cursor:pointer;box-shadow:var(--sh-md);white-space:nowrap;transition:.14s}
 .fab-item:hover{border-color:var(--mmh-blue);transform:translateX(-3px)}
 .fab-ic{font-size:17px}
@@ -1134,12 +1148,11 @@ button{cursor:pointer}
 <div id="modals"></div>
 <div id="overlay"><div class="ov-card"><div class="gate-spinner" style="margin:0"></div><h3 id="ov-title">Đang xử lý</h3><p id="ov-msg">Vui lòng đợi…</p></div></div>
 
+<div id="pri-bar"></div>   <!-- ⭐ v5.9: thanh gửi email nhắc ưu tiên -->
 <div id="fab-wrap" style="display:none">
   <div id="fab-menu">
     <button class="fab-item" id="fab-key" onclick="fabAddKey()"><span class="fab-ic">🗂️</span>Thêm Key Task</button>
     <button class="fab-item" onclick="fabAddSub()"><span class="fab-ic">➕</span>Thêm Sub Task</button>
-    <!-- ⭐ v5.9: chỉ quản lý mới thấy — giao việc cho người khác + gửi email -->
-    <button class="fab-item" id="fab-assign" style="display:none" onclick="fabAssign()"><span class="fab-ic">📨</span>Giao việc cho người khác</button>
   </div>
   <button id="fab-btn" onclick="toggleFab()" title="Thêm việc">
     <svg viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
@@ -1299,7 +1312,6 @@ var S={
   monthSel:"", monthType:"", monthTypes:[], monthPics:[],
   reportFrom:"", reportTo:"", reportPics:[], reportTypes:[], reportFilterOpen:"",
   sendWeek:"", sendMonth:"",   /* ⭐ v5.3: kỳ báo cáo chọn trong hộp thoại gửi */
-  assignTo:"", assignSel:{}, assignNote:"", assignQ:"", assignRepic:true,   /* ⭐ v5.8: giao việc */
   editCtx:null,
 };
 function initDateFilter(){
@@ -1622,7 +1634,6 @@ function startApp(){
   }
   switchTab("detail");
   $("fab-wrap").style.display="flex";
-  syncFabAssign();   /* ⭐ v5.9 */
   var rail=document.getElementById("activity-rail"); if(rail) rail.style.display="flex";
   renderActivity();
   renderMyTaskBar();
@@ -1725,7 +1736,6 @@ function applySource(src, res, silent){
   buildTabs();                       // ẩn tab Monthly khi ở Management
   var dp=$("denied-page"); if(dp) dp.style.display="none";
   applyDefaultPicFilter();
-  syncFabAssign();                   // ⭐ v5.9: quyền giao việc theo từng sheet
   var me=String((S.user&&S.user.pic)||"");
   if(me){ S.detailPics=[me]; S.detailTimeMode="week"; setDateMode("week"); }
   switchTab("detail");               // vào thẳng "Tất cả công việc" của mình
@@ -1821,18 +1831,7 @@ function fabAddSub(){
   try{ switchTab("detail"); }catch(e){ console.error(e); }
   setTimeout(function(){ openAddSub(null); },60);
 }
-/* ⭐ v5.9: GIAO VIỆC nằm ngay trong nút "+" — chỉ quản lý mới thấy.
-   Việc luôn được tạo/giao Ở ĐÚNG SHEET (nguồn) đang mở. */
-function fabAssign(){
-  closeFab();
-  try{ switchTab("detail"); }catch(e){ console.error(e); }
-  setTimeout(function(){ openAssign(null); },60);
-}
-/* Hiện/ẩn mục "Giao việc" theo quyền của người đang đăng nhập */
-function syncFabAssign(){
-  var b=$("fab-assign"); if(!b) return;
-  b.style.display = canAssign() ? "flex" : "none";
-}
+
 document.addEventListener("click",function(e){
   var w=$("fab-wrap");
   if(w && w.style.display!=="none" && !w.contains(e.target)) closeFab();
@@ -1858,7 +1857,9 @@ function buildTabs(){
       +'<svg viewBox="0 0 24 24">'+t.icon+'</svg>'+esc(t.label)+'</button>';
   }).join("");
 }
+/* ⭐ v5.9: rời tab "Tất cả công việc" thì tắt chế độ ưu tiên cho gọn màn hình */
 function switchTab(id){
+  if(id!=="detail" && S.priorityMode){ S.priorityMode=false; var pb=$("pri-bar"); if(pb) pb.classList.remove("show"); }
   S.tab=id;
   $("denied-page").style.display="none";
   document.querySelectorAll(".tabbtn").forEach(function(b){ b.classList.toggle("active",b.dataset.tab===id); });
@@ -2023,7 +2024,15 @@ var DICT_EN = {
   "Không có công việc chưa hoàn thành nào khớp.":"No unfinished task matches.",
   "🔒 Chỉ quản lý mới giao việc được":"🔒 Only managers can assign tasks",
   "⚠️ Chưa chọn người nhận":"⚠️ No recipient selected",
-  "⚠️ Chưa chọn việc nào để giao":"⚠️ No task selected"
+  "⚠️ Chưa chọn việc nào để giao":"⚠️ No task selected",
+  /* ⭐ v5.9: nhắc việc ưu tiên */
+  "☆ Nhắc việc ưu tiên":"☆ Priority reminder", "★ Đang chọn việc ưu tiên":"★ Selecting priority tasks",
+  "★ Nhắc việc ưu tiên":"★ Priority reminder", "Gửi email nhắc ưu tiên":"Send priority reminder",
+  "📨 Gửi email":"📨 Send email", "Bỏ chọn":"Clear selection",
+  "Ghi chú kèm email":"Note in the email", "Đánh dấu ưu tiên & gửi email…":"Flagging priority & sending email…",
+  "🔒 Chỉ quản lý mới nhắc việc ưu tiên":"🔒 Only managers can send priority reminders",
+  "🔒 Chỉ quản lý mới đánh dấu ưu tiên":"🔒 Only managers can flag priority",
+  "⚠️ Chưa chọn việc nào":"⚠️ No task selected", "⚠️ Không có việc nào có PIC":"⚠️ No task has an assignee"
 };
 
 /* Quy tắc động (có số / tên) VI → EN */
@@ -2072,6 +2081,10 @@ var RULES_EN = [
   [/^Chọn công việc để giao \((\d+) đã chọn\)$/, "Select tasks to assign ($1 selected)"],
   [/^\((\d+) đã chọn\)$/, "($1 selected)"],
   [/^Đã giao (\d+) việc cho (.+)$/, "Assigned $1 task(s) to $2"],
+  [/^Đã chọn (\d+) việc ưu tiên của (\d+) nhân sự$/, "Selected $1 priority tasks across $2 assignees"],
+  [/^Người nhận \((\d+) nhân sự · (\d+) việc\)$/, "Recipients ($1 assignees · $2 tasks)"],
+  [/^(\d+) việc$/, "$1 tasks"],
+  [/^Đã gửi nhắc ưu tiên (\d+) việc$/, "Priority reminder sent for $1 tasks"],
   [/^Đã gửi nhắc việc \((\d+) công việc\) tới (.+)$/, "Sent assignment ($1 tasks) to $2"],
   [/^Không tìm thấy email của (.+)$/, "No email found for $1"],
   [/^Đã gửi email giao việc cho (.+)$/, "Assignment email sent to $1"],
@@ -2989,6 +3002,12 @@ function renderDetail(){
     +'<input type="text" id="detail-search" placeholder="Tìm key task, sub-task, PIC…" value="'+esc(S.detailQ||"")+'" oninput="S.detailQ=this.value;clearTimeout(window._dq);window._dq=setTimeout(renderDetailList,200)"/></div>';
   h+=multiFilterDropdown("type","Loại việc",types.map(function(t){return {val:t,label:t,color:typeColor(t)};}),selTypes);
   h+=multiFilterDropdown("pic","Nhân sự",pics.map(function(p){return {val:p,label:p,av:true};}),selPics);
+  /* ⭐ v5.9: NHẮC ƯU TIÊN — chỉ quản lý; bật lên sẽ hiện ô tích ★ trước từng sub-task */
+  if(canAssign()){
+    h+='<div class="sp" style="flex:1"></div>'
+      +'<button class="btn-secondary'+(S.priorityMode?' pri-on':'')+'" onclick="togglePriorityMode()">'
+      +(S.priorityMode?'★ Đang chọn việc ưu tiên':'☆ Nhắc việc ưu tiên')+'</button>';
+  }
   h+='</div>';
   h+='<div id="detail-list"></div>';
   $("tab-detail").innerHTML=h;
@@ -3022,7 +3041,8 @@ function renderDetailList(){
   });
   if(!filtered.length){ el.innerHTML='<div class="empty"><div class="ic">📋</div><p>Không có công việc khớp bộ lọc.</p></div>'; return; }
   el.innerHTML=detailKeyPanels(filtered, wFrom, wTo, null);
-  buildSourceTabs();   /* ⭐ v5.5: badge theo bộ lọc */
+  buildSourceTabs();
+  renderPriorityBar();   /* ⭐ v5.9 */   /* ⭐ v5.5: badge theo bộ lọc */
 }
 function setDetailTime(mode){
   S.detailTimeMode=mode;
@@ -3504,133 +3524,11 @@ function delMonth(row,no,title,month){
 function showModal(html){ $("modals").innerHTML='<div class="modal-overlay show" onclick="if(event.target===this)closeModal()">'+html+'</div>'; if(typeof LANG!=="undefined"&&LANG==="en") translateNode($("modals")); }
 function closeModal(){ $("modals").innerHTML=""; }
 
-/* ══════════════ ⭐ v5.8: GIAO VIỆC (ASSIGN) — gửi email giao việc cho PIC ══════════════
-   Trước đây backend đã có action 'assign' nhưng GIAO DIỆN chưa hề gọi tới → tính năng "không chạy".
-   Nay: quản lý (Nguyen Ha · Tuyen · Hoa · Team Leader) mở hộp thoại, chọn người nhận,
-   tick các việc cần giao (hoặc thêm việc mới ngay tại chỗ), tuỳ chọn CHUYỂN PIC của việc
-   sang người đó, rồi gửi email giao việc. Dùng được ở CẢ 3 nguồn (kể cả Management). */
-function assignablePics(){
-  var names=(S.picList||[]).map(function(u){return u.pic;});
-  picListAll().forEach(function(p){ if(names.indexOf(p)<0) names.push(p); });
-  return names.filter(function(p,i,a){ return p && a.indexOf(p)===i; }).sort();
-}
-function openAssign(preNo){
-  if(!canAssign()){ toast("🔒 Chỉ quản lý mới giao việc được"); return; }
-  S.assignSel = {};
-  if(preNo) S.assignSel[preNo]=true;
-  S.assignTo = S.assignTo || "";
-  S.assignQ = "";
-  renderAssignModal();
-}
-function assignOpenSubs(){
-  var out=[];
-  (S.keyTasks||[]).forEach(function(k){ (k.subs||[]).forEach(function(sb){
-    if(isDone(sb.status)||isCancelled(sb.status)) return;
-    out.push({k:k,s:sb});
-  });});
-  return out;
-}
-function renderAssignModal(){
-  var pics=assignablePics();
-  var to=S.assignTo||"";
-  var q=(S.assignQ||"").toLowerCase();
-  var list=assignOpenSubs().filter(function(o){
-    if(!q) return true;
-    var hay=(o.s.name||o.s.subTask||"")+" "+(o.k.keyTask||"")+" "+(o.s.pic||"")+" "+(o.s.no||"");
-    return hay.toLowerCase().indexOf(q)>=0;
-  });
-  var nSel=Object.keys(S.assignSel||{}).filter(function(k){return S.assignSel[k];}).length;
-  var rows=list.length ? list.map(function(o){
-    var on=!!S.assignSel[o.s.no];
-    var dl=effDate(o.s)?fmtVNFull(effDate(o.s)):"—";
-    var od=isOverdue(o.s);
-    return '<label class="as-row'+(on?" on":"")+(od?" od":"")+'">'
-      +'<input type="checkbox" '+(on?"checked":"")+' onchange="toggleAssignSel(\''+jsq(o.s.no)+'\',this.checked)"/>'
-      +'<span class="as-no">'+esc(o.s.no)+'</span>'
-      +'<span class="as-nm"><b>'+esc(o.s.name||o.s.subTask||"")+'</b><small>'+esc(o.k.keyTask||"")+'</small></span>'
-      +'<span class="as-pic"><span class="as-av" style="background:'+avColor(o.s.pic)+'">'+esc(initials(o.s.pic||"?"))+'</span>'+esc(o.s.pic||"— chưa gán —")+'</span>'
-      +'<span class="as-dl'+(od?" od":"")+'">'+esc(dl)+'</span>'
-      +'</label>';
-  }).join("") : '<div class="as-empty">Không có công việc chưa hoàn thành nào khớp.</div>';
-
-  var html='<div class="modal-box modal-lg"><div class="modal-head"><h3>📨 Giao việc</h3>'
-    +'<button class="modal-close" onclick="closeModal()">✕</button></div>'
-    +'<div class="modal-body">'
-    +'<div class="field"><label>Giao cho (người nhận email)</label>'
-      +'<select id="as-to" onchange="S.assignTo=this.value;renderAssignModal()">'
-      +'<option value="">— Chọn nhân sự —</option>'
-      +pics.map(function(p){ return '<option value="'+esc(p)+'"'+(p===to?" selected":"")+'>'+esc(p)+'</option>'; }).join("")
-      +'</select></div>'
-    +'<label class="as-check"><input type="checkbox" id="as-repic" '+(S.assignRepic!==false?"checked":"")+' onchange="S.assignRepic=this.checked"/>'
-      +'<span>Chuyển <b>PIC</b> của các việc đã chọn sang người này (ghi vào sheet)</span></label>'
-    +'<div class="field" style="margin-top:12px"><label>Chọn công việc để giao <span style="color:var(--mmh-blue)">('+nSel+' đã chọn)</span></label>'
-      +'<div class="search" style="margin-bottom:8px"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>'
-      +'<input type="text" id="as-q" placeholder="Tìm công việc…" value="'+esc(S.assignQ||"")+'" oninput="S.assignQ=this.value;clearTimeout(window._asq);window._asq=setTimeout(renderAssignModal,220)"/></div>'
-      +'<div class="as-list">'+rows+'</div></div>'
-    +'<div class="as-new"><b>➕ Hoặc giao một việc MỚI</b>'
-      +'<div class="field-row" style="margin-top:8px">'
-        +'<div class="field"><label>Tên công việc mới</label><input id="as-newname" placeholder="VD: Chuẩn bị hồ sơ thầu BV Bạch Mai"/></div>'
-        +'<div class="field"><label>Deadline</label><input id="as-newdl" type="date"/></div>'
-      +'</div>'
-      +'<div class="field"><label>Thuộc Key Task</label><select id="as-newkey">'
-        +(S.keyTasks||[]).map(function(k){ return '<option value="'+esc(k.no)+'">'+esc(k.no+'. '+k.keyTask)+'</option>'; }).join("")
-      +'</select></div></div>'
-    +'<div class="field"><div class="field-label-row"><label>Ghi chú kèm email</label></div>'
-      +'<textarea id="as-note" rows="3" placeholder="VD: Ưu tiên hoàn thành trước 20/07, báo cáo lại khi xong.">'+esc(S.assignNote||"")+'</textarea></div>'
-    +'<div class="modal-footer"><button class="btn-secondary" onclick="closeModal()">Hủy</button>'
-    +'<button class="btn-primary" id="as-send" onclick="doAssign()">📨 Gửi email giao việc</button></div>'
-    +'</div></div>';
-  showModal(html);
-}
-function toggleAssignSel(no,on){ S.assignSel=S.assignSel||{}; S.assignSel[no]=!!on; renderAssignModal(); }
-function doAssign(){
-  var to=String(S.assignTo||"").trim();
-  if(!to){ toast("⚠️ Chưa chọn người nhận"); return; }
-  var note=$("as-note")?$("as-note").value:"";
-  S.assignNote=note;
-  var newName=$("as-newname")?$("as-newname").value.trim():"";
-  var newDl=$("as-newdl")?$("as-newdl").value:"";
-  var newKey=$("as-newkey")?$("as-newkey").value:"";
-  var repic=$("as-repic")?$("as-repic").checked:true;
-
-  var picked=[];
-  assignOpenSubs().forEach(function(o){
-    if(S.assignSel && S.assignSel[o.s.no]){
-      picked.push({ no:o.s.no, row:o.s.row, name:o.s.name||o.s.subTask||"", keyTask:o.k.keyTask||"",
-                    deadline:effDate(o.s)||"", status:o.s.status||"", pic:to });
-    }
-  });
-  if(!picked.length && !newName){ toast("⚠️ Chưa chọn việc nào để giao"); return; }
-
-  var btn=$("as-send"); if(btn) btn.disabled=true;
-  overlay(true,"Đang giao việc","Cập nhật PIC & gửi email…");
-
-  var jobs=[];
-  /* (a) đổi PIC các việc đã chọn */
-  if(repic && picked.length){
-    picked.forEach(function(it){
-      jobs.push(apiPost({action:"updateSub", no:it.no, row:it.row, updates:{pic:to}}));
-    });
-  }
-  /* (b) tạo việc mới rồi giao luôn */
-  if(newName){
-    jobs.push(apiPost({action:"addSub", parentNo:newKey, keyNo:newKey, name:newName, subTask:newName,
-                       pic:to, planned:newDl, status:"To Do", progress:0 }));
-    picked.push({ no:"(mới)", name:newName, keyTask:"", deadline:newDl, status:"To Do", pic:to });
-  }
-
-  Promise.all(jobs).catch(function(){/* lỗi ghi sheet vẫn tiếp tục gửi email */}).then(function(){
-    return apiPost({ action:"assign", toPic:to, note:note, items:JSON.stringify(picked) });
-  }).then(function(r){
-    overlay(false); closeModal();
-    S.assignSel={}; S.assignNote="";
-    toast("✓ "+((r&&r.message)||("Đã giao "+picked.length+" việc cho "+to)));
-    reloadSoft();
-  }).catch(function(e){
-    overlay(false); if(btn)btn.disabled=false;
-    toast("⚠️ "+e.message);
-  });
-}
+/* ⭐ v5.10: KHÔNG còn hộp thoại "Giao việc" riêng.
+   · Giao việc = TẠO TASK như bình thường: PIC thường chỉ tạo dưới tên mình;
+     quản lý chọn được người khác ⇒ tạo xong TỰ ĐỘNG gửi email giao việc cho PIC đó.
+   · Nhắc việc hàng loạt = dùng "☆ Nhắc việc ưu tiên" ở tab Tất cả công việc
+     (chọn nhiều task cùng lúc rồi gửi 1 email). */
 
 /* ── SỬA SUB-TASK (kèm kết quả/link — payload có thể DÀI → apiPost tự POST) ── */
 function openEdit(sno){
@@ -3736,6 +3634,8 @@ function openAddKey(){
       +'<div class="field"><label>Bắt đầu</label><input type="date" id="ak-start" value="'+today+'" onchange="syncDeadlineMin(\'ak-start\',\'ak-planned\')"/></div>'
       +'<div class="field"><label>Hạn</label><input type="date" id="ak-planned" value="'+today+'" min="'+today+'"/></div>'
     +'</div>'
+    +(canAsg?'<label class="as-check"><input type="checkbox" id="ak-mail" checked/>'
+      +'<span>📨 Gửi <b>email giao việc</b> nếu PIC không phải là bạn</span></label>':'')
     +'<div class="modal-footer"><button class="btn-secondary" onclick="closeModal()">Hủy</button>'
     +'<button class="btn-primary" id="ak-save" onclick="saveAddKey()">➕ Thêm</button></div>'
     +'</div></div>';
@@ -3749,11 +3649,24 @@ function syncDeadlineMin(startId, planId){
 function saveAddKey(){
   var name=$("ak-name").value.trim();
   if(!name){ toast("Nhập tên key task"); return; }
-  var pic=$("ak-pic").value || S.user.pic;
+  /* ⭐ v5.10: PIC thường LUÔN tạo dưới tên mình; quản lý mới chọn được người khác */
+  var pic = canAssign() ? ($("ak-pic").value || S.user.pic) : S.user.pic;
+  var wantMail = !!($("ak-mail") && $("ak-mail").checked)
+              && String(pic).toLowerCase()!==String(S.user.pic).toLowerCase();
   var _t=$("ak-type").value, _s=$("ak-start").value, _p=$("ak-planned").value;
   $("ak-save").disabled=true;
   closeModal(); toast("✓ Đang thêm key task…");
   apiPost({action:"addKey",keyTask:name,type:_t,pic:pic,start:_s,planned:_p})
+    .then(function(r){
+      /* giao việc: tạo xong tự gửi email cho PIC được giao (đúng sheet đang mở) */
+      if(wantMail){
+        apiPost({ action:"assign", toPic:pic, note:"",
+                  items:JSON.stringify([{ no:(r&&r.no)||"", name:name, keyTask:name, deadline:_p, status:"To Do", pic:pic }]) })
+          .then(function(rr){ toast("📨 "+((rr&&rr.message)||("Đã gửi email giao việc cho "+pic))); })
+          .catch(function(e){ toast("⚠️ Đã tạo việc nhưng gửi email lỗi: "+e.message); });
+      }
+      return r;
+    })
     .then(function(r){
       S.keyTasks.push({ row:(r&&r.row)||0, no:(r&&r.no)||String(S.keyTasks.length+1),
         keyTask:name, type:_t, pic:pic, status:"To Do", progress:0,
@@ -4189,15 +4102,98 @@ function syncPriorityMarks(){
   S.keyTasks.forEach(function(k){ (k.subs||[]).forEach(function(s){ if(s.priority)m[s.no]=true; }); });
   S.priorityMarks=m;
 }
-function togglePriorityMode(){ S.priorityMode=!S.priorityMode; renderDetail(); }
+/* ⭐ v5.9: CHẾ ĐỘ NHẮC VIỆC ƯU TIÊN
+   Quản lý bật chế độ → tích ★ nhiều việc → hệ thống ĐÁNH DẤU vào sheet + GHI LOG,
+   và hiện thanh "Gửi email" để nhắc TOÀN BỘ PIC liên quan (mỗi người 1 email riêng). */
+function togglePriorityMode(){
+  if(!canAssign()){ toast("🔒 Chỉ quản lý mới nhắc việc ưu tiên"); return; }
+  S.priorityMode=!S.priorityMode;
+  if(!S.priorityMode) S.priorityMarks={};
+  renderDetail(); renderPriorityBar();
+}
 function togglePriority(sno){
+  if(!canAssign()){ toast("🔒 Chỉ quản lý mới đánh dấu ưu tiên"); return; }
   var s=findSub(sno); if(!s)return;
   var on=!S.priorityMarks[sno];
   S.priorityMarks[sno]=on;
-  apiPost({action:"setPriority",no:sno,priority:on?1:0}).then(function(){
-    toast(on?"★ Đã đánh dấu ưu tiên":"Đã bỏ ưu tiên");
-  }).catch(function(e){ toast("⚠️ "+e.message); });
-  renderDetail();
+  /* đánh dấu vào sheet + ghi Activity Log (backend tự log) */
+  apiPost({action:"setPriorityFlag", no:sno, row:s.row||0, on:on?1:0})
+    .catch(function(e){ toast("⚠️ "+e.message); });
+  renderDetail(); renderPriorityBar();
+}
+function priorityPicked(){
+  var out=[];
+  (S.keyTasks||[]).forEach(function(k){ (k.subs||[]).forEach(function(sb){
+    if(!S.priorityMarks[sb.no]) return;
+    if(isDone(sb.status)||isCancelled(sb.status)) return;   // việc xong thì không nhắc
+    out.push({ no:sb.no, row:sb.row, name:sb.name||sb.subTask||"", keyTask:k.keyTask||"",
+               pic:picOf(sb), deadline:effDate(sb)||"", status:sb.status||"" });
+  });});
+  return out;
+}
+function renderPriorityBar(){
+  var bar=$("pri-bar"); if(!bar) return;
+  var items=priorityPicked();
+  if(!S.priorityMode || !items.length){ bar.classList.remove("show"); return; }
+  var pics={};
+  items.forEach(function(it){ if(it.pic) pics[it.pic]=(pics[it.pic]||0)+1; });
+  var chips=Object.keys(pics).map(function(p){
+    return '<span class="pri-chip"><span class="pri-av" style="background:'+avColor(p)+'">'+esc(initials(p))+'</span>'
+      +esc(p)+'<b>'+pics[p]+'</b></span>';
+  }).join("");
+  bar.classList.add("show");
+  bar.innerHTML='<span class="pri-ic">★</span>'
+    +'<span class="pri-txt">Đã chọn <b>'+items.length+'</b> việc ưu tiên của <b>'+Object.keys(pics).length+'</b> nhân sự</span>'
+    +'<span class="pri-chips">'+chips+'</span>'
+    +'<button class="btn-secondary" onclick="clearPriority()">Bỏ chọn</button>'
+    +'<button class="btn-primary" id="pri-send" onclick="openSendPriority()">'
+    +'<svg viewBox="0 0 24 24"><path d="M22 2 11 13M22 2 15 22l-4-9-9-4 20-7z"/></svg>Gửi email nhắc ưu tiên</button>';
+  if(LANG==="en") translateNode(bar);
+}
+function clearPriority(){
+  var items=priorityPicked();
+  items.forEach(function(it){ apiPost({action:"setPriorityFlag", no:it.no, row:it.row||0, on:0}).catch(function(){}); });
+  S.priorityMarks={}; renderDetail(); renderPriorityBar();
+}
+function openSendPriority(){
+  var items=priorityPicked();
+  if(!items.length){ toast("⚠️ Chưa chọn việc nào"); return; }
+  var noEmailWarn = items.filter(function(it){ return !it.pic || it.pic===NO_PIC; }).length;
+  var byPic={}; items.forEach(function(it){ (byPic[it.pic]=byPic[it.pic]||[]).push(it); });
+  var list=Object.keys(byPic).map(function(p){
+    return '<div class="as-row on"><span class="as-av" style="background:'+avColor(p)+'">'+esc(initials(p))+'</span>'
+      +'<span class="as-nm"><b>'+esc(p)+'</b><small>'+byPic[p].map(function(i){return i.name;}).join(" · ")+'</small></span>'
+      +'<span class="as-dl">'+byPic[p].length+' việc</span></div>';
+  }).join("");
+  var html='<div class="modal-box modal-lg"><div class="modal-head"><h3>★ Nhắc việc ưu tiên</h3>'
+    +'<button class="modal-close" onclick="closeModal()">✕</button></div>'
+    +'<div class="modal-body">'
+    +'<div class="field-hint" style="margin-bottom:12px;padding:11px 13px;background:#FFF8E6;border-radius:10px;font-size:13px;line-height:1.6">'
+      +'Mỗi nhân sự nhận <b>1 email riêng</b> chỉ gồm việc của họ. CC: người gửi · Tuyen · Hoa.'
+      +(noEmailWarn?'<br><b style="color:#B3261E">⚠️ Có '+noEmailWarn+' việc chưa gán PIC — sẽ bị bỏ qua.</b>':'')
+    +'</div>'
+    +'<div class="field"><label>Người nhận ('+Object.keys(byPic).length+' nhân sự · '+items.length+' việc)</label>'
+      +'<div class="as-list">'+list+'</div></div>'
+    +'<div class="field"><label>Ghi chú kèm email</label>'
+      +'<textarea id="pri-note" rows="3" placeholder="VD: Đề nghị hoàn thành trước 20/07 và báo cáo lại."></textarea></div>'
+    +'<div class="modal-footer"><button class="btn-secondary" onclick="closeModal()">Hủy</button>'
+    +'<button class="btn-primary" id="pri-send-btn" onclick="doSendPriority()">📨 Gửi email</button></div>'
+    +'</div></div>';
+  showModal(html);
+}
+function doSendPriority(){
+  var items=priorityPicked().filter(function(it){ return it.pic && it.pic!==NO_PIC; });
+  if(!items.length){ toast("⚠️ Không có việc nào có PIC"); return; }
+  var note=$("pri-note")?$("pri-note").value:"";
+  var btn=$("pri-send-btn"); if(btn) btn.disabled=true;
+  overlay(true,"Đang gửi","Đánh dấu ưu tiên & gửi email…");
+  apiPost({ action:"sendPriority", note:note, items:JSON.stringify(items) })
+    .then(function(r){
+      overlay(false); closeModal();
+      toast("✓ "+((r&&r.message)||("Đã gửi nhắc ưu tiên "+items.length+" việc")));
+      reloadSoft();
+    })
+    .catch(function(e){ overlay(false); if(btn)btn.disabled=false; toast("⚠️ "+e.message); });
 }
 
 
