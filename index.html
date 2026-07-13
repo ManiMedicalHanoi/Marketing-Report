@@ -29,19 +29,30 @@ body{min-height:100vh}
 .mono{font-family:'DM Mono',monospace}
 button,input,select,textarea{font-family:inherit}
 button{cursor:pointer}
-.wrap{max-width:1460px;margin:0 auto;padding:0 26px 70px}
+.wrap{max-width:100%;margin:0 auto;padding:0 22px 70px}   /* ⭐ v5.4: tận dụng gần full chiều ngang */
 .hidden{display:none!important}
 ::-webkit-scrollbar{width:11px;height:11px}
 ::-webkit-scrollbar-thumb{background:#cdd6e8;border-radius:8px;border:3px solid var(--gray)}
 
 /* ══ TOP BAR ══ */
 #topbar{background:linear-gradient(120deg,var(--mmh-navy),var(--mmh-blue) 78%);box-shadow:var(--sh-md);position:sticky;top:0;z-index:60}
-.tb-inner{max-width:1460px;margin:0 auto;padding:15px 26px;display:flex;align-items:center;gap:16px}
+.tb-inner{max-width:100%;margin:0 auto;padding:15px 22px;display:flex;align-items:center;gap:16px}   /* ⭐ v5.4 */
 .tb-logo{width:44px;height:44px;background:var(--mmh-yellow);border-radius:12px;display:flex;align-items:center;justify-content:center;flex-shrink:0;box-shadow:0 4px 14px rgba(0,0,0,.18)}
 .tb-logo span{color:var(--mmh-navy);font-size:16px;font-weight:800;letter-spacing:-.5px}
 .tb-title h1{color:#fff;font-size:20px;font-weight:800;line-height:1.1}
 .tb-title p{color:#c7d6ef;font-size:12.5px;margin-top:2px}
 .tb-sp{flex:1}
+/* ⭐ v5.4: link nhanh tới các webapp MMH khác */
+.tb-links{display:flex;align-items:center;gap:7px;margin-left:6px;flex-wrap:wrap}
+.tb-link{display:inline-flex;align-items:center;gap:6px;text-decoration:none;color:#fff;background:rgba(255,255,255,.10);border:1px solid rgba(255,255,255,.20);border-radius:10px;padding:7px 12px;font-size:12.5px;font-weight:700;white-space:nowrap;transition:.15s}
+.tb-link:hover{background:var(--mmh-yellow);color:var(--mmh-navy);border-color:var(--mmh-yellow);transform:translateY(-1px)}
+.tb-link svg{width:13px;height:13px;stroke:currentColor;fill:none;stroke-width:2.2;opacity:.8}
+@media(max-width:1180px){ .tb-links{display:none} }
+/* bản rút gọn cho màn hẹp — hiện dưới thanh source tab */
+.qlinks{display:none;gap:8px;flex-wrap:wrap;margin:12px 0 0}
+@media(max-width:1180px){ .qlinks{display:flex} }
+.qlink{display:inline-flex;align-items:center;gap:6px;text-decoration:none;color:var(--mmh-navy);background:#fff;border:1.5px solid var(--border);border-radius:10px;padding:8px 12px;font-size:12.5px;font-weight:700}
+.qlink:hover{border-color:var(--mmh-blue);color:var(--mmh-blue)}
 .tb-user{display:flex;align-items:center;gap:11px;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.18);border-radius:14px;padding:6px 14px 6px 7px}
 .tb-av{width:36px;height:36px;border-radius:50%;background:var(--mmh-yellow);color:var(--mmh-navy);font-weight:800;font-size:14px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
 .tb-ut{line-height:1.25;text-align:left}
@@ -703,13 +714,16 @@ button{cursor:pointer}
 
 /* ══ BẢNG TIN HOẠT ĐỘNG (banner chạy chậm bên phải) ══ */
 .act-rail{position:fixed;top:0;right:0;height:100vh;z-index:400;display:flex;align-items:stretch;pointer-events:none}
+/* ⭐ v5.4: panel Hoạt động ĐÈ LÊN nội dung + nền mờ phía sau (không chiếm chỗ bố cục) */
+.act-backdrop{position:fixed;inset:0;background:rgba(14,32,60,.42);backdrop-filter:blur(2px);opacity:0;visibility:hidden;transition:opacity .28s var(--ease),visibility .28s;pointer-events:none;z-index:399}
+.act-rail:not(.collapsed) .act-backdrop{opacity:1;visibility:visible;pointer-events:auto}
 .act-toggle{pointer-events:auto;position:fixed;right:20px;top:76px;z-index:401;background:var(--mmh-navy);color:#fff;border:none;height:42px;padding:0 16px;border-radius:22px;cursor:pointer;font-weight:700;display:flex;flex-direction:row;align-items:center;justify-content:center;gap:8px;box-shadow:0 5px 18px rgba(14,47,95,.28);transition:transform .16s,background .16s}
 .act-toggle:hover{transform:translateY(-1px);background:#123a6b}
 .act-toggle-ic{font-size:16px;line-height:1}
 .act-toggle-txt{font-size:12.5px;line-height:1;white-space:nowrap}
-.act-rail:not(.collapsed) .act-toggle{right:352px}
+.act-rail:not(.collapsed) .act-toggle{right:376px;z-index:403}
 @media(max-width:820px){ .act-toggle{top:auto;bottom:150px;right:18px;padding:0;width:52px;height:52px;border-radius:50%} .act-toggle-txt{display:none} .act-rail:not(.collapsed) .act-toggle{right:18px;top:14px;bottom:auto} }
-.act-panel{pointer-events:auto;width:336px;max-width:86vw;background:#fff;border-left:1px solid var(--border);box-shadow:-8px 0 28px rgba(14,47,95,.10);display:flex;flex-direction:column;transform:translateX(100%);transition:transform .32s cubic-bezier(.4,0,.2,1)}
+.act-panel{pointer-events:auto;position:relative;z-index:402;width:360px;max-width:88vw;background:#fff;border-left:1px solid var(--border);box-shadow:-14px 0 44px rgba(14,47,95,.26);display:flex;flex-direction:column;transform:translateX(100%);transition:transform .32s cubic-bezier(.4,0,.2,1)}
 .act-rail:not(.collapsed) .act-panel{transform:translateX(0)}
 .act-head{padding:14px 16px;border-bottom:1px solid var(--border);background:var(--gray)}
 .act-head b{font-size:14px;color:var(--mmh-navy);display:block;margin-bottom:9px}
@@ -963,6 +977,8 @@ button{cursor:pointer}
   <div id="topbar"><div class="tb-inner">
     <div class="tb-logo"><span>MMH</span></div>
     <div class="tb-title"><h1>Report Hub</h1><p>Marketing &amp; Product · Weekly / Monthly Tracker</p></div>
+    <!-- ⭐ v5.4: link nhanh sang các webapp MMH khác -->
+    <div class="tb-links"><a class="tb-link" href="https://manimedicalhanoi.github.io/Tender-Result/" target="_blank" rel="noopener" title="Thông tin thầu">📑 Thông tin thầu<svg viewBox="0 0 24 24"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg></a><a class="tb-link" href="https://manimedicalhanoi.github.io/Product-Data/" target="_blank" rel="noopener" title="Product Data">📦 Product Data<svg viewBox="0 0 24 24"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg></a><a class="tb-link" href="https://manimedicalhanoi.github.io/MMH-FY67-Turnover/" target="_blank" rel="noopener" title="Dự trù & Doanh số">📈 Dự trù & Doanh số<svg viewBox="0 0 24 24"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg></a></div>
     <div class="tb-sp"></div>
     <div class="tb-user">
       <div class="tb-av" id="u-av">?</div>
@@ -975,6 +991,7 @@ button{cursor:pointer}
   <div class="wrap">
     <!-- ⭐ SOURCE TABS: Marketing / Back Office / Management -->
     <div id="sourcetabs"></div>
+    <div class="qlinks"><a class="qlink" href="https://manimedicalhanoi.github.io/Tender-Result/" target="_blank" rel="noopener">📑 Thông tin thầu<svg viewBox="0 0 24 24"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg></a><a class="qlink" href="https://manimedicalhanoi.github.io/Product-Data/" target="_blank" rel="noopener">📦 Product Data<svg viewBox="0 0 24 24"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg></a><a class="qlink" href="https://manimedicalhanoi.github.io/MMH-FY67-Turnover/" target="_blank" rel="noopener">📈 Dự trù & Doanh số<svg viewBox="0 0 24 24"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg></a></div>   <!-- ⭐ v5.4: bản rút gọn cho màn hình hẹp -->
 
     <!-- ⭐ v5: NOTIFICATION công việc của tôi (mọi phòng ban) -->
     <div id="mytask-bar" class="hidden"></div>
@@ -991,6 +1008,7 @@ button{cursor:pointer}
 
   <!-- Bảng tin hoạt động -->
   <div id="activity-rail" class="act-rail collapsed">
+    <div class="act-backdrop" onclick="toggleActivityRail()"></div>
     <button class="act-toggle" onclick="toggleActivityRail()" title="Bảng tin hoạt động">
       <span class="act-toggle-ic">📢</span>
       <span class="act-toggle-txt">Hoạt động</span>
@@ -1981,7 +1999,11 @@ function trackCells(cols){
 }
 function setGanttUnit(u){ S.ganttUnit=u; renderGantt(); }
 function ganttToggleSub(sno){ S.ganttOpenSub[sno]=!S.ganttOpenSub[sno]; renderGantt(); }
-function clearGanttSearch(){ S.ganttQ=""; S._ganttFocus=true; renderGantt(); }
+function clearGanttSearch(){
+  S.ganttQ=""; S._ganttFocus=true;
+  var gi=$("gantt-search"); if(gi) gi.value="";
+  renderGantt();   /* vẽ lại toàn tab để bỏ nút ✕ */
+}
 /* Gantt range: mở rộng giới hạn khi xem theo tuần/tháng */
 function ganttRange(){
   var start=new Date(S.dateFrom+"T00:00:00"); start.setHours(0,0,0,0);
@@ -1994,7 +2016,12 @@ function ganttRange(){
   var today=new Date(); today.setHours(0,0,0,0);
   return { start:start, end:end, days:days, today:today };
 }
-function renderGantt(){
+/* ⭐ v5.4 FIX Ô TÌM KIẾM GANTT:
+   Trước đây mỗi lần gõ → renderGantt() ghi đè innerHTML của cả tab ⇒ <input> bị XOÁ và tạo lại
+   ⇒ mất focus, phải bấm lại vào ô mới gõ tiếp được.
+   Nay tách làm 2 phần: thanh công cụ (chứa ô tìm kiếm) render 1 lần, còn BIỂU ĐỒ nằm trong
+   #gantt-body và chỉ mình nó được vẽ lại khi gõ ⇒ ô input KHÔNG bao giờ bị thay thế. */
+function renderGantt(bodyOnly){
   var kts=allKeyTasks();
   var types=[...new Set(kts.map(function(k){return k.type;}).filter(Boolean))];
   var gPics=picListAll();
@@ -2157,7 +2184,9 @@ function renderGantt(){
   });
   if(!body) body='<div class="empty"><div class="ic">📊</div><p>'+(gq?'Không tìm thấy công việc khớp "'+esc(S.ganttQ)+'".':'Chưa có key task nào trong khoảng này.')+'</p></div>';
 
-  h+='<div class="gantt-wrap"><div class="gantt-grid">'
+  /* ⭐ v5.4: từ đây là phần THÂN biểu đồ → gom vào hBody */
+  var hBody="";
+  hBody+='<div class="gantt-wrap"><div class="gantt-grid">'
     +'<div class="gantt-hrow"><div class="gantt-hlabel">Key Task <small class="gantt-hlabel-sub">— bấm để xem sub · bấm sub để xem kết quả</small></div>'
     +'<div class="gantt-days" style="position:relative">'
       +dayCells
@@ -2165,7 +2194,7 @@ function renderGantt(){
     +'</div></div>'
     +body
     +'</div></div>';
-  h+='<div class="gantt-legend">'
+  hBody+='<div class="gantt-legend">'
     +'<span class="gl-item"><span class="gl-dot" style="background:#D9433F"></span>0–25%</span>'
     +'<span class="gl-item"><span class="gl-dot" style="background:#E08A00"></span>25–50%</span>'
     +'<span class="gl-item"><span class="gl-dot" style="background:#3A5CAA"></span>50–75%</span>'
@@ -2173,22 +2202,25 @@ function renderGantt(){
     +'<span class="gl-item"><span class="gl-dot" style="background:#1E9E5A"></span>100%</span>'
     +'<span class="gl-item"><span class="gl-dot" style="background:#FFECEC;border:1.5px solid #D9433F"></span>Quá hạn</span>'
     +'</div>';
-  $("tab-gantt").innerHTML=h;
+  /* ⭐ v5.4: gõ tìm kiếm → chỉ vẽ lại THÂN biểu đồ, giữ nguyên ô input đang gõ */
+  var bodyEl=$("gantt-body");
+  if(bodyOnly && bodyEl){ bodyEl.innerHTML=hBody; return; }
 
-  // ⭐ GIỮ FOCUS + con trỏ ở ô tìm kiếm (fix "gõ vài từ bị out khỏi khung")
+  $("tab-gantt").innerHTML = h + '<div id="gantt-body">' + hBody + '</div>';
+
   var gi=$("gantt-search");
   if(gi){
     gi.oninput=function(){
       S.ganttQ=this.value;
       clearTimeout(window._gq);
-      window._gq=setTimeout(function(){ renderGantt(); }, 260);
+      window._gq=setTimeout(function(){ renderGantt(true); }, 200);   // ⭐ chỉ render thân
     };
+    gi.onkeydown=function(e){ if(e.key==="Escape") clearGanttSearch(); };
     if(S._ganttFocus){
       gi.focus();
       try{ gi.setSelectionRange(gi.value.length, gi.value.length); }catch(e){}
+      S._ganttFocus=false;
     }
-    gi.onfocus=function(){ S._ganttFocus=true; };
-    gi.onblur=function(){ S._ganttFocus=false; };
   }
 }
 function ganttBarHtml(style, pct, label, tip, onclickExpr, isSub){
