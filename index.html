@@ -393,6 +393,9 @@ button{cursor:pointer}
 .pb-lb{flex:0 0 130px;font-size:12.5px;font-weight:700;color:var(--sub);text-align:right;white-space:nowrap}
 .pb-track{position:relative;flex:1;height:22px;background:var(--lb3);border-radius:11px;overflow:hidden;display:block}
 .pb-track.big{height:30px;border-radius:14px}
+/* ⭐ v5.9 FIX: trong .pb-hero-r (flex COLUMN), "flex:1" của .pb-track bị hiểu là grow theo CHIỀU CAO
+   ⇒ basis 0 ⇒ thanh co lại, không thấy màu. Ép lại kích thước ở đây. */
+.pb-hero-r .pb-track{flex:0 0 auto;width:100%;height:30px;min-height:30px;display:block}
 .pb-fill{border-radius:14px}
 .pb-inpct.big{line-height:30px;right:14px;font-size:13px}
 .pb-fill{position:absolute;left:0;top:0;bottom:0;border-radius:11px;transition:width .5s var(--ease)}
@@ -1135,6 +1138,8 @@ button{cursor:pointer}
   <div id="fab-menu">
     <button class="fab-item" id="fab-key" onclick="fabAddKey()"><span class="fab-ic">🗂️</span>Thêm Key Task</button>
     <button class="fab-item" onclick="fabAddSub()"><span class="fab-ic">➕</span>Thêm Sub Task</button>
+    <!-- ⭐ v5.9: chỉ quản lý mới thấy — giao việc cho người khác + gửi email -->
+    <button class="fab-item" id="fab-assign" style="display:none" onclick="fabAssign()"><span class="fab-ic">📨</span>Giao việc cho người khác</button>
   </div>
   <button id="fab-btn" onclick="toggleFab()" title="Thêm việc">
     <svg viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
@@ -1219,24 +1224,42 @@ function subPct(s){
 }
 /* ⭐ v5.6: BẢNG MÀU LOẠI CÔNG VIỆC — mỗi loại 1 màu KHÁC HẲN nhau (không còn cùng sắc xanh) */
 var TYPE_COLORS={
-  /* Marketing & Product */
-  "Marketing-Digital Marketing":"#3B6FB6", "Marketing-Design":"#7E63C4", "Marketing-Event":"#C2504C",
-  "Marketing-Project":"#3F8F8A",           "Marketing-Promotion":"#D08A3E", "Marketing-Customer care":"#5B8C5A",
-  "Marketing-KOL Partnership":"#B4628F",
-  "Product-Training & Presentation":"#4E8C6E", "Product-Data Organization":"#6C7BAE",
-  "Product-Customer Claim":"#A0616A",          "Product-Market Research":"#4B93B8",
+  /* ⭐ v5.9: mỗi loại 1 HỌ MÀU riêng (đỏ · cam · vàng · lá · lục lam · lam · chàm · tím · hồng · nâu · ô-liu · xám)
+     → không còn 2 loại cùng tông đỏ/mận như trước. Độ bão hoà vừa phải, không chói. */
+  /* Marketing */
+  "Marketing-Event":"#D2554F",              /* đỏ  */
+  "Marketing-Promotion":"#E08B3C",          /* cam */
+  "Marketing-Design":"#8A5FB8",             /* tím */
+  "Marketing-Project":"#2F8F87",            /* lục lam */
+  "Marketing-Digital Marketing":"#3B6FB6",  /* lam */
+  "Marketing-Customer care":"#4C9A5A",      /* lá */
+  "Marketing-KOL Partnership":"#C15BA5",    /* hồng sen */
+  /* Product */
+  "Product-Market Research":"#3E9BC0",      /* xanh trời */
+  "Product-Training & Presentation":"#7A8B3C", /* ô-liu */
+  "Product-Data Organization":"#5B5BC2",    /* chàm */
+  "Product-Customer Claim":"#96694A",       /* nâu */
   /* Back office */
-  "Back office-IT Support":"#4B93B8",  "Back office-Legal":"#C2504C",   "Back office-Inventory":"#D08A3E",
-  "Back office-Purchasing":"#9A7B4F",  "Back office-Financial":"#4E8C6E","Back office-Logistics":"#3F8F8A",
-  "Back office-Sales Support":"#7E63C4","Back office-Product Registration":"#B4628F",
-  "Back office-Risk Management":"#6B7A90","Back office-HR-GA":"#BFA14A",
+  "Back office-Legal":"#D2554F",            /* đỏ */
+  "Back office-Inventory":"#E08B3C",        /* cam */
+  "Back office-Financial":"#4C9A5A",        /* lá */
+  "Back office-Logistics":"#2F8F87",        /* lục lam */
+  "Back office-IT Support":"#3E9BC0",       /* xanh trời */
+  "Back office-Purchasing":"#96694A",       /* nâu */
+  "Back office-Sales Support":"#8A5FB8",    /* tím */
+  "Back office-Product Registration":"#C15BA5", /* hồng sen */
+  "Back office-Risk Management":"#667A94",  /* xám xanh */
+  "Back office-HR-GA":"#C9A227",            /* vàng */
   /* Management */
-  "Management-Reporting":"#3B6FB6", "Management-Planning":"#8E6BA8", "Management-Process":"#42827C",
-  "Management-People":"#C06C7E",    "Management-Meeting":"#A8813F"
+  "Management-Reporting":"#3B6FB6",         /* lam */
+  "Management-Planning":"#5B5BC2",          /* chàm */
+  "Management-Process":"#7A8B3C",           /* ô-liu */
+  "Management-People":"#D4707F",            /* hồng đào */
+  "Management-Meeting":"#C9A227"            /* vàng */
 };
-/* Loại chưa khai báo → sinh màu ổn định từ bảng màu dịu, tương phản (không chói mắt) */
-var TYPE_PALETTE=["#C2504C","#3B6FB6","#D08A3E","#4E8C6E","#7E63C4","#3F8F8A","#B4628F","#8A9A4E",
-                  "#C0784B","#4B93B8","#6C7BAE","#A0616A","#5B8C5A","#BFA14A","#8E6BA8","#6B7A90"];
+/* 14 màu tách hue đều nhau cho loại chưa khai báo */
+var TYPE_PALETTE=["#D2554F","#3B6FB6","#E08B3C","#4C9A5A","#8A5FB8","#2F8F87","#C15BA5","#C9A227",
+                  "#3E9BC0","#96694A","#5B5BC2","#7A8B3C","#D4707F","#667A94"];
 var _typeColorCache={};
 function typeColor(t){
   var k=String(t||"");
@@ -1599,6 +1622,7 @@ function startApp(){
   }
   switchTab("detail");
   $("fab-wrap").style.display="flex";
+  syncFabAssign();   /* ⭐ v5.9 */
   var rail=document.getElementById("activity-rail"); if(rail) rail.style.display="flex";
   renderActivity();
   renderMyTaskBar();
@@ -1701,6 +1725,7 @@ function applySource(src, res, silent){
   buildTabs();                       // ẩn tab Monthly khi ở Management
   var dp=$("denied-page"); if(dp) dp.style.display="none";
   applyDefaultPicFilter();
+  syncFabAssign();                   // ⭐ v5.9: quyền giao việc theo từng sheet
   var me=String((S.user&&S.user.pic)||"");
   if(me){ S.detailPics=[me]; S.detailTimeMode="week"; setDateMode("week"); }
   switchTab("detail");               // vào thẳng "Tất cả công việc" của mình
@@ -1795,6 +1820,18 @@ function fabAddSub(){
   closeFab();
   try{ switchTab("detail"); }catch(e){ console.error(e); }
   setTimeout(function(){ openAddSub(null); },60);
+}
+/* ⭐ v5.9: GIAO VIỆC nằm ngay trong nút "+" — chỉ quản lý mới thấy.
+   Việc luôn được tạo/giao Ở ĐÚNG SHEET (nguồn) đang mở. */
+function fabAssign(){
+  closeFab();
+  try{ switchTab("detail"); }catch(e){ console.error(e); }
+  setTimeout(function(){ openAssign(null); },60);
+}
+/* Hiện/ẩn mục "Giao việc" theo quyền của người đang đăng nhập */
+function syncFabAssign(){
+  var b=$("fab-assign"); if(!b) return;
+  b.style.display = canAssign() ? "flex" : "none";
 }
 document.addEventListener("click",function(e){
   var w=$("fab-wrap");
@@ -1971,6 +2008,11 @@ var DICT_EN = {
   "👤 Team Leader":"👤 Team Leader",
   /* ⭐ v5.8: giao việc */
   "Giao việc":"Assign task", "📨 Giao việc":"📨 Assign task",
+  "Giao việc cho người khác":"Assign to someone else",
+  "📨 Gửi email giao việc nếu PIC không phải là bạn":"📨 Send an assignment email if the assignee is not you",
+  "email giao việc":"assignment email", "Gửi":"Send",
+  "nếu PIC không phải là bạn":"if the assignee is not you",
+  "(mặc định là bạn)":"(defaults to you)",
   "📨 Gửi email giao việc":"📨 Send assignment email",
   "Giao cho (người nhận email)":"Assign to (email recipient)", "— Chọn nhân sự —":"— Select assignee —",
   "Chọn công việc để giao":"Select tasks to assign", "Tìm công việc…":"Search tasks…",
@@ -2032,6 +2074,8 @@ var RULES_EN = [
   [/^Đã giao (\d+) việc cho (.+)$/, "Assigned $1 task(s) to $2"],
   [/^Đã gửi nhắc việc \((\d+) công việc\) tới (.+)$/, "Sent assignment ($1 tasks) to $2"],
   [/^Không tìm thấy email của (.+)$/, "No email found for $1"],
+  [/^Đã gửi email giao việc cho (.+)$/, "Assignment email sent to $1"],
+  [/^⚠️ Đã tạo việc nhưng gửi email lỗi: (.+)$/, "⚠️ Task created but email failed: $1"],
   [/^✓ (.+)$/, "✓ $1"]
 ];
 
@@ -2448,18 +2492,52 @@ function kpiCard(val,label,ic,cls){
 }
 function groupCount(rows,fn){ var m={}; rows.forEach(function(r){ var k=fn(r)||"(khác)"; m[k]=(m[k]||0)+1; }); return Object.keys(m).map(function(k){return[k,m[k]];}).sort(function(a,b){return b[1]-a[1];}); }
 /* ⭐ v5.5: DONUT LỚN — bán kính to hơn, chú thích rõ, có tooltip & % */
+/* ⭐ v5.9b: CHỐNG TRÙNG MÀU TRONG 1 BIỂU ĐỒ
+   Dù mỗi loại đã có màu riêng, khi 1 donut trộn nhiều phòng ban vẫn có thể lọt 2-3 sắc gần nhau
+   (vd 3 tông lam). Ở đây đo khoảng cách màu; nếu quá gần màu đã dùng → đổi sang màu dự phòng
+   tương phản nhất còn lại. Chú giải và múi luôn khớp nhau. */
+function _rgb(h){ h=String(h||"#000").replace("#",""); return [parseInt(h.slice(0,2),16),parseInt(h.slice(2,4),16),parseInt(h.slice(4,6),16)]; }
+function colorDist(a,b){ var x=_rgb(a),y=_rgb(b);
+  return Math.sqrt(Math.pow(x[0]-y[0],2)*0.9+Math.pow(x[1]-y[1],2)*1.2+Math.pow(x[2]-y[2],2)*0.7); }
+var DISTINCT_FALLBACK=["#D2554F","#E08B3C","#4C9A5A","#3B6FB6","#8A5FB8","#2F8F87","#C15BA5","#7A8B3C",
+                       "#96694A","#3E9BC0","#5B5BC2","#B0913A","#6B7A90","#9C4A63","#4E8C6E","#C0703C"];
+function spreadColors(cols){
+  var used=[], out=[];
+  function minDist(c){
+    if(!used.length) return 999;
+    return used.reduce(function(m,u){ return Math.min(m, colorDist(c,u)); }, 999);
+  }
+  cols.forEach(function(c){
+    if(minDist(c) < 62){
+      /* chọn màu dự phòng TỐT NHẤT (xa các màu đã dùng nhất), đảm bảo không lặp */
+      var best=null, bestD=-1;
+      DISTINCT_FALLBACK.forEach(function(f){
+        if(out.indexOf(f)>=0) return;
+        var d=minDist(f);
+        if(d>bestD){ bestD=d; best=f; }
+      });
+      if(best && bestD>minDist(c)) c=best;
+    }
+    used.push(c); out.push(c);
+  });
+  return out;
+}
 function donutBig(entries,centerLabel,centerSub,colorFn){
   var list=entries.filter(function(e){return e[1]>0;});
+  /* gán lại màu cho các múi quá giống nhau */
+  var _cols=spreadColors(list.map(function(e){ return e[2]||(colorFn?colorFn(e[0]):"#3A5CAA"); }));
+  list=list.map(function(e,i){ return [e[0], e[1], _cols[i]]; });
   var total=list.reduce(function(a,e){return a+e[1];},0);
   if(!total) return '<div class="chart-empty">'+t("chart.nodata")+'</div>';
   var R=76, SW=30, C=2*Math.PI*R, off=0, CX=100;
+  var GAP=(list.length>1)?3.2:0;      /* ⭐ v5.9: khe trắng giữa các múi → tách bạch hẳn */
   var segs=list.map(function(e){
     var col=e[2]||(colorFn?colorFn(e[0]):"#3A5CAA");
-    var frac=e[1]/total, len=frac*C;
+    var frac=e[1]/total, len=Math.max(1, frac*C-GAP);
     var seg='<circle cx="'+CX+'" cy="'+CX+'" r="'+R+'" fill="none" stroke="'+col+'" stroke-width="'+SW+'" '
       +'stroke-dasharray="'+len+' '+(C-len)+'" stroke-dashoffset="'+(-off)+'" transform="rotate(-90 '+CX+' '+CX+')" '
       +'style="transition:stroke-dashoffset .6s"><title>'+esc(e[0])+': '+e[1]+' ('+Math.round(frac*100)+'%)</title></circle>';
-    off+=len; return seg;
+    off+=frac*C; return seg;
   }).join("");
   var legend=list.map(function(e){
     var col=e[2]||(colorFn?colorFn(e[0]):"#3A5CAA");
@@ -2911,12 +2989,6 @@ function renderDetail(){
     +'<input type="text" id="detail-search" placeholder="Tìm key task, sub-task, PIC…" value="'+esc(S.detailQ||"")+'" oninput="S.detailQ=this.value;clearTimeout(window._dq);window._dq=setTimeout(renderDetailList,200)"/></div>';
   h+=multiFilterDropdown("type","Loại việc",types.map(function(t){return {val:t,label:t,color:typeColor(t)};}),selTypes);
   h+=multiFilterDropdown("pic","Nhân sự",pics.map(function(p){return {val:p,label:p,av:true};}),selPics);
-  /* ⭐ v5.8: GIAO VIỆC — chỉ hiện với người có quyền (Nguyen Ha · Tuyen · Hoa · Team Leader) */
-  if(canAssign()){
-    h+='<div class="sp" style="flex:1"></div>'
-      +'<button class="btn-primary" onclick="openAssign()">'
-      +'<svg viewBox="0 0 24 24"><path d="M22 2 11 13M22 2 15 22l-4-9-9-4 20-7z"/></svg>Giao việc</button>';
-  }
   h+='</div>';
   h+='<div id="detail-list"></div>';
   $("tab-detail").innerHTML=h;
@@ -3714,6 +3786,8 @@ function openAddSub(kno){
       +'<div class="field"><label>Bắt đầu</label><input type="date" id="as-start" value="'+today+'" onchange="syncDeadlineMin(\'as-start\',\'as-planned\')"/></div>'
       +'<div class="field"><label>Hạn</label><input type="date" id="as-planned" value="'+today+'" min="'+today+'"/></div>'
     +'</div>'
+    +(canAsg?'<label class="as-check"><input type="checkbox" id="as-mail" checked/>'
+      +'<span>📨 Gửi <b>email giao việc</b> nếu PIC không phải là bạn</span></label>':'')
     +'<div class="modal-footer"><button class="btn-secondary" onclick="closeModal()">Hủy</button>'
     +'<button class="btn-primary" id="as-save" onclick="saveAddSub()">➕ Thêm</button></div>'
     +'</div></div>';
@@ -3723,11 +3797,24 @@ function saveAddSub(){
   var kno=$("as-key").value;
   var name=$("as-name").value.trim();
   if(!name){ toast("Nhập tên sub-task"); return; }
-  var pic=$("as-pic").value || S.user.pic;
+  /* ⭐ v5.9: PIC thường LUÔN tạo dưới tên mình; quản lý mới được chọn người khác */
+  var pic = canAssign() ? ($("as-pic").value || S.user.pic) : S.user.pic;
+  var wantMail = !!($("as-mail") && $("as-mail").checked)
+              && String(pic).toLowerCase()!==String(S.user.pic).toLowerCase();
   var _st=$("as-status").value, _s=$("as-start").value, _p=$("as-planned").value;
   $("as-save").disabled=true;
   closeModal(); toast("✓ Đang thêm sub-task…");
   apiPost({action:"addSub",keyNo:kno,parentNo:kno,name:name,pic:pic,status:_st,start:_s,planned:_p})
+    .then(function(r){
+      /* giao việc: gửi email cho PIC được gán (đúng sheet đang mở) */
+      if(wantMail){
+        apiPost({ action:"assign", toPic:pic, note:"",
+                  items:JSON.stringify([{ no:(r&&r.no)||"", name:name, keyTask:"", deadline:_p, status:_st, pic:pic }]) })
+          .then(function(rr){ toast("📨 "+((rr&&rr.message)||("Đã gửi email giao việc cho "+pic))); })
+          .catch(function(e){ toast("⚠️ Đã tạo việc nhưng gửi email lỗi: "+e.message); });
+      }
+      return r;
+    })
     .then(function(r){
       var k=S.keyTasks.filter(function(x){return x.no===kno;})[0];
       if(k){
