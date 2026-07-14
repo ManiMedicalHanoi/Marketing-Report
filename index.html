@@ -1312,6 +1312,7 @@ var S={
   monthSel:"", monthType:"", monthTypes:[], monthPics:[],
   reportFrom:"", reportTo:"", reportPics:[], reportTypes:[], reportFilterOpen:"",
   sendWeek:"", sendMonth:"",   /* ⭐ v5.3: kỳ báo cáo chọn trong hộp thoại gửi */
+  dataVersion:"", syncing:false,   /* ⭐ v5.11: đồng bộ real-time với Google Sheet */
   editCtx:null,
 };
 function initDateFilter(){
@@ -1639,6 +1640,7 @@ function startApp(){
   renderMyTaskBar();
   scanMyTasks();   // ⭐ quét task của tôi ở CẢ 3 phòng ban (chạy nền)
   setTimeout(prefetchSources, 400);   // ⭐ v5.6: tải sẵn 2 phòng ban còn lại → chuyển tab tức thì
+  startSync();                        // ⭐ v5.11: theo dõi thay đổi trực tiếp trên Google Sheet
   /* ⭐ v5.5: ngôn ngữ */
   renderLangSwitch();
   startI18nObserver();
@@ -1756,6 +1758,7 @@ function switchSource(src){
   S.ganttQ=""; S.ganttOpenSub={};
   S._monthPicInit=false;
 
+  S.dataVersion="";   /* ⭐ v5.11: nguồn mới → dò lại vân tay từ đầu */
   var cached=SRC_CACHE[src];
   var haveCache = !!(cached && cached.res && !cached.res.denied);
 
@@ -1772,6 +1775,7 @@ function switchSource(src){
       overlay(false); buildSourceTabs(); showDeniedPage(); return;
     }
     cacheBoot(src,res);
+    checkVersion(true);          /* ⭐ v5.11 */
     if(haveCache){
       // chỉ cập nhật dữ liệu, KHÔNG nhảy tab / không đụng bộ lọc người dùng vừa chỉnh
       S.keyTasks=res.keyTasks||[]; S.monthly=res.monthly||[];
@@ -1978,6 +1982,7 @@ var DICT_EN = {
   "Việc chưa hoàn thành của bạn":"Your unfinished tasks",
   "bấm để xem chi tiết":"click for details",
   "Chưa có dữ liệu":"No data yet",
+  "🔄 Dữ liệu vừa thay đổi trên Google Sheet — đã cập nhật":"🔄 Data changed on Google Sheet — refreshed",
   /* ⭐ v5.7 — Bảng tin hoạt động */
   "👥 Tất cả nhân sự":"👥 All assignees", "⚙️ Tất cả hành động":"⚙️ All actions",
   "Tất cả nhân sự":"All assignees", "Tất cả hành động":"All actions",
@@ -4062,8 +4067,48 @@ function reloadSoft(){
     _softBusy=false;
     if(res&&res.denied){ showDeniedPage(); return; }
     applyBootData(res);
-    rerenderActive(); renderActivity();
+    SRC_CACHE[S.source]={ ts:Date.now(), res:res };   /* ⭐ v5.11: cache luôn tươi */
+    rerenderActive(); renderActivity(); renderMyTaskBar(); buildSourceTabs();
+    if(LANG==="en") translateNode(document.body);
   }).catch(function(){ _softBusy=false; });
+}
+
+/* ══════════════ ⭐ v5.11: ĐỒNG BỘ REAL-TIME VỚI GOOGLE SHEET ══════════════
+   Vấn đề: ai đó XOÁ THẲNG 1 hoặc nhiều dòng task ngay trên Google Sheet (không qua web)
+   → web vẫn giữ dữ liệu cũ, thậm chí thao tác tiếp sẽ ghi nhầm dòng.
+   Cách xử lý: cứ 20 giây (và mỗi khi quay lại tab trình duyệt) web hỏi backend một
+   "vân tay dữ liệu" rất nhẹ (action=version). Vân tay đổi ⇒ tự tải lại dữ liệu, GIỮ NGUYÊN
+   tab / bộ lọc / vị trí cuộn, rồi báo nhẹ cho người dùng.                                  */
+var SYNC_MS=20000, _syncTimer=null;
+function bumpVersion(v){ S.dataVersion=v||""; }
+function checkVersion(force){
+  if(!S.user || S.syncing) return;
+  if(!force && document.hidden) return;              // tab ẩn thì khỏi hỏi cho đỡ tốn quota
+  var src=S.source;
+  jsonpTo(GAS_URLS[src], { action:"version", pic:S.user.pic })
+    .then(function(r){
+      if(!r || !r.ok || !r.v) return;
+      if(S.source!==src) return;
+      if(!S.dataVersion){ bumpVersion(r.v); return; }  // lần đầu: chỉ ghi nhận
+      if(r.v===S.dataVersion) return;                  // không đổi
+      bumpVersion(r.v);
+      delete SRC_CACHE[src];                           // cache cũ đã hỏng → bỏ
+      S.syncing=true;
+      var y=window.scrollY||0;
+      reloadSoft().then(function(){
+        S.syncing=false;
+        window.scrollTo(0,y);
+        toast("🔄 Dữ liệu vừa thay đổi trên Google Sheet — đã cập nhật");
+      });
+    })
+    .catch(function(){});
+}
+function startSync(){
+  clearInterval(_syncTimer);
+  _syncTimer=setInterval(checkVersion, SYNC_MS);
+  document.addEventListener("visibilitychange", function(){ if(!document.hidden) checkVersion(true); });
+  window.addEventListener("focus", function(){ checkVersion(true); });
+  checkVersion(true);
 }
 /* ⭐ Cập nhật cục bộ: tìm sub theo no rồi gán field, render lại ngay */
 function localPatchSub(sno, patch){
