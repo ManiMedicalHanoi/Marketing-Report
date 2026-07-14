@@ -648,6 +648,55 @@ button{cursor:pointer}
 .mfd-av{width:24px;height:24px;border-radius:50%;color:#fff;font-size:10px;font-weight:800;display:flex;align-items:center;justify-content:center;flex:0 0 auto}
 .mfd-name{font-size:13.5px;color:var(--text);font-weight:600}
 .mfd-empty{padding:14px;text-align:center;font-size:13px;color:var(--faint)}
+/* ⭐ v6.0: TÀI LIỆU THAM CHIẾU */
+.doc-tab-btn{display:inline-flex;align-items:center;gap:7px;background:#fff;border:1.5px solid var(--border);border-radius:10px;padding:9px 14px;font-size:13px;font-weight:700;color:var(--mmh-navy);cursor:pointer;transition:.15s;white-space:nowrap}
+.doc-tab-btn svg{width:15px;height:15px;stroke:currentColor;fill:none;stroke-width:2}
+.doc-tab-btn:hover{border-color:var(--mmh-blue);color:var(--mmh-blue)}
+.doc-tab-btn.on{background:var(--mmh-navy);border-color:var(--mmh-navy);color:#fff}
+.doc-bar{display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin:4px 0 12px}
+.doc-modes{display:flex;background:var(--lb3);border-radius:10px;padding:3px;gap:2px}
+.doc-modes button{border:none;background:transparent;color:var(--sub);font-size:12.5px;font-weight:700;padding:7px 13px;border-radius:8px;cursor:pointer;white-space:nowrap}
+.doc-modes button.active{background:var(--mmh-navy);color:#fff}
+.doc-dates{display:flex;align-items:center;gap:7px;font-size:12.5px;color:var(--sub);font-weight:700}
+.doc-dates input{border:1.5px solid var(--border);border-radius:8px;padding:6px 9px;font-size:12.5px}
+.doc-rangelbl{font-size:12.5px;color:var(--faint);font-weight:700}
+.doc-count{font-size:12.5px;color:var(--mmh-blue);font-weight:800;background:#E8EEF9;border-radius:8px;padding:6px 11px}
+.doc-search{position:relative;display:flex;align-items:center;margin-bottom:14px}
+.doc-search svg{position:absolute;left:15px;width:17px;height:17px;stroke:var(--faint);fill:none;stroke-width:2}
+.doc-search input{width:100%;border:1.5px solid var(--border);border-radius:12px;padding:13px 40px 13px 44px;font-size:14.5px;font-family:inherit;box-shadow:var(--sh-sm)}
+.doc-search input:focus{outline:none;border-color:var(--mmh-blue);box-shadow:0 0 0 3px rgba(58,92,170,.12)}
+.doc-x{position:absolute;right:12px;border:none;background:var(--lb3);color:var(--sub);width:24px;height:24px;border-radius:50%;cursor:pointer;font-size:12px}
+.doc-card{background:#fff;border:1.5px solid var(--border);border-radius:12px;margin-bottom:9px;overflow:hidden;transition:.15s}
+.doc-card:hover{border-color:var(--mmh-blue)}
+.doc-card.open{border-color:var(--mmh-blue);box-shadow:var(--sh-sm)}
+.doc-head{display:flex;align-items:center;gap:10px;padding:12px 14px;cursor:pointer}
+.doc-caret{color:var(--faint);font-size:11px;width:10px}
+.doc-badge{font-size:9.5px;font-weight:800;letter-spacing:.5px;border-radius:5px;padding:3px 6px;color:#fff}
+.doc-badge.key{background:var(--mmh-navy)} .doc-badge.sub{background:#8FA3C4}
+.doc-no{font-size:11px;font-weight:800;color:var(--mmh-blue);background:#E8EEF9;border-radius:5px;padding:2px 7px}
+.doc-nm{flex:1;min-width:0;display:flex;flex-direction:column}
+.doc-nm b{font-size:14px;color:var(--text);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.doc-nm small{font-size:11.5px;color:var(--faint);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.doc-nm mark{background:#FFE99A;color:inherit;border-radius:3px;padding:0 2px}
+.doc-hit{color:var(--mmh-blue)!important;font-weight:600}
+.doc-meta{display:flex;align-items:center;gap:9px;flex-wrap:wrap}
+.doc-type{font-size:10.5px;font-weight:700;color:#fff;border-radius:6px;padding:3px 8px;white-space:nowrap}
+.doc-pic{display:flex;align-items:center;gap:5px;font-size:12px;color:var(--sub);font-weight:600;white-space:nowrap}
+.doc-av{width:21px;height:21px;border-radius:50%;color:#fff;font-size:9px;font-weight:800;display:flex;align-items:center;justify-content:center}
+.doc-date{font-size:12px;color:var(--faint);font-weight:700;white-space:nowrap}
+.doc-cnt{font-size:12px;font-weight:800;color:var(--mmh-navy);background:var(--pale);border-radius:7px;padding:3px 8px;white-space:nowrap}
+.doc-links{border-top:1px dashed var(--border);padding:10px 14px 12px;display:flex;flex-direction:column;gap:7px;background:#FBFCFE}
+.dk-link{display:flex;align-items:center;gap:11px;text-decoration:none;background:#fff;border:1.5px solid var(--border);border-radius:10px;padding:10px 12px;transition:.14s}
+.dk-link:hover{border-color:var(--mmh-blue);background:#F5F8FF;transform:translateX(2px)}
+.dk-ic{font-size:19px;flex:0 0 auto}
+.dk-tx{flex:1;min-width:0;display:flex;flex-direction:column}
+.dk-tx b{font-size:13.5px;color:var(--mmh-blue);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.dk-tx small{font-size:11.5px;color:var(--faint);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.dk-go{color:var(--faint);font-size:15px;font-weight:800}
+.dk-link:hover .dk-go{color:var(--mmh-blue)}
+@media(max-width:760px){ .doc-meta .doc-type,.doc-date{display:none} }
+/* ⭐ v6.0: key task tự nó là 1 đầu việc */
+.key-self-chip{display:inline-block;margin-left:7px;background:#E8EEF9;color:var(--mmh-blue);font-size:9.5px;font-weight:800;letter-spacing:.4px;border-radius:5px;padding:2px 6px;vertical-align:middle}
 /* ⭐ v5.8: hộp thoại GIAO VIỆC */
 .as-check{display:flex;align-items:center;gap:9px;margin-top:10px;font-size:13.5px;color:var(--sub);cursor:pointer}
 .as-check input{width:17px;height:17px}
@@ -1313,6 +1362,7 @@ var S={
   reportFrom:"", reportTo:"", reportPics:[], reportTypes:[], reportFilterOpen:"",
   sendWeek:"", sendMonth:"",   /* ⭐ v5.3: kỳ báo cáo chọn trong hộp thoại gửi */
   dataVersion:"", syncing:false,   /* ⭐ v5.11: đồng bộ real-time với Google Sheet */
+  docTab:false, docMode:"week", docFrom:"", docTo:"", docQ:"", docOpen:{}, docFocus:false,   /* ⭐ v6.0: Tài liệu tham chiếu */
   editCtx:null,
 };
 function initDateFilter(){
@@ -1494,8 +1544,29 @@ function boot(){
     }
   });
 }
+/* ══════════════ ⭐ v6.0: KEY TASK CŨNG LÀ MỘT ĐẦU VIỆC ══════════════
+   Nhiều Key Task chỉ có DUY NHẤT 1 đầu việc là chính nó — người dùng điền thẳng
+   "Task result / Link" (cột I) ngay trên DÒNG KEY TASK, không tạo sub-task nào.
+   Trước đây web chỉ duyệt qua sub-task ⇒ những key task này BIẾN MẤT khỏi mọi tab
+   (kể cả "Công việc trong tuần") và không xem/sửa được kết quả.
+   Cách xử lý: key task nào KHÔNG có sub → tự sinh 1 "sub ảo" trỏ về CHÍNH DÒNG KEY đó
+   (cùng row ⇒ mọi thao tác sửa kết quả / % / trạng thái đều ghi đúng cột I, N, O của dòng key).  */
+function normalizeKeyTasks(list){
+  (list||[]).forEach(function(k){
+    if(k.subs && k.subs.length) return;
+    k.selfTask=true;                       // đánh dấu: key task tự nó là 1 đầu việc
+    k.subs=[{
+      no:k.no, row:k.row, __isKeyRow:true,
+      subTask:k.keyTask, name:k.keyTask, type:k.type,
+      pic:k.pic, status:k.status, progress:k.progress,
+      start:k.start, planned:k.planned, revised:k.revised,
+      result:k.result, actual:k.actual, priority:k.priority
+    }];
+  });
+  return list||[];
+}
 function applyBootData(res){
-  S.keyTasks=res.keyTasks||[];
+  S.keyTasks=normalizeKeyTasks(res.keyTasks||[]);
   S.monthly=res.monthly||[];
   S.activityLog=res.activityLog||[];
   syncPriorityMarks();
@@ -1778,7 +1849,7 @@ function switchSource(src){
     checkVersion(true);          /* ⭐ v5.11 */
     if(haveCache){
       // chỉ cập nhật dữ liệu, KHÔNG nhảy tab / không đụng bộ lọc người dùng vừa chỉnh
-      S.keyTasks=res.keyTasks||[]; S.monthly=res.monthly||[];
+      S.keyTasks=normalizeKeyTasks(res.keyTasks||[]); S.monthly=res.monthly||[];
       S.activityLog=res.activityLog||[]; S.pics=res.pics||[];
       S.managers=res.managers||[]; S.picList=res.picList||[];
       S.typeOptions=res.typeOptions||[]; S._picSet=null;
@@ -1983,6 +2054,15 @@ var DICT_EN = {
   "bấm để xem chi tiết":"click for details",
   "Chưa có dữ liệu":"No data yet",
   "🔄 Dữ liệu vừa thay đổi trên Google Sheet — đã cập nhật":"🔄 Data changed on Google Sheet — refreshed",
+  /* ⭐ v6.0: Tài liệu tham chiếu */
+  "Tài liệu tham chiếu":"Reference documents", "Tuần này":"This week", "Tháng này":"This month",
+  "Khoảng thời gian":"Date range", "Toàn bộ thời gian":"All time",
+  "Gõ tên key task, sub-task, người phụ trách hoặc tên tài liệu…":"Search key task, sub-task, assignee or document name…",
+  "KẾT QUẢ CHUNG":"OVERALL RESULT",
+  "Google Sheet":"Google Sheet", "Google Doc":"Google Doc", "Google Slides":"Google Slides",
+  "Thư mục Drive":"Drive folder", "Tệp Drive":"Drive file", "Hình ảnh":"Image", "Liên kết":"Link",
+  "Chưa có tài liệu nào trong kỳ đã chọn.":"No documents in the selected period.",
+  "Thêm link vào ô “Task result / Link” của key task hoặc sub-task.":"Add a link in the “Task result / Link” cell of a key task or sub-task.",
   /* ⭐ v5.7 — Bảng tin hoạt động */
   "👥 Tất cả nhân sự":"👥 All assignees", "⚙️ Tất cả hành động":"⚙️ All actions",
   "Tất cả nhân sự":"All assignees", "Tất cả hành động":"All actions",
@@ -2053,6 +2133,8 @@ var RULES_EN = [
   [/^(\d+) việc trong kỳ$/, "$1 tasks in period"],
   [/^\+(\d+) việc khác$/, "+$1 more"],
   [/^(\d+) mục$/, "$1 items"],
+  [/^(\d+) việc · (\d+) tài liệu$/, "$1 tasks · $2 documents"],
+  [/^Không tìm thấy tài liệu khớp “(.+)”\.$/, 'No document matches "$1".'],
   [/^(\d+) người$/, "$1 people"],
   [/^Công việc của (.+)$/, "Tasks of $1"],
   [/^(.+) không có việc trong khoảng đã chọn\.$/, "$1 has no tasks in the selected period."],
@@ -3007,6 +3089,10 @@ function renderDetail(){
     +'<input type="text" id="detail-search" placeholder="Tìm key task, sub-task, PIC…" value="'+esc(S.detailQ||"")+'" oninput="S.detailQ=this.value;clearTimeout(window._dq);window._dq=setTimeout(renderDetailList,200)"/></div>';
   h+=multiFilterDropdown("type","Loại việc",types.map(function(t){return {val:t,label:t,color:typeColor(t)};}),selTypes);
   h+=multiFilterDropdown("pic","Nhân sự",pics.map(function(p){return {val:p,label:p,av:true};}),selPics);
+  /* ⭐ v6.0: TÀI LIỆU THAM CHIẾU — tab ngay cạnh bộ lọc Nhân sự */
+  h+='<button class="doc-tab-btn'+(S.docTab?" on":"")+'" onclick="toggleDocTab()" title="Kho link/tài liệu đính kèm trong ô Task result">'
+    +'<svg viewBox="0 0 24 24"><path d="M21.44 11.05l-9.19 9.19a6 6 0 0 1-8.49-8.49l9.19-9.19a4 4 0 0 1 5.66 5.66l-9.2 9.19a2 2 0 0 1-2.83-2.83l8.49-8.48"/></svg>'
+    +'Tài liệu tham chiếu</button>';
   /* ⭐ v5.9: NHẮC ƯU TIÊN — chỉ quản lý; bật lên sẽ hiện ô tích ★ trước từng sub-task */
   if(canAssign()){
     h+='<div class="sp" style="flex:1"></div>'
@@ -3019,8 +3105,14 @@ function renderDetail(){
   renderDetailList();   // render danh sách lần đầu
 }
 /* ⭐ #3: chỉ dựng lại DANH SÁCH (không đụng ô search → không mất focus/nhảy con trỏ) */
+function toggleDocTab(){          /* ⭐ v6.0 */
+  S.docTab=!S.docTab;
+  if(S.docTab) S.docFocus=true;
+  renderDetail();
+}
 function renderDetailList(){
   var el=$("detail-list"); if(!el) return;
+  if(S.docTab){ renderDocs(); return; }      /* ⭐ v6.0: kho Tài liệu tham chiếu */
   var kts=allKeyTasks();
   var q=(S.detailQ||"").toLowerCase();
   var selTypes=S.detailTypes||[], selPics=S.detailPics||[];
@@ -3219,6 +3311,7 @@ function subRowVertical(k,s,from,to){
   h+='<span class="sr-dot" style="background:'+m.dot+'"></span>';
   h+='<span class="sr-no">'+esc(s.no)+'</span>';
   h+='<div class="sr-namewrap"><span class="sr-name">'+esc(s.name||s.subTask)
+    +(s.__isKeyRow?'<span class="key-self-chip" title="Key task này chưa có sub-task — kết quả ghi thẳng trên dòng Key Task">KẾT QUẢ CHUNG</span>':'')
     +(od?'<span class="od-chip">QUÁ HẠN</span>':'')+'</span>'
     +(outRange?'<span class="sr-outtag '+(isDone(s.status)?'done':'todo')+'">'+(isDone(s.status)?'✓ đã xong (ngoài kỳ)':'ngoài khoảng lọc')+'</span>':'')+'</div>';
   // ⭐ KẾT QUẢ hiển thị NGAY BÊN CẠNH (không cần click mở ở dưới)
@@ -3535,6 +3628,209 @@ function closeModal(){ $("modals").innerHTML=""; }
    · Nhắc việc hàng loạt = dùng "☆ Nhắc việc ưu tiên" ở tab Tất cả công việc
      (chọn nhiều task cùng lúc rồi gửi 1 email). */
 
+/* ══════════════════════════════════════════════════════════════════════════
+   ⭐ v6.0 — TÀI LIỆU THAM CHIẾU
+   Gom mọi Key Task / Sub-task có LINK trong ô "Task result / Link" thành một
+   kho tài liệu tra cứu: lọc theo kỳ (tuần này / tháng này / khoảng tuỳ chọn),
+   gõ từ khoá kiểu Google → ra danh sách việc → bấm vào xem toàn bộ link,
+   mỗi link hiện TÊN FILE / FOLDER / TÀI LIỆU thay vì URL thô.
+   ══════════════════════════════════════════════════════════════════════════ */
+
+/* ── Nhận diện loại link & đặt tên hiển thị ───────────────────────────────── */
+var LINK_KINDS=[
+  {re:/docs\.google\.com\/spreadsheets/i, ic:"📊", kind:"Google Sheet"},
+  {re:/docs\.google\.com\/document/i,     ic:"📝", kind:"Google Doc"},
+  {re:/docs\.google\.com\/presentation/i, ic:"📽️", kind:"Google Slides"},
+  {re:/docs\.google\.com\/forms/i,        ic:"🧾", kind:"Google Form"},
+  {re:/drive\.google\.com\/drive\/folders/i, ic:"📁", kind:"Thư mục Drive"},
+  {re:/drive\.google\.com/i,              ic:"📎", kind:"Tệp Drive"},
+  {re:/\.pdf(\?|$)/i,                     ic:"📕", kind:"PDF"},
+  {re:/\.(xlsx?|csv)(\?|$)/i,             ic:"📊", kind:"Excel"},
+  {re:/\.(pptx?)(\?|$)/i,                 ic:"📽️", kind:"PowerPoint"},
+  {re:/\.(docx?)(\?|$)/i,                 ic:"📝", kind:"Word"},
+  {re:/\.(png|jpe?g|gif|webp)(\?|$)/i,    ic:"🖼️", kind:"Hình ảnh"},
+  {re:/youtube\.com|youtu\.be/i,          ic:"▶️", kind:"Video"},
+  {re:/mail\.google\.com/i,               ic:"✉️", kind:"Email"}
+];
+function linkKind(url){
+  for(var i=0;i<LINK_KINDS.length;i++) if(LINK_KINDS[i].re.test(url)) return LINK_KINDS[i];
+  return {ic:"🔗", kind:"Liên kết"};
+}
+/* Tên hiển thị: ưu tiên chữ người dùng gõ NGAY TRƯỚC link trên cùng dòng
+   (VD: "Báo cáo Q3: https://…" → "Báo cáo Q3"). Nếu không có → suy từ URL. */
+function nameFromUrl(url){
+  try{
+    var u=new URL(url);
+    var seg=u.pathname.split("/").filter(Boolean);
+    var last=decodeURIComponent(seg[seg.length-1]||"");
+    if(/^(edit|view|preview|d)$/i.test(last)) last="";
+    if(last && !/^[a-zA-Z0-9_-]{20,}$/.test(last)) return last.replace(/[-_+]/g," ").slice(0,60);
+    return linkKind(url).kind + " · " + u.hostname.replace(/^www\./,"");
+  }catch(e){ return url.slice(0,50); }
+}
+function parseLinks(txt){
+  var raw=String(txt||"");
+  if(!raw) return [];
+  var out=[], seen={};
+  raw.split(/\r?\n/).forEach(function(line){
+    var urls=line.match(/https?:\/\/[^\s)>\]]+/g);
+    if(!urls) return;
+    urls.forEach(function(url){
+      url=url.replace(/[.,;:)\]]+$/,"");
+      if(seen[url]) return; seen[url]=1;
+      /* chữ đứng trước link trên cùng dòng = tên tài liệu */
+      var before=line.slice(0, line.indexOf(url))
+        .replace(/https?:\/\/[^\s]+/g,"")
+        .replace(/[-–—:·|>\s]+$/,"")
+        .replace(/^[-–—•*\d.\s]+/,"")
+        .trim();
+      var k=linkKind(url);
+      var label = before && before.length>1 ? before : nameFromUrl(url);
+      out.push({ url:url, label:label.slice(0,80), ic:k.ic, kind:k.kind });
+    });
+  });
+  return out;
+}
+
+/* ── Thu thập mọi việc CÓ LINK ─────────────────────────────────────────────── */
+function docItems(){
+  var out=[];
+  (S.keyTasks||[]).forEach(function(k){
+    (k.subs||[]).forEach(function(sb){
+      var links=parseLinks(sb.result);
+      if(!links.length) return;
+      out.push({
+        isKey: !!sb.__isKeyRow, no:sb.no, name:sb.name||sb.subTask||"", keyTask:k.keyTask||"",
+        type:sb.type||k.type||"", pic:picOf(sb), status:sb.status||"",
+        date: effDate(sb)||sb.start||sb.actual||"", links:links, raw:String(sb.result||"")
+      });
+    });
+  });
+  return out;
+}
+/* ── Bộ lọc kỳ ─────────────────────────────────────────────────────────────── */
+function docRange(){
+  var t=new Date();
+  if(S.docMode==="week"){ var mon=mondayOf(t), sun=new Date(mon); sun.setDate(mon.getDate()+6);
+    return [toISO(mon), toISO(sun)]; }
+  if(S.docMode==="month"){ var y=t.getFullYear(), m=t.getMonth();
+    return [toISO(new Date(y,m,1)), toISO(new Date(y,m+1,0))]; }
+  if(S.docMode==="all") return ["",""];
+  return [S.docFrom||"", S.docTo||""];
+}
+function setDocMode(m){ S.docMode=m; if(m==="range"&&!S.docFrom){ var r=docRange(); S.docFrom=r[0]||toISO(new Date()); S.docTo=S.docFrom; } renderDocs(); }
+function setDocRange(f,t){ if(f)S.docFrom=f; if(t)S.docTo=t; S.docMode="range"; renderDocs(); }
+function toggleDocOpen(no){ S.docOpen=S.docOpen||{}; S.docOpen[no]=!S.docOpen[no]; renderDocs(true); }
+function clearDocQ(){ S.docQ=""; renderDocs(); }
+
+/* ── Giao diện ─────────────────────────────────────────────────────────────── */
+function renderDocs(bodyOnly){
+  var host=$("detail-list"); if(!host) return;
+  var r=docRange(), from=r[0], to=r[1];
+  var q=String(S.docQ||"").trim().toLowerCase();
+  var items=docItems().filter(function(d){
+    if(from && to && d.date && !(d.date>=from && d.date<=to)) return false;
+    if(from && to && !d.date) return false;
+    return true;
+  });
+  var totalInRange=items.length;
+  if(q){
+    var words=q.split(/\s+/).filter(Boolean);
+    items=items.filter(function(d){
+      var hay=(d.name+" "+d.keyTask+" "+d.pic+" "+d.no+" "+d.type+" "
+              +d.links.map(function(l){return l.label+" "+l.kind;}).join(" ")).toLowerCase();
+      return words.every(function(w){ return hay.indexOf(w)>=0; });
+    });
+  }
+  items.sort(function(a,b){ return (b.date||"").localeCompare(a.date||""); });
+  var nLinks=items.reduce(function(a,d){ return a+d.links.length; },0);
+
+  var body='';
+  if(!totalInRange){
+    body='<div class="empty"><div class="ic">📎</div><p>Chưa có tài liệu nào trong kỳ đã chọn.<br><small>Thêm link vào ô “Task result / Link” của key task hoặc sub-task.</small></p></div>';
+  } else if(!items.length){
+    body='<div class="empty"><div class="ic">🔍</div><p>Không tìm thấy tài liệu khớp “'+esc(S.docQ)+'”.</p></div>';
+  } else {
+    body=items.map(function(d){
+      var open=!!(S.docOpen&&S.docOpen[d.no]);
+      var links=d.links.map(function(l){
+        return '<a class="dk-link" href="'+esc(l.url)+'" target="_blank" rel="noopener" title="'+esc(l.url)+'">'
+          +'<span class="dk-ic">'+l.ic+'</span>'
+          +'<span class="dk-tx"><b>'+esc(l.label)+'</b><small>'+esc(l.kind)+' · '+esc(shortUrl(l.url))+'</small></span>'
+          +'<span class="dk-go">↗</span></a>';
+      }).join("");
+      return '<div class="doc-card'+(open?" open":"")+'">'
+        +'<div class="doc-head" onclick="toggleDocOpen(\''+jsq(d.no)+'\')">'
+          +'<span class="doc-caret">'+(open?"▾":"▸")+'</span>'
+          +'<span class="doc-badge '+(d.isKey?"key":"sub")+'">'+(d.isKey?"KEY":"SUB")+'</span>'
+          +'<span class="doc-no">'+esc(d.no)+'</span>'
+          +'<span class="doc-nm"><b>'+hl(d.name,q)+'</b>'
+            +(d.keyTask&&!d.isKey?'<small>'+hl(d.keyTask,q)+'</small>':'')
+            /* ⭐ khi tìm kiếm: hiện luôn TÊN TÀI LIỆU khớp từ khoá (kiểu Google) */
+            +(q ? (function(){
+                var hits=d.links.filter(function(l){
+                  return q.split(/\s+/).filter(Boolean).some(function(wd){
+                    return (l.label+" "+l.kind).toLowerCase().indexOf(wd)>=0; });
+                });
+                return hits.length ? '<small class="doc-hit">📎 '+hits.map(function(l){ return hl(l.label,q); }).join(" · ")+'</small>' : '';
+              })() : '')
+          +'</span>'
+          +'<span class="doc-meta">'
+            +(d.type?'<span class="doc-type" style="background:'+typeColor(d.type)+'">'+esc(d.type)+'</span>':'')
+            +'<span class="doc-pic"><span class="doc-av" style="background:'+avColor(d.pic)+'">'+esc(initials(d.pic))+'</span>'+esc(d.pic)+'</span>'
+            +(d.date?'<span class="doc-date">'+esc(fmtVNFull(d.date))+'</span>':'')
+            +'<span class="doc-cnt">📎 '+d.links.length+'</span>'
+          +'</span>'
+        +'</div>'
+        +(open?'<div class="doc-links">'+links+'</div>':'')
+      +'</div>';
+    }).join("");
+  }
+
+  if(bodyOnly && $("doc-body")){ $("doc-body").innerHTML=body; return; }
+
+  var h='<div class="doc-bar">'
+    +'<div class="doc-modes">'
+      +'<button class="'+(S.docMode==="week"?"active":"")+'" onclick="setDocMode(\'week\')">Tuần này</button>'
+      +'<button class="'+(S.docMode==="month"?"active":"")+'" onclick="setDocMode(\'month\')">Tháng này</button>'
+      +'<button class="'+(S.docMode==="range"?"active":"")+'" onclick="setDocMode(\'range\')">Khoảng thời gian</button>'
+      +'<button class="'+(S.docMode==="all"?"active":"")+'" onclick="setDocMode(\'all\')">Tất cả</button>'
+    +'</div>'
+    +(S.docMode==="range"
+      ? '<div class="doc-dates"><label>Từ</label><input type="date" value="'+esc(S.docFrom||"")+'" onchange="setDocRange(this.value,null)"/>'
+        +'<label>Đến</label><input type="date" value="'+esc(S.docTo||"")+'" onchange="setDocRange(null,this.value)"/></div>'
+      : '<span class="doc-rangelbl">'+(from&&to?esc(fmtVNFull(from))+" → "+esc(fmtVNFull(to)):"Toàn bộ thời gian")+'</span>')
+    +'<span class="sp" style="flex:1"></span>'
+    +'<span class="doc-count">'+items.length+' việc · '+nLinks+' tài liệu</span>'
+  +'</div>'
+  +'<div class="doc-search"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>'
+    +'<input type="text" id="doc-q" placeholder="Gõ tên key task, sub-task, người phụ trách hoặc tên tài liệu…" value="'+esc(S.docQ||"")+'"/>'
+    +(S.docQ?'<button class="doc-x" onclick="clearDocQ()">✕</button>':'')
+  +'</div>'
+  +'<div id="doc-body">'+body+'</div>';
+
+  host.innerHTML=h;
+  var qi=$("doc-q");
+  if(qi){
+    qi.oninput=function(){ S.docQ=this.value; clearTimeout(window._dq); window._dq=setTimeout(function(){ renderDocs(true); },160); };
+    qi.onkeydown=function(e){ if(e.key==="Escape") clearDocQ(); };
+    if(S.docFocus){ qi.focus(); try{ qi.setSelectionRange(qi.value.length,qi.value.length); }catch(e){} S.docFocus=false; }
+  }
+  buildSourceTabs();
+}
+function shortUrl(u){ try{ var x=new URL(u); return x.hostname.replace(/^www\./,""); }catch(e){ return u.slice(0,24); } }
+/* tô đậm từ khoá khớp (kiểu Google) */
+function hl(txt,q){
+  var t=esc(String(txt||""));
+  if(!q) return t;
+  q.split(/\s+/).filter(Boolean).forEach(function(w){
+    if(w.length<2) return;
+    var re=new RegExp("("+w.replace(/[.*+?^${}()|[\]\\]/g,"\\$&")+")","ig");
+    t=t.replace(re,'<mark>$1</mark>');
+  });
+  return t;
+}
+
 /* ── SỬA SUB-TASK (kèm kết quả/link — payload có thể DÀI → apiPost tự POST) ── */
 function openEdit(sno){
   var s=findSub(sno), k=findKeyOfSub(sno);
@@ -3673,9 +3969,11 @@ function saveAddKey(){
       return r;
     })
     .then(function(r){
-      S.keyTasks.push({ row:(r&&r.row)||0, no:(r&&r.no)||String(S.keyTasks.length+1),
+      var nk={ row:(r&&r.row)||0, no:(r&&r.no)||String(S.keyTasks.length+1),
         keyTask:name, type:_t, pic:pic, status:"To Do", progress:0,
-        start:_s, planned:_p, revised:"", result:"", actual:"", subs:[] });
+        start:_s, planned:_p, revised:"", result:"", actual:"", subs:[] };
+      S.keyTasks.push(nk);
+      normalizeKeyTasks([nk]);   /* ⭐ v6.0: key task mới hiện NGAY ở "Công việc trong tuần" */
       rerenderActive(); toast("✓ Đã thêm key task"); reloadSoft();
     })
     .catch(function(e){ toast("⚠️ "+e.message); reloadSoft(); });
