@@ -1096,6 +1096,229 @@ button{cursor:pointer}
   .report-toolbar{padding:12px}
   .report-toolbar .btn-primary{width:100%;justify-content:center}
 }
+
+/* ══════════════════════════════════════════════════════════════════════
+   ⭐ MMH CALENDAR — Lịch tổng hợp (Công tác · Đào tạo · Marketing)
+   Overlay toàn màn hình, độc lập với hệ thống báo cáo theo phòng ban.
+   ══════════════════════════════════════════════════════════════════════ */
+.cal-launch{display:inline-flex;align-items:center;gap:8px;border:none;
+  background:var(--mmh-yellow);color:var(--mmh-navy);font-weight:800;font-size:13.5px;
+  padding:9px 15px;border-radius:11px;box-shadow:0 4px 14px rgba(0,0,0,.18);
+  letter-spacing:.2px;white-space:nowrap;transition:.15s;margin-right:6px}
+.cal-launch:hover{transform:translateY(-1px);box-shadow:0 8px 22px rgba(0,0,0,.26)}
+.cal-launch span{font-size:13.5px}
+
+#cal-app{position:fixed;inset:0;z-index:200;background:#eef2f8;display:none;
+  flex-direction:column;overflow:hidden}
+#cal-app.show{display:flex;animation:calFade .28s var(--ease)}
+@keyframes calFade{from{opacity:0}to{opacity:1}}
+
+/* ── Header ── */
+.cal-hd{background:linear-gradient(120deg,var(--mmh-navy),var(--mmh-blue) 82%);
+  color:#fff;padding:16px 26px;display:flex;align-items:center;gap:18px;flex-wrap:wrap;
+  box-shadow:0 8px 26px rgba(0,48,71,.22);position:relative;z-index:5}
+.cal-hd .cal-badge{width:46px;height:46px;background:var(--mmh-yellow);border-radius:13px;
+  display:flex;align-items:center;justify-content:center;font-size:24px;flex-shrink:0;
+  box-shadow:0 5px 16px rgba(0,0,0,.22)}
+.cal-hd h2{font-size:23px;font-weight:800;line-height:1.05;letter-spacing:-.3px}
+.cal-hd .cal-sub{color:#c7d6ef;font-size:12.5px;margin-top:3px;font-weight:500}
+.cal-hd .sp{flex:1}
+.cal-updated{color:#a9c0e6;font-size:11.5px;font-weight:600;text-align:right;line-height:1.4}
+.cal-x{border:none;background:rgba(255,255,255,.14);color:#fff;width:42px;height:42px;
+  border-radius:12px;font-size:22px;display:flex;align-items:center;justify-content:center;
+  transition:.15s;flex-shrink:0}
+.cal-x:hover{background:var(--danger);transform:rotate(90deg)}
+
+/* ── Toolbar ── */
+.cal-tools{background:#fff;padding:16px 26px 6px;border-bottom:1px solid var(--border);
+  display:flex;flex-direction:column;gap:14px;box-shadow:var(--sh-sm);z-index:4}
+.cal-cats{display:flex;gap:10px;flex-wrap:wrap}
+.cal-cat{display:inline-flex;align-items:center;gap:9px;border:2px solid var(--border);
+  background:#fff;color:var(--sub);font-weight:800;font-size:14.5px;padding:11px 18px;
+  border-radius:14px;transition:.16s;letter-spacing:.2px}
+.cal-cat .ic{font-size:18px}
+.cal-cat .cnt{background:var(--gray);color:var(--sub);font-size:12px;font-weight:800;
+  min-width:22px;height:22px;padding:0 7px;border-radius:11px;display:inline-flex;
+  align-items:center;justify-content:center}
+.cal-cat:hover{border-color:var(--blue-2);color:var(--mmh-blue);transform:translateY(-1px)}
+.cal-cat.on{color:#fff;border-color:transparent}
+.cal-cat.on .cnt{background:rgba(255,255,255,.28);color:#fff}
+.cal-cat.on.c-all{background:linear-gradient(120deg,#334d8a,#5b7fd0)}
+.cal-cat.on.c-trip{background:linear-gradient(120deg,#0E8A6E,#12b58f)}
+.cal-cat.on.c-training{background:linear-gradient(120deg,#7c3aed,#9d5cf5)}
+.cal-cat.on.c-event{background:linear-gradient(120deg,#2457c5,#5b7fd0)}
+.cal-cat.on.c-product{background:linear-gradient(120deg,#d97706,#f59e0b)}
+
+.cal-row2{display:flex;align-items:center;gap:14px;flex-wrap:wrap}
+.cal-nav{display:flex;align-items:center;gap:4px;background:var(--gray);border-radius:13px;padding:5px}
+.cal-nav button{border:none;background:#fff;color:var(--mmh-navy);width:40px;height:40px;
+  border-radius:10px;font-size:20px;font-weight:800;display:flex;align-items:center;
+  justify-content:center;box-shadow:var(--sh-sm);transition:.14s}
+.cal-nav button:hover{background:var(--mmh-blue);color:#fff}
+.cal-month{font-size:20px;font-weight:800;color:var(--text);min-width:190px;text-align:center;
+  letter-spacing:-.3px}
+.cal-today{border:2px solid var(--border);background:#fff;color:var(--mmh-blue);font-weight:800;
+  font-size:13px;padding:9px 15px;border-radius:11px;transition:.14s}
+.cal-today:hover{border-color:var(--mmh-blue);background:var(--pale)}
+.cal-refresh{border:none;background:var(--pale);color:var(--mmh-blue);font-weight:800;font-size:13px;
+  padding:9px 15px;border-radius:11px;display:inline-flex;align-items:center;gap:7px;transition:.14s}
+.cal-refresh:hover{background:var(--mmh-blue);color:#fff}
+.cal-refresh.spin svg{animation:calSpin 1s linear infinite}
+@keyframes calSpin{to{transform:rotate(360deg)}}
+.cal-viewtog{display:flex;background:var(--gray);border-radius:11px;padding:4px;gap:3px;margin-left:auto}
+.cal-viewtog button{border:none;background:transparent;color:var(--sub);font-weight:800;font-size:12.5px;
+  padding:8px 14px;border-radius:8px;transition:.14s}
+.cal-viewtog button.on{background:#fff;color:var(--mmh-navy);box-shadow:var(--sh-sm)}
+
+/* sub-switch marketing (Sự kiện / Sản phẩm) + page chips */
+.cal-sub{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.cal-subtabs{display:flex;background:#eef2fb;border:1.5px solid var(--border);border-radius:12px;padding:4px;gap:3px}
+.cal-subtab{border:none;background:transparent;color:var(--sub);font-weight:800;font-size:13px;
+  padding:9px 16px;border-radius:9px;transition:.14s;display:inline-flex;align-items:center;gap:7px}
+.cal-subtab.on{background:var(--mmh-navy);color:#fff}
+.cal-pages{display:flex;gap:7px;flex-wrap:wrap}
+.cal-page{border:1.5px solid var(--border);background:#fff;color:var(--sub);font-weight:700;font-size:12.5px;
+  padding:8px 13px;border-radius:20px;transition:.14s}
+.cal-page:hover{border-color:var(--blue-2)}
+.cal-page.on{background:var(--mmh-blue);color:#fff;border-color:var(--mmh-blue)}
+.cal-page.on.pg-dental{background:#2457c5;border-color:#2457c5}
+.cal-page.on.pg-ophthalmic{background:#0E8A6E;border-color:#0E8A6E}
+.cal-page.on.pg-thailand{background:#b8455f;border-color:#b8455f}
+
+/* ── Summary strip ── */
+.cal-summary{display:flex;gap:12px;flex-wrap:wrap;padding:14px 26px 2px}
+.cal-stat{background:#fff;border:1px solid var(--border);border-radius:14px;padding:12px 18px;
+  min-width:132px;box-shadow:var(--sh-sm)}
+.cal-stat .v{font-size:26px;font-weight:800;color:var(--mmh-navy);line-height:1;letter-spacing:-1px}
+.cal-stat .l{font-size:11.5px;color:var(--sub);font-weight:700;margin-top:5px;text-transform:uppercase;letter-spacing:.4px}
+.cal-stat.accent{background:linear-gradient(135deg,var(--mmh-navy),var(--mmh-blue));border:none}
+.cal-stat.accent .v{color:#fff}
+.cal-stat.accent .l{color:#c7d6ef}
+.cal-pillars{display:flex;align-items:center;gap:4px;margin-top:8px;height:9px;border-radius:5px;overflow:hidden;background:var(--gray)}
+.cal-pillars i{height:100%;display:block}
+.cal-pilllegend{display:flex;gap:12px;flex-wrap:wrap;font-size:11px;color:var(--sub);font-weight:700;margin-top:7px}
+.cal-pilllegend span{display:inline-flex;align-items:center;gap:5px}
+.cal-pilllegend b{width:9px;height:9px;border-radius:3px;display:inline-block}
+
+/* ── Body scroll ── */
+.cal-body{flex:1;overflow:auto;padding:16px 26px 40px}
+
+/* ── GRID (month) ── */
+.cal-grid{background:#fff;border-radius:18px;box-shadow:var(--sh-md);overflow:hidden;border:1px solid var(--border)}
+.cal-dow{display:grid;grid-template-columns:repeat(7,1fr);background:var(--mmh-navy)}
+.cal-dow div{color:#dbe6f7;font-size:12.5px;font-weight:800;text-align:center;padding:13px 0;letter-spacing:1px;text-transform:uppercase}
+.cal-dow div.we{color:var(--mmh-yellow)}
+.cal-weeks{display:grid;grid-template-columns:repeat(7,1fr)}
+.cal-cell{min-height:138px;border-right:1px solid var(--border);border-bottom:1px solid var(--border);
+  padding:8px 8px 10px;display:flex;flex-direction:column;gap:5px;position:relative;cursor:pointer;transition:background .12s}
+.cal-cell:nth-child(7n){border-right:none}
+.cal-cell:hover{background:var(--pale)}
+.cal-cell.out{background:#fafbfd}
+.cal-cell.out .cal-dnum{color:#c3ccdd}
+.cal-cell.today{background:#fffdf0}
+.cal-cell.today .cal-dnum{background:var(--mmh-yellow);color:var(--mmh-navy)}
+.cal-dnum{align-self:flex-start;font-size:14px;font-weight:800;color:var(--text);
+  width:29px;height:29px;display:flex;align-items:center;justify-content:center;border-radius:9px}
+.cal-cell.we .cal-dnum{color:var(--mmh-blue)}
+.cal-chips{display:flex;flex-direction:column;gap:4px;overflow:hidden}
+.cal-chip{display:flex;align-items:center;gap:6px;font-size:12px;font-weight:700;color:#fff;
+  padding:4px 8px;border-radius:7px;line-height:1.25;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+  box-shadow:0 1px 3px rgba(0,0,0,.12)}
+.cal-chip .cdot{width:6px;height:6px;border-radius:50%;background:rgba(255,255,255,.85);flex-shrink:0}
+.cal-chip .ctxt{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.cal-chip.k-trip{background:#0E8A6E}
+.cal-chip.k-training{background:#7c3aed}
+.cal-chip.k-event{background:#2457c5}
+.cal-chip.k-product{background:#d97706}
+.cal-chip.planned{opacity:.92;background-image:linear-gradient(135deg,rgba(255,255,255,.22) 25%,transparent 25%,transparent 50%,rgba(255,255,255,.22) 50%,rgba(255,255,255,.22) 75%,transparent 75%);background-size:12px 12px}
+.cal-more{font-size:11.5px;font-weight:800;color:var(--mmh-blue);padding:2px 8px;cursor:pointer}
+.cal-more:hover{text-decoration:underline}
+
+/* ── LIST / AGENDA ── */
+.cal-list{display:flex;flex-direction:column;gap:16px}
+.cal-daygrp{background:#fff;border-radius:16px;box-shadow:var(--sh-sm);border:1px solid var(--border);overflow:hidden}
+.cal-daygrp-hd{display:flex;align-items:center;gap:12px;padding:13px 18px;background:var(--pale);border-bottom:1px solid var(--border)}
+.cal-daygrp-hd .dn{font-size:22px;font-weight:800;color:var(--mmh-navy);letter-spacing:-1px}
+.cal-daygrp-hd .dw{font-size:12.5px;color:var(--sub);font-weight:700}
+.cal-daygrp-hd .dc{margin-left:auto;font-size:12px;color:var(--sub);font-weight:800;background:#fff;
+  padding:4px 11px;border-radius:20px;border:1px solid var(--border)}
+.cal-daygrp-bd{padding:12px 16px;display:flex;flex-direction:column;gap:10px}
+
+/* ── Event card (shared list + day drawer) ── */
+.cal-ev{border:1px solid var(--border);border-left:5px solid var(--mmh-blue);border-radius:12px;
+  padding:13px 15px;background:#fff;transition:.14s;cursor:pointer}
+.cal-ev:hover{box-shadow:var(--sh-md);transform:translateY(-1px)}
+.cal-ev.k-trip{border-left-color:#0E8A6E}
+.cal-ev.k-training{border-left-color:#7c3aed}
+.cal-ev.k-event{border-left-color:#2457c5}
+.cal-ev.k-product{border-left-color:#d97706}
+.cal-ev-top{display:flex;align-items:center;gap:9px;flex-wrap:wrap;margin-bottom:5px}
+.cal-tag{font-size:11px;font-weight:800;padding:3px 9px;border-radius:7px;letter-spacing:.3px;color:#fff}
+.cal-tag.k-trip{background:#0E8A6E}.cal-tag.k-training{background:#7c3aed}
+.cal-tag.k-event{background:#2457c5}.cal-tag.k-product{background:#d97706}
+.cal-st{font-size:11px;font-weight:800;padding:3px 10px;border-radius:20px}
+.cal-st.ok{background:var(--success-bg);color:var(--success-fg)}
+.cal-st.warn{background:var(--warn-bg);color:var(--warn-fg)}
+.cal-st.info{background:var(--info-bg);color:var(--info-fg)}
+.cal-st.bad{background:var(--danger-bg);color:var(--danger-fg)}
+.cal-st.muted{background:var(--todo-bg);color:var(--todo-fg)}
+.cal-ev-title{font-size:15px;font-weight:800;color:var(--text);line-height:1.32;margin:3px 0}
+.cal-ev-meta{display:flex;flex-wrap:wrap;gap:6px 14px;font-size:12.5px;color:var(--sub);font-weight:600;margin-top:6px}
+.cal-ev-meta span{display:inline-flex;align-items:center;gap:5px}
+.cal-ev-meta b{color:var(--text);font-weight:700}
+.cal-pagepill{font-size:10.5px;font-weight:800;padding:2px 8px;border-radius:6px;background:#eef2fb;color:var(--mmh-navy)}
+.cal-pagepill.pg-dental{background:#e3ecff;color:#1c3f8f}
+.cal-pagepill.pg-ophthalmic{background:#dcf5ee;color:#0a6b54}
+.cal-pagepill.pg-thailand{background:#fbe4ea;color:#a13350}
+.cal-ev-body{margin-top:9px;padding-top:9px;border-top:1px dashed var(--border);font-size:13px;color:var(--sub);
+  line-height:1.55;display:none}
+.cal-ev.open .cal-ev-body{display:block;animation:fade .2s var(--ease)}
+.cal-ev-body .kv{margin-bottom:4px}.cal-ev-body .kv b{color:var(--text)}
+.cal-link{display:inline-flex;align-items:center;gap:6px;margin-top:9px;font-size:12.5px;font-weight:800;
+  color:#fff;background:var(--mmh-blue);padding:7px 13px;border-radius:9px;text-decoration:none}
+.cal-link:hover{background:var(--mmh-navy)}
+
+/* ── Day drawer (khi bấm 1 ô ngày ở grid) ── */
+.cal-drawer{position:fixed;top:0;right:0;bottom:0;width:min(440px,94vw);background:#fff;z-index:210;
+  box-shadow:-16px 0 48px rgba(0,48,71,.22);transform:translateX(100%);transition:transform .3s var(--ease);
+  display:flex;flex-direction:column}
+.cal-drawer.show{transform:translateX(0)}
+.cal-drawer-hd{padding:20px 22px;background:linear-gradient(120deg,var(--mmh-navy),var(--mmh-blue));color:#fff;
+  display:flex;align-items:center;gap:12px}
+.cal-drawer-hd .dbig{font-size:34px;font-weight:800;line-height:1;letter-spacing:-1.5px}
+.cal-drawer-hd .dsub{font-size:13px;color:#c7d6ef;font-weight:700;margin-top:3px}
+.cal-drawer-hd .sp{flex:1}
+.cal-drawer-hd button{border:none;background:rgba(255,255,255,.16);color:#fff;width:38px;height:38px;
+  border-radius:11px;font-size:20px}
+.cal-drawer-bd{flex:1;overflow:auto;padding:18px;display:flex;flex-direction:column;gap:11px}
+.cal-drawer-back{position:fixed;inset:0;background:rgba(10,25,50,.35);z-index:209;opacity:0;pointer-events:none;transition:.28s}
+.cal-drawer-back.show{opacity:1;pointer-events:auto}
+
+/* ── Empty / loading ── */
+.cal-empty{text-align:center;padding:70px 20px;color:var(--faint)}
+.cal-empty .em{font-size:56px;margin-bottom:14px;opacity:.55}
+.cal-empty h3{font-size:18px;color:var(--sub);font-weight:800;margin-bottom:6px}
+.cal-empty p{font-size:13.5px}
+.cal-loading{display:flex;flex-direction:column;align-items:center;gap:16px;padding:80px 20px;color:var(--sub)}
+.cal-spin{width:44px;height:44px;border:4px solid var(--border);border-top-color:var(--mmh-blue);border-radius:50%;animation:calSpin .9s linear infinite}
+.cal-legend{display:flex;gap:16px;flex-wrap:wrap;margin:14px 4px 0;font-size:12px;color:var(--sub);font-weight:700}
+.cal-legend span{display:inline-flex;align-items:center;gap:6px}
+.cal-legend b{width:12px;height:12px;border-radius:4px;display:inline-block}
+
+@media(max-width:900px){
+  .cal-hd{padding:14px 16px}.cal-tools,.cal-summary,.cal-body{padding-left:14px;padding-right:14px}
+  .cal-hd h2{font-size:19px}.cal-viewtog{margin-left:0}
+  .cal-cell{min-height:74px;padding:5px}
+  .cal-dnum{width:24px;height:24px;font-size:12.5px}
+  .cal-chip{font-size:10px;padding:3px 5px}.cal-chip .cdot{display:none}
+  .cal-month{font-size:17px;min-width:150px}
+}
+@media(max-width:560px){
+  .cal-dow div{font-size:10px;padding:9px 0}
+  .cal-cell{min-height:60px}
+  .cal-chip .ctxt{max-width:100%}
+}
+
 </style>
 </head>
 <body>
@@ -1123,6 +1346,7 @@ button{cursor:pointer}
     <div class="tb-title"><h1>MMH Report</h1><p data-i18n="app.sub">Weekly / Monthly Tracker · Toàn bộ phòng ban</p></div>
     <!-- ⭐ v5.4: link nhanh sang các webapp MMH khác -->
     <div class="tb-links"><a class="tb-link" href="https://manimedicalhanoi.github.io/Tender-Result/" target="_blank" rel="noopener" title="Thông tin thầu">📑 Thông tin thầu<svg viewBox="0 0 24 24"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg></a><a class="tb-link" href="https://manimedicalhanoi.github.io/Product-Data/" target="_blank" rel="noopener" title="Product Data">📦 Product Data<svg viewBox="0 0 24 24"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg></a><a class="tb-link" href="https://manimedicalhanoi.github.io/MMH-FY67-Turnover/" target="_blank" rel="noopener" title="Dự trù & Doanh số">📈 Dự trù & Doanh số<svg viewBox="0 0 24 24"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg></a></div>
+    <button class="cal-launch" onclick="openMMHCalendar()" title="Mở lịch tổng hợp MMH">📅 <span>MMH Calendar</span></button>
     <div class="tb-sp"></div>
     <div id="lang-switch" class="lang-sw"></div>   <!-- ⭐ v5.5: VN / EN -->
     <div class="tb-user">
@@ -1192,6 +1416,49 @@ button{cursor:pointer}
       <div class="act-viewport"><div id="act-track" class="act-track"></div></div>
     </div>
   </div>
+</div>
+
+<!-- ═══ MMH CALENDAR (overlay toàn màn hình) ═══ -->
+<div id="cal-app">
+  <div class="cal-hd">
+    <div class="cal-badge">📅</div>
+    <div>
+      <h2>MMH Calendar</h2>
+      <div class="cal-sub">Lịch tổng hợp · Công tác · Đào tạo · Marketing (Sự kiện &amp; Sản phẩm)</div>
+    </div>
+    <div class="sp"></div>
+    <div class="cal-updated" id="cal-updated"></div>
+    <button class="cal-x" onclick="closeMMHCalendar()" title="Đóng lịch">&times;</button>
+  </div>
+
+  <div class="cal-tools">
+    <div class="cal-cats" id="cal-cats"></div>
+    <div class="cal-sub" id="cal-subrow" style="display:none"></div>
+    <div class="cal-row2">
+      <div class="cal-nav">
+        <button onclick="CAL.shift(-1)" title="Tháng trước">‹</button>
+        <button onclick="CAL.shift(1)"  title="Tháng sau">›</button>
+      </div>
+      <div class="cal-month" id="cal-month">—</div>
+      <button class="cal-today" onclick="CAL.goToday()">Hôm nay</button>
+      <button class="cal-refresh" id="cal-refresh" onclick="CAL.reload()" title="Tải lại dữ liệu mới nhất">
+        <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M21 12a9 9 0 1 1-3-6.7"/><polyline points="21 3 21 9 15 9"/></svg>
+        Làm mới
+      </button>
+      <div class="cal-viewtog">
+        <button id="cal-vgrid" class="on" onclick="CAL.setView('grid')">▦ Lịch tháng</button>
+        <button id="cal-vlist" onclick="CAL.setView('list')">☰ Danh sách</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="cal-summary" id="cal-summary"></div>
+  <div class="cal-body" id="cal-body"></div>
+</div>
+<div class="cal-drawer-back" id="cal-drawer-back" onclick="CAL.closeDay()"></div>
+<div class="cal-drawer" id="cal-drawer">
+  <div class="cal-drawer-hd" id="cal-drawer-hd"></div>
+  <div class="cal-drawer-bd" id="cal-drawer-bd"></div>
 </div>
 
 <div id="modals"></div>
@@ -4811,6 +5078,384 @@ function renderActivity(){
     track.innerHTML=cards;
   }
 }
+
+/* ══════════════════════════════════════════════════════════════════════════
+   ⭐ MMH CALENDAR — module lịch tổng hợp (độc lập, JSONP tới 3 backend riêng)
+   Công tác (Business trip) · Đào tạo (Training) · Marketing (Event + Product)
+   ══════════════════════════════════════════════════════════════════════════ */
+(function(){
+"use strict";
+
+var CAL = window.CAL = {
+  /* 3 URL backend — FIX CỨNG theo yêu cầu */
+  URLS: {
+    trip:      "https://script.google.com/a/macros/manimedicalhanoi.com/s/AKfycbzAsSxx8NNQhjELq1dnASdXZo4o4sWvGaaHjIrBUkp8ljEb119hUnAdiiBXGfxRfgVniQ/exec",
+    training:  "https://script.google.com/macros/s/AKfycbxDLxMevRP5DHQ0eIurYRPS37jBjENo1vJ32z9Zo7X8GQA25HDBFvNBuSE1C29lFBKa/exec",
+    marketing: "https://script.google.com/a/macros/manimedicalhanoi.com/s/AKfycbw9knw7Da8q8dpDUE5Z776I3VdDjCpyGcK5ipLBB5l1uMWbzvMQBTWI3MBdfg4ghppIYA/exec"
+  },
+  raw:{ trip:[], training:[], event:[], product:[] },
+  updated:{},                       // source → chuỗi thời điểm cập nhật
+  loaded:false, loading:false,
+  cat:"all",                        // all | trip | training | marketing
+  mkKind:"event",                   // khi cat=marketing: event | product
+  mkPage:"",                        // "" | Dental | Ophthalmic | Thailand | Others
+  view:"grid",                      // grid | list
+  ym:null,                          // {y,m} tháng đang xem
+  selDay:null
+};
+
+/* ── tiện ích ── */
+function $(id){ return document.getElementById(id); }
+function esc(s){ return String(s==null?"":s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;"); }
+function jsq(s){ return String(s==null?"":s).replace(/\\/g,"\\\\").replace(/'/g,"\\'"); }
+var VN_DOW=["CN","T2","T3","T4","T5","T6","T7"];
+var VN_DOW_FULL=["Chủ nhật","Thứ hai","Thứ ba","Thứ tư","Thứ năm","Thứ sáu","Thứ bảy"];
+function pad(n){ n=String(n); return n.length<2?"0"+n:n; }
+function isoOf(d){ return d.getFullYear()+"-"+pad(d.getMonth()+1)+"-"+pad(d.getDate()); }
+function ddmmyyyy(iso){ if(!iso) return ""; var p=String(iso).slice(0,10).split("-"); return p.length===3?(p[2]+"/"+p[1]+"/"+p[0]):iso; }
+function dowOfIso(iso){ var p=iso.split("-"); return new Date(+p[0],+p[1]-1,+p[2]).getDay(); }
+function money(n){ n=+n||0; return n? n.toLocaleString("vi-VN")+" vnd" : "—"; }
+var _seq=0;
+function jsonp(url, params, timeoutMs){
+  return new Promise(function(resolve){
+    var cb="__cal_cb_"+Date.now()+"_"+(++_seq);
+    var s=document.createElement("script");
+    var t=setTimeout(function(){ done(null); }, timeoutMs||25000);
+    function done(d){ clearTimeout(t); delete window[cb]; if(s.parentNode)s.parentNode.removeChild(s); resolve(d); }
+    window[cb]=function(d){ done(d); };
+    params=params||{}; params.callback=cb;
+    var qs=Object.keys(params).map(function(k){ return encodeURIComponent(k)+"="+encodeURIComponent(params[k]==null?"":params[k]); }).join("&");
+    s.src=url+"?"+qs;
+    s.onerror=function(){ done(null); };
+    document.body.appendChild(s);
+  });
+}
+
+/* ── mở / đóng ── */
+window.openMMHCalendar=function(){
+  var el=$("cal-app"); if(!el) return;
+  el.classList.add("show"); document.body.style.overflow="hidden";
+  if(!CAL.ym){ var n=new Date(); CAL.ym={y:n.getFullYear(),m:n.getMonth()}; }
+  buildCats(); render();
+  if(!CAL.loaded && !CAL.loading) CAL.reload();
+  else if(CAL.loaded && (Date.now()-(CAL._ts||0))>90000) CAL.reload();  // reopen → làm mới ngầm nếu dữ liệu cũ >90s
+};
+window.closeMMHCalendar=function(){
+  $("cal-app").classList.remove("show"); document.body.style.overflow=""; CAL.closeDay();
+};
+
+/* ── tải dữ liệu 3 backend ── */
+CAL.reload=function(){
+  if(CAL.loading) return;
+  CAL.loading=true;
+  var btn=$("cal-refresh"); if(btn) btn.classList.add("spin");
+  if(!CAL.loaded) renderLoading();
+  Promise.all([
+    jsonp(CAL.URLS.trip,      {action:"calendar"}),
+    jsonp(CAL.URLS.training,  {action:"calendar"}),
+    jsonp(CAL.URLS.marketing, {action:"calendar"})
+  ]).then(function(res){
+    var trip=res[0], trn=res[1], mkt=res[2];
+    CAL.raw.trip     = (trip && trip.ok && trip.events) ? trip.events : [];
+    CAL.raw.training = (trn  && trn.ok  && trn.events)  ? trn.events  : [];
+    var me=[], mp=[];
+    if(mkt && mkt.ok && mkt.events) mkt.events.forEach(function(ev){ (ev.kind==="product"?mp:me).push(ev); });
+    CAL.raw.event=me; CAL.raw.product=mp;
+    CAL.updated={ trip:(trip&&trip.updated)||"", training:(trn&&trn.updated)||"", marketing:(mkt&&mkt.updated)||"" };
+    CAL.loaded=true; CAL.loading=false; CAL._ts=Date.now();
+    if(btn) btn.classList.remove("spin");
+    render();
+  });
+};
+
+/* ── state setters ── */
+CAL.setCat=function(c){ CAL.cat=c; buildCats(); render(); };
+CAL.setMkKind=function(k){ CAL.mkKind=k; render(); };
+CAL.setPage=function(p){ CAL.mkPage=(CAL.mkPage===p?"":p); render(); };
+CAL.setView=function(v){ CAL.view=v; $("cal-vgrid").classList.toggle("on",v==="grid"); $("cal-vlist").classList.toggle("on",v==="list"); renderBody(); };
+CAL.shift=function(d){ var y=CAL.ym.y, m=CAL.ym.m+d; CAL.ym={y:y+Math.floor(m/12), m:((m%12)+12)%12}; render(); };
+CAL.goToday=function(){ var n=new Date(); CAL.ym={y:n.getFullYear(),m:n.getMonth()}; render(); };
+
+/* ── effective category ── */
+function effCat(){ return CAL.cat==="marketing" ? CAL.mkKind : CAL.cat; }
+
+/* ── lấy events theo category (bỏ qua tháng) ── */
+function poolFor(cat){
+  if(cat==="all") return [].concat(CAL.raw.trip,CAL.raw.training,CAL.raw.event,CAL.raw.product);
+  if(cat==="marketing") return [].concat(CAL.raw.event,CAL.raw.product);
+  return CAL.raw[cat]||[];
+}
+/* ── lọc theo tháng + page ── */
+function inMonth(iso){ if(!iso) return false; var p=iso.split("-"); return (+p[0]===CAL.ym.y && (+p[1]-1)===CAL.ym.m); }
+function pageMatch(ev){
+  if(!CAL.mkPage) return true;
+  if(ev.kind!=="event" && ev.kind!=="product") return true;
+  return String(ev.page||"").toLowerCase().indexOf(CAL.mkPage.toLowerCase())>=0;
+}
+function monthEvents(){
+  var ec=effCat();
+  var pool = ec==="all" ? poolFor("all") : (ec==="event"||ec==="product" ? CAL.raw[ec] : poolFor(ec));
+  var showPage = (CAL.cat==="marketing");
+  return pool.filter(function(ev){ return inMonth(ev.date) && (!showPage || pageMatch(ev)); });
+}
+
+/* ══════ RENDER ══════ */
+function render(){
+  var mn=["Tháng 1","Tháng 2","Tháng 3","Tháng 4","Tháng 5","Tháng 6","Tháng 7","Tháng 8","Tháng 9","Tháng 10","Tháng 11","Tháng 12"];
+  $("cal-month").textContent = mn[CAL.ym.m]+" · "+CAL.ym.y;
+  var up=[]; if(CAL.updated.trip)up.push("Công tác "+CAL.updated.trip);
+  if(CAL.updated.training)up.push("Đào tạo "+CAL.updated.training);
+  if(CAL.updated.marketing)up.push("Marketing "+CAL.updated.marketing);
+  $("cal-updated").innerHTML = CAL.loaded ? ("🔄 Cập nhật:<br>"+esc(up.join(" · "))) : "";
+  buildCats(); buildSubrow(); renderSummary(); renderBody();
+}
+
+function catCount(cat){ return poolFor(cat).filter(function(ev){ return inMonth(ev.date); }).length; }
+function buildCats(){
+  var defs=[
+    {id:"all",      cls:"c-all",      ic:"🗓️", lbl:"Tất cả"},
+    {id:"trip",     cls:"c-trip",     ic:"🧳", lbl:"Công tác"},
+    {id:"training", cls:"c-training", ic:"🎓", lbl:"Đào tạo"},
+    {id:"marketing",cls:"c-event",    ic:"📣", lbl:"Marketing"}
+  ];
+  $("cal-cats").innerHTML=defs.map(function(d){
+    var n=catCount(d.id);
+    var on=(CAL.cat===d.id);
+    return '<button class="cal-cat '+d.cls+(on?" on":"")+'" onclick="CAL.setCat(\''+d.id+'\')">'
+      +'<span class="ic">'+d.ic+'</span>'+esc(d.lbl)+'<span class="cnt">'+n+'</span></button>';
+  }).join("");
+}
+function buildSubrow(){
+  var row=$("cal-subrow");
+  if(CAL.cat!=="marketing"){ row.style.display="none"; row.innerHTML=""; return; }
+  row.style.display="flex";
+  var ev=CAL.raw.event.filter(function(e){return inMonth(e.date);}).length;
+  var pr=CAL.raw.product.filter(function(e){return inMonth(e.date);}).length;
+  var pages=[["","Tất cả page"],["Dental","Mani Dental"],["Ophthalmic","Mani Ophthalmic"],["Thailand","Mani Thailand"]];
+  var chips=pages.map(function(p){
+    var on=(CAL.mkPage===p[0]); var cl=p[0]?("pg-"+p[0].toLowerCase()):"";
+    return '<button class="cal-page '+cl+(on?" on":"")+'" onclick="CAL.setPage(\''+p[0]+'\')">'+esc(p[1])+'</button>';
+  }).join("");
+  row.innerHTML=
+    '<div class="cal-subtabs">'
+      +'<button class="cal-subtab'+(CAL.mkKind==="event"?" on":"")+'" onclick="CAL.setMkKind(\'event\')">📸 Sự kiện <b style="opacity:.7;margin-left:2px">'+ev+'</b></button>'
+      +'<button class="cal-subtab'+(CAL.mkKind==="product"?" on":"")+'" onclick="CAL.setMkKind(\'product\')">🦷 Sản phẩm <b style="opacity:.7;margin-left:2px">'+pr+'</b></button>'
+    +'</div>'
+    +'<div class="cal-pages">'+chips+'</div>';
+}
+
+/* ── status → màu badge ── */
+function stMeta(ev){
+  var s=String(ev.status||"").toLowerCase();
+  if(/reject|từ chối/.test(s))                 return {cls:"bad",  lbl:"✖ "+(ev.status||"Rejected")};
+  if(/cancel|huỷ|hủy/.test(s))                 return {cls:"muted",lbl:"⊘ "+(ev.status||"Cancel")};
+  if(/approve|đã duyệt/.test(s))               return {cls:"ok",   lbl:"✅ "+(ev.status||"Approved")};
+  if(/complet|hoàn thành/.test(s))             return {cls:"ok",   lbl:"✅ "+(ev.status||"Completed")};
+  if(/đúng hạn|on time/.test(s))               return {cls:"ok",   lbl:"✅ On air đúng hạn"};
+  if(/muộn|late|trễ/.test(s))                  return {cls:"warn", lbl:"⏰ On air muộn"};
+  if(/plan|kế hoạch/.test(s))                  return {cls:"info", lbl:"📋 Kế hoạch"};
+  if(/pending|chờ|duyệt/.test(s))              return {cls:"info", lbl:"🕓 "+(ev.status||"Pending")};
+  if(!s)                                       return {cls:"muted",lbl:"—"};
+  return {cls:"info", lbl:ev.status};
+}
+function pageCls(page){
+  var p=String(page||"").toLowerCase();
+  if(p.indexOf("dental")>=0) return "pg-dental";
+  if(p.indexOf("ophthal")>=0) return "pg-ophthalmic";
+  if(p.indexOf("thailand")>=0) return "pg-thailand";
+  return "";
+}
+
+/* ── SUMMARY strip ── */
+function renderSummary(){
+  var box=$("cal-summary"); if(!box) return;
+  var ec=effCat();
+  var list=monthEvents();
+  function stat(v,l,accent){ return '<div class="cal-stat'+(accent?" accent":"")+'"><div class="v">'+v+'</div><div class="l">'+esc(l)+'</div></div>'; }
+  var html="";
+  if(ec==="all"){
+    var t=list.filter(function(e){return e.kind==="trip";}).length;
+    var tr=list.filter(function(e){return e.kind==="training";}).length;
+    var ev=list.filter(function(e){return e.kind==="event";}).length;
+    var pr=list.filter(function(e){return e.kind==="product";}).length;
+    html=stat(list.length,"Tổng lịch",1)+stat(t,"🧳 Công tác")+stat(tr,"🎓 Đào tạo")+stat(ev,"📸 Bài sự kiện")+stat(pr,"🦷 Bài sản phẩm");
+  } else if(ec==="trip"){
+    var days=0,cost=0; list.forEach(function(e){ days+=(+e.days||0); cost+=(+e.costTotal||0); });
+    var pics={}; list.forEach(function(e){ if(e.pic)pics[e.pic]=1; });
+    html=stat(list.length,"Chuyến công tác",1)+stat(days,"Tổng số ngày")+stat(Object.keys(pics).length,"Nhân sự đi")+stat((cost/1e6).toFixed(1)+"M","Dự tính chi phí (vnd)");
+  } else if(ec==="training"){
+    var done=list.filter(function(e){return !e.planned;}).length;
+    var plan=list.filter(function(e){return e.planned;}).length;
+    var trainers={}; list.forEach(function(e){ if(e.trainer)trainers[e.trainer]=1; });
+    html=stat(list.length,"Buổi đào tạo",1)+stat(done,"✅ Đã diễn ra")+stat(plan,"📋 Kế hoạch")+stat(Object.keys(trainers).length,"Trainer");
+  } else { // event | product
+    html=stat(list.length, ec==="event"?"Bài đăng sự kiện":"Bài đăng sản phẩm",1);
+    if(ec==="event"){ var evs={}; list.forEach(function(e){ if(e.event)evs[e.event]=1; }); html+=stat(Object.keys(evs).length,"📸 Số sự kiện"); }
+    else { var types={}; list.forEach(function(e){ if(e.ptype)types[e.ptype]=1; }); html+=stat(Object.keys(types).length,"🦷 Nhóm sản phẩm"); }
+    // pillar ratio
+    var pc={}; list.forEach(function(e){ var k=e.pillar||"Khác"; pc[k]=(pc[k]||0)+1; });
+    var keys=Object.keys(pc); var tot=list.length||1;
+    var PC=["#3A5CAA","#0E8A6E","#E08A00","#B0468C","#7c3aed","#c0392b","#0f766e"];
+    var bars=keys.map(function(k,i){ return '<i style="width:'+(pc[k]/tot*100)+'%;background:'+PC[i%PC.length]+'"></i>'; }).join("");
+    var leg=keys.map(function(k,i){ return '<span><b style="background:'+PC[i%PC.length]+'"></b>'+esc(k)+' ('+pc[k]+')</span>'; }).join("");
+    html+='<div class="cal-stat" style="flex:1;min-width:260px"><div class="l" style="margin:0 0 3px">Tỉ lệ loại bài (Pillar)</div><div class="cal-pillars">'+bars+'</div><div class="cal-pilllegend">'+leg+'</div></div>';
+  }
+  box.innerHTML=html;
+}
+
+/* ── BODY: grid hoặc list ── */
+function renderLoading(){ $("cal-body").innerHTML='<div class="cal-loading"><div class="cal-spin"></div><div>Đang tải lịch từ 3 nguồn dữ liệu…</div></div>'; }
+function renderBody(){
+  if(!CAL.loaded){ renderLoading(); return; }
+  if(CAL.view==="list") renderList(); else renderGrid();
+}
+
+function chipText(ev){
+  if(ev.kind==="trip")     return (ev.pic?esc(ev.pic)+" · ":"")+esc(ev.destination||ev.title);
+  if(ev.kind==="training") return esc(ev.title);
+  if(ev.kind==="event")    return esc(ev.event||ev.title);
+  return esc(ev.title);
+}
+function isPlannedChip(ev){
+  if(ev.kind==="training") return !!ev.planned;
+  if(ev.kind==="event"||ev.kind==="product") return !ev.actual && !!ev.planned;
+  return false;
+}
+
+function renderGrid(){
+  var list=monthEvents();
+  // gom theo ngày
+  var byDay={}; list.forEach(function(ev){ var d=ev.date.slice(0,10); (byDay[d]=byDay[d]||[]).push(ev); });
+  var y=CAL.ym.y, m=CAL.ym.m;
+  var first=new Date(y,m,1);
+  var startDow=(first.getDay()+6)%7;               // Mon=0
+  var daysInMonth=new Date(y,m+1,0).getDate();
+  var todayIso=isoOf(new Date());
+
+  var dow='<div class="cal-dow">'+["T2","T3","T4","T5","T6","T7","CN"].map(function(d,i){ return '<div class="'+(i>=5?"we":"")+'">'+d+'</div>'; }).join("")+'</div>';
+  var cells="";
+  var total=startDow+daysInMonth; var rows=Math.ceil(total/7)*7;
+  for(var idx=0; idx<rows; idx++){
+    var dayNum=idx-startDow+1;
+    var out=(dayNum<1||dayNum>daysInMonth);
+    var dd, iso, we=false, isToday=false, chipsHtml="";
+    if(!out){
+      dd=dayNum; iso=y+"-"+pad(m+1)+"-"+pad(dd);
+      var wd=(idx%7); we=(wd>=5);
+      isToday=(iso===todayIso);
+      var evs=byDay[iso]||[];
+      var shown=evs.slice(0,3).map(function(ev){
+        var m2=stMeta(ev);
+        return '<div class="cal-chip k-'+ev.kind+(isPlannedChip(ev)?" planned":"")+'" onclick="event.stopPropagation();CAL.openDay(\''+iso+'\')" title="'+esc((ev.title||"")+" — "+m2.lbl)+'">'
+          +'<span class="cdot"></span><span class="ctxt">'+chipText(ev)+'</span></div>';
+      }).join("");
+      var more=evs.length>3 ? '<div class="cal-more" onclick="event.stopPropagation();CAL.openDay(\''+iso+'\')">+ '+(evs.length-3)+' nữa</div>' : "";
+      chipsHtml='<div class="cal-chips">'+shown+more+'</div>';
+    }
+    cells+='<div class="cal-cell'+(out?" out":"")+(we?" we":"")+(isToday?" today":"")+'"'
+      +(out?"":' onclick="CAL.openDay(\''+iso+'\')"')+'>'
+      +(out?"":'<div class="cal-dnum">'+dd+'</div>'+chipsHtml)+'</div>';
+  }
+  var legend='<div class="cal-legend">'
+    +'<span><b style="background:#0E8A6E"></b>Công tác</span>'
+    +'<span><b style="background:#7c3aed"></b>Đào tạo</span>'
+    +'<span><b style="background:#2457c5"></b>Bài sự kiện</span>'
+    +'<span><b style="background:#d97706"></b>Bài sản phẩm</span>'
+    +'<span><b style="background:repeating-linear-gradient(135deg,#8aa0d8 0 4px,#c3d0ee 4px 8px)"></b>Sọc = dự kiến / kế hoạch</span>'
+    +'</div>';
+  if(!list.length){
+    $("cal-body").innerHTML=dow.replace(/.*/,"")+'<div class="cal-grid">'+dow+'<div class="cal-weeks">'+cells+'</div></div>'+legend
+      +'<div class="cal-empty"><div class="em">🗓️</div><h3>Không có lịch trong tháng này</h3><p>Chuyển tháng khác hoặc đổi hạng mục ở trên.</p></div>';
+    return;
+  }
+  $("cal-body").innerHTML='<div class="cal-grid">'+dow+'<div class="cal-weeks">'+cells+'</div></div>'+legend;
+}
+
+function renderList(){
+  var list=monthEvents().slice().sort(function(a,b){ return a.date<b.date?-1:(a.date>b.date?1:0); });
+  if(!list.length){ $("cal-body").innerHTML='<div class="cal-empty"><div class="em">🗓️</div><h3>Không có lịch trong tháng này</h3><p>Chuyển tháng khác hoặc đổi hạng mục ở trên.</p></div>'; return; }
+  var byDay={}, order=[];
+  list.forEach(function(ev){ var d=ev.date.slice(0,10); if(!byDay[d]){byDay[d]=[];order.push(d);} byDay[d].push(ev); });
+  var html=order.map(function(d){
+    var evs=byDay[d]; var w=dowOfIso(d); var dn=d.split("-")[2];
+    return '<div class="cal-daygrp"><div class="cal-daygrp-hd">'
+      +'<div class="dn">'+(+dn)+'</div><div><div class="dw">'+VN_DOW_FULL[w]+'</div><div class="dw" style="color:var(--faint)">'+ddmmyyyy(d)+'</div></div>'
+      +'<div class="dc">'+evs.length+' lịch</div></div>'
+      +'<div class="cal-daygrp-bd">'+evs.map(evCard).join("")+'</div></div>';
+  }).join("");
+  $("cal-body").innerHTML='<div class="cal-list">'+html+'</div>';
+}
+
+/* ── Event card (dùng chung list + drawer) ── */
+function evCard(ev){
+  var m=stMeta(ev);
+  var tag={trip:"🧳 CÔNG TÁC",training:"🎓 ĐÀO TẠO",event:"📸 SỰ KIỆN",product:"🦷 SẢN PHẨM"}[ev.kind]||ev.kind;
+  var meta="", body="";
+  if(ev.kind==="trip"){
+    meta='<span>👤 <b>'+esc(ev.pic)+'</b></span>'
+        +'<span>📅 '+ddmmyyyy(ev.date)+' → '+ddmmyyyy(ev.endDate)+' ('+(ev.days||"?")+' ngày)</span>'
+        +'<span>📍 <b>'+esc(ev.destination)+'</b></span>';
+    body='<div class="kv"><b>Người đi cùng:</b> '+esc(ev.coTraveler||"No")+'</div>'
+        +'<div class="kv"><b>Mục đích:</b> '+esc(ev.purpose||"—")+'</div>'
+        +'<div class="kv"><b>Chi phí dự tính:</b> '+money(ev.costTotal)+'</div>'
+        +'<div class="kv"><b>Thiết bị mang theo:</b> '+esc(ev.equipment||"N/A")+'</div>'
+        +'<div class="kv"><b>Tư liệu (Folder):</b> '+(ev.folder?('<a class="cal-link" href="'+esc(ev.folder)+'" target="_blank" rel="noopener">📁 Mở folder</a>'):"N/A")+'</div>';
+  } else if(ev.kind==="training"){
+    meta='<span>📅 '+ddmmyyyy(ev.date)+'</span>'
+        +'<span>🏷️ '+esc(ev.type)+(ev.category?' · '+esc(ev.category):"")+'</span>'
+        +'<span>👨‍🏫 <b>'+esc(ev.trainer)+'</b></span>';
+    body='<div class="kv"><b>Đối tượng:</b> '+esc(ev.audience||"—")+'</div>'
+        +(ev.purpose?'<div class="kv"><b>Mục đích:</b> '+esc(ev.purpose)+'</div>':"")
+        +(ev.folder?'<div class="kv"><b>Thư mục:</b> '+esc(ev.folder)+'</div>':"")
+        +(ev.link?'<a class="cal-link" href="'+esc(ev.link)+'" target="_blank" rel="noopener">🔗 Link buổi học / record</a>':"");
+  } else if(ev.kind==="event"){
+    meta='<span class="cal-pagepill '+pageCls(ev.page)+'">'+esc(ev.page||"—")+'</span>'
+        +'<span>🎯 '+esc(ev.pillar||"—")+'</span>'
+        +(ev.kol?'<span>⭐ '+esc(ev.kol)+'</span>':"");
+    body='<div class="kv"><b>Sự kiện:</b> '+esc(ev.event||"—")+'</div>'
+        +(ev.format?'<div class="kv"><b>Format:</b> '+esc(ev.format)+'</div>':"")
+        +'<div class="kv"><b>On-air dự kiến:</b> '+(ev.planned?ddmmyyyy(ev.planned):"—")+' &nbsp;•&nbsp; <b>On-air thực tế:</b> '+(ev.actual?ddmmyyyy(ev.actual):"— (chưa đăng)")+'</div>'
+        +(ev.note?'<div class="kv"><b>Ghi chú:</b> '+esc(ev.note)+'</div>':"")
+        +(ev.link?'<a class="cal-link" href="'+esc(ev.link)+'" target="_blank" rel="noopener">📄 Link bài đăng</a>':"");
+  } else { // product
+    meta='<span class="cal-pagepill '+pageCls(ev.page)+'">'+esc(ev.page||"—")+'</span>'
+        +'<span>🦷 '+esc(ev.ptype||"—")+'</span>'
+        +'<span>🎯 '+esc(ev.pillar||"—")+'</span>';
+    body=(ev.format?'<div class="kv"><b>Format:</b> '+esc(ev.format)+'</div>':"")
+        +'<div class="kv"><b>On-air dự kiến:</b> '+(ev.planned?ddmmyyyy(ev.planned):"—")+' &nbsp;•&nbsp; <b>On-air thực tế:</b> '+(ev.actual?ddmmyyyy(ev.actual):"— (chưa đăng)")+'</div>'
+        +(ev.reason?'<div class="kv"><b>Lý do:</b> '+esc(ev.reason)+'</div>':"")
+        +(ev.link?'<a class="cal-link" href="'+esc(ev.link)+'" target="_blank" rel="noopener">📄 Link bài đăng</a>':"");
+  }
+  return '<div class="cal-ev k-'+ev.kind+'" onclick="CAL.toggleEv(this)">'
+    +'<div class="cal-ev-top"><span class="cal-tag k-'+ev.kind+'">'+tag+'</span><span class="cal-st '+m.cls+'">'+esc(m.lbl)+'</span></div>'
+    +'<div class="cal-ev-title">'+esc(ev.title||"—")+'</div>'
+    +'<div class="cal-ev-meta">'+meta+'</div>'
+    +'<div class="cal-ev-body">'+body+'</div></div>';
+}
+CAL.toggleEv=function(el){ el.classList.toggle("open"); };
+
+/* ── Day drawer ── */
+CAL.openDay=function(iso){
+  CAL.selDay=iso;
+  var list=monthEvents().filter(function(ev){ return ev.date.slice(0,10)===iso; });
+  var w=dowOfIso(iso), dn=+iso.split("-")[2];
+  $("cal-drawer-hd").innerHTML='<div><div class="dbig">'+dn+'</div><div class="dsub">'+VN_DOW_FULL[w]+' · '+ddmmyyyy(iso)+'</div></div>'
+    +'<div class="sp"></div><span style="font-weight:800;font-size:13px;background:rgba(255,255,255,.16);padding:6px 12px;border-radius:20px">'+list.length+' lịch</span>'
+    +'<button onclick="CAL.closeDay()">&times;</button>';
+  $("cal-drawer-bd").innerHTML = list.length ? list.map(evCard).join("") : '<div class="cal-empty"><div class="em">📭</div><h3>Không có lịch</h3></div>';
+  $("cal-drawer").classList.add("show"); $("cal-drawer-back").classList.add("show");
+};
+CAL.closeDay=function(){ $("cal-drawer").classList.remove("show"); $("cal-drawer-back").classList.remove("show"); CAL.selDay=null; };
+
+/* ESC để đóng */
+document.addEventListener("keydown",function(e){
+  if(e.key!=="Escape") return;
+  if($("cal-drawer").classList.contains("show")){ CAL.closeDay(); return; }
+  if($("cal-app").classList.contains("show")) closeMMHCalendar();
+});
+
+})();
+
 </script>
 </body>
 </html>
